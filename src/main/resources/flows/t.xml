@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process name="测试流程" displayName="测试流程" instanceUrl="/snaker/flow/all" >
+<start layout="70,89,50,50" name="start" >
+<transition offset="0,-10" to="rect2" name="path8" displayName="path8" />
+</start>
+<task layout="183,97,100,50" name="rect2" displayName="申请" form="/config/form/use/1" taskType="Major"  performType="ANY" >
+<transition offset="0,-10" to="rect3" name="path9" displayName="path9" />
+<transition offset="0,-10" to="rect4" name="path12" displayName="path12" />
+<transition offset="0,-10" to="rect5" name="path14" displayName="path14" />
+</task>
+<task layout="405,33,100,50" name="rect3" displayName="窗口1" form="/config/form/use/1" taskType="Major" assignee="touser" performType="ANY" >
+<transition offset="0,-10" to="rect6" name="path10" displayName="path10" />
+</task>
+<task layout="409,111,100,50" name="rect4" displayName="窗口2" form="/config/form/use/1" taskType="Major" assignee="touser" performType="ANY" >
+<transition offset="0,-10" to="rect6" name="path13" displayName="path13" />
+</task>
+<task layout="412,197,100,50" name="rect5" displayName="窗口3" form="/config/form/use/1" taskType="Major" assignee="touser" performType="ANY" >
+<transition offset="0,-10" to="rect6" name="path15" displayName="path15" />
+</task>
+<task layout="634,114,100,50" name="rect6" displayName="审核" form="/config/form/use/1" taskType="Major" assignee="touser" performType="ANY" >
+<transition offset="0,-10" to="end" name="path11" displayName="path11" />
+</task>
+<end layout="777,124,50,50" name="end" >
+</end>
+</process>

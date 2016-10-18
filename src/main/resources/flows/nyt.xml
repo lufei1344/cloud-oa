@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process name="农业厅" displayName="农业厅" instanceUrl="/snaker/flow/all">
+<start layout="-71,122,100,50" name="start" text="主办单位拟稿" >
+<transition offset="0,-10" to="rect2" name="path34" displayName="TO 负责人审核" />
+</start>
+<task layout="87,122,100,50" name="rect2" displayName="负责人审核" text="负责人审核" form="/config/form/use/1"  >
+<transition offset="0,-10" to="rect3" name="path19" displayName="TO 厅内会签" />
+<transition offset="15,-11" to="rect12" name="path20" displayName="TO 厅办公室收发员初审登记" />
+</task>
+<task layout="93,10,100,50" name="rect3" displayName="厅内会签" text="厅内会签" form="/config/form/use/1" assignee="touser" performType="ALL" >
+<transition offset="0,-10" to="rect2" name="path16" displayName="path16" />
+</task>
+<task layout="479,117,100,50" name="rect4" displayName="办公室拟办" text="办公室拟办" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="0,-13" to="rect11" name="path21" displayName="TO 厅办公室收发员登记分送" />
+</task>
+<task layout="644,177,100,50" name="rect5" displayName="主管厅长签批" text="主管厅长签批" form="/config/form/use/1" assignee="touser" performType="ALL">
+<transition offset="0,-10" to="rect6" name="path26" displayName="TO 厅长签发" />
+<transition offset="0,-10" to="rect7" name="path31" displayName="TO 办公室编号" />
+</task>
+<task layout="785,172,100,50" name="rect6" displayName="厅长签发" text="厅长签发" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="0,-10" to="rect7" g="835,282" name="path17" displayName="path17" />
+</task>
+<task layout="645,257,100,50" name="rect7" displayName="办公室编号" text="办公室编号" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="0,-10" to="rect8" name="path18" displayName="TO 主办单位排版" />
+<transition offset="0,-10" to="rect8" name="path29" displayName="TO 主办单位排版" />
+</task>
+<task layout="499,261,100,50" name="rect8" displayName="主办单位排版校对" text="主办单位排版校对" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="0,-10" to="rect14" name="path30" displayName="path30" />
+</task>
+<task layout="346,180,100,50" name="rect9" displayName="厅办公室分管主任审核拟办" text="厅办公室分管主任审核拟办" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="0,-10" to="rect4" g="530,204" name="path22" displayName="path22" />
+</task>
+<task layout="91,268,100,50" name="rect10" displayName="主办单位分发办结" text="主办单位分发办结" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="0,-10" to="end" name="path37" displayName="path37" />
+</task>
+<task layout="650,116,100,50" name="rect11" displayName="厅办公室收发员登记分送" text="厅办公室收发员登记分送" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="8,-11" to="rect5" name="path27" displayName="TO 主管厅长签批" />
+<transition offset="1,-3" to="rect6" g="836,140" name="path28" displayName="path28" />
+</task>
+<task layout="220,118,100,50" name="rect12" displayName="厅办公室收发员初审登记" text="厅办公室收发员初审登记" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="0,-10" to="rect15" name="path23" displayName="TO 厅办公室文字秘书核稿" />
+</task>
+<task layout="220,267,100,50" name="rect13" displayName="主办单位制发" text="主办单位制发" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="0,-10" to="rect10" name="path33" displayName="TO 任务" />
+</task>
+<task layout="353,263,100,50" name="rect14" displayName="厅办公室登记用章" text="厅办公室登记用章" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="0,-10" to="rect13" name="path32" displayName="TO 任务" />
+</task>
+<task layout="344,117,100,50" name="rect15" displayName="厅办公室文字秘书核稿" text="厅办公室文字秘书核稿" form="/config/form/use/1" assignee="touser" performType="ANY">
+<transition offset="0,-10" to="rect9" name="path24" displayName="TO 厅办公室分管主任审核拟办" />
+<transition offset="0,-10" to="rect4" name="path25" displayName="TO 办公室拟办" />
+</task>
+<end layout="-43,262,50,50" name="end" >
+</end>
+</process>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process name="111111" displayName="11111" instanceUrl="/snaker/flow/all" >
+<start layout="6,116,50,50" name="start" >
+<transition offset="0,-10" to="rect3" name="path8" displayName="path8" />
+</start>
+<end layout="647,151,50,50" name="end" >
+</end>
+<task layout="94,112,100,50" name="rect3" displayName="rect3" form="/config/form/use/1" taskType="Major" performType="ANY" >
+<transition offset="0,-10" to="rect7" name="path9" displayName="path9" />
+</task>
+<task layout="379,84,100,50" name="rect4" displayName="rect4" form="/config/form/use/1" taskType="Major" assignee="touser" performType="ANY" >
+<transition offset="0,-10" to="rect6" name="path11" displayName="path11" />
+</task>
+<task layout="372,163,100,50" name="rect5" displayName="rect5" form="/config/form/use/1" taskType="Major" assignee="touser" performType="ANY" >
+<transition offset="0,-10" to="rect6" name="path14" displayName="path14" />
+</task>
+<task layout="530,142,100,50" name="rect6" displayName="rect6" form="/config/form/use/1" taskType="Major" assignee="touser" performType="ANY" >
+<transition offset="0,-10" to="end" name="path12" displayName="path12" />
+</task>
+<decision layout="230,117,48,44" name="rect7" expr="#nextNode" >
+<transition offset="0,-10" to="rect4" name="rect4" displayName="path10" />
+<transition offset="0,-10" to="rect5" name="rect5" displayName="path13" />
+</decision>
+</process>
