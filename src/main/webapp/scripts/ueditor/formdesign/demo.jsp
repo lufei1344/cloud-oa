@@ -1,12 +1,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctxPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>业务表单视图编辑</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <link href="${ctxPath}/scripts/ueditor/formdesign/images/icons.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" charset="utf-8" src="${ctxPath}/scripts/ueditor/ueditor-fd-config.js"></script>
-<script type="text/javascript" charset="utf-8" src="${ctxPath}/scripts/ueditor/ueditor-fd.all.js"> </script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/scripts/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="${ctxPath}/scripts/ueditor/ueditor.all.js"> </script>
 <script type="text/javascript" charset="utf-8" src="${ctxPath}/scripts/ueditor/lang/zh-cn/zh-cn.js"></script>
 <!-- 引入表单控件 -->
 <script type="text/javascript" charset="utf-8" src="${ctxPath}/scripts/ueditor/formdesign/design-plugin.js"></script>
@@ -29,26 +31,26 @@ html,body
            <table style="width:100%;">
                <tr>
                    <td style="width:100%;">
-                       <a  class="icon-textbox" plain="true" onclick="exePlugin('extdig-textbox')">文本控件</a>
-                       <a  class="icon-textarea" plain="true" onclick="exePlugin('extdig-textarea')">多行文本控件</a>
-                       <a  class="icon-checkbox" plain="true" onclick="exePlugin('extdig-checkbox')">复选框</a>
-                       <a  class="icon-radiobuttonlist" plain="true" onclick="exePlugin('extdig-radiobuttonlist')">单选按钮列表</a>
-                       <a  class="icon-checkboxlist" plain="true" onclick="exePlugin('extdig-checkboxlist')">复选按钮列表</a>
-                       <a  class="icon-combobox" plain="true" onclick="exePlugin('extdig-combobox')">下拉框控件</a>
-                       <a  class="icon-datepicker" plain="true" onclick="exePlugin('extdig-datepicker')">日期控件</a>
-                       <a  class="icon-monthpicker" plain="true" onclick="exePlugin('extdig-monthpicker')">月份控件</a>
-                       <a  class="icon-timespinner" plain="true" onclick="exePlugin('extdig-timespinner')">时间输入框</a>
-                       <a  class="icon-spinner" plain="true" onclick="exePlugin('extdig-spinner')">数据输入框</a>
-                       <a  class="icon-ueditor" plain="true" onclick="exePlugin('extdig-ueditor')">富文本输入框</a>
-                       <a  class="icon-user" plain="true" onclick="exePlugin('extdig-user')">用户选择框</a>
-                       <a  class="icon-group" plain="true" onclick="exePlugin('extdig-group')">用户组选择框</a>
-                       <a  class="icon-upload" plain="true" onclick="exePlugin('upload-panel')">上传控件</a>
-                       <a  class="icon-hidden" plain="true" onclick="exePlugin('extdig-hidden')">隐藏域控件</a>
-                       <a  class="icon-buttonedit" plain="true" onclick="exePlugin('extdig-buttonedit')">按钮输入框</a>
-                       <a  class="icon-dep" plain="true" onclick="exePlugin('extdig-dep')">部门选择控件</a>
-                       <a  class="rx-grid" plain="true" onclick="exePlugin('rx-grid')">表格控件</a>
-                       <a  class="icon-treeselect" plain="true" onclick="exePlugin('extdig-treeselect')">下拉树选择控件</a>
-                       <a  class="icon-btn" plain="true" onclick="exePlugin('extdig-button')">自定义按钮</a>
+                       <button  class="icon-textbox" plain="true" onclick="exePlugin('extdig-textbox')">文本控件</button>
+                       <button  class="icon-textarea" plain="true" onclick="exePlugin('extdig-textarea')">多行文本控件</button>
+                       <button  class="icon-checkbox" plain="true" onclick="exePlugin('extdig-checkbox')">复选框</button>
+                       <button  class="icon-radiobuttonlist" plain="true" onclick="exePlugin('extdig-radiobuttonlist')">单选按钮列表</button>
+                       <button  class="icon-checkboxlist" plain="true" onclick="exePlugin('extdig-checkboxlist')">复选按钮列表</button>
+                       <button  class="icon-combobox" plain="true" onclick="exePlugin('extdig-combobox')">下拉框控件</button>
+                       <button  class="icon-datepicker" plain="true" onclick="exePlugin('extdig-datepicker')">日期控件</button>
+                       <button  class="icon-monthpicker" plain="true" onclick="exePlugin('extdig-monthpicker')">月份控件</button>
+                       <button  class="icon-timespinner" plain="true" onclick="exePlugin('extdig-timespinner')">时间输入框</button>
+                       <button  class="icon-spinner" plain="true" onclick="exePlugin('extdig-spinner')">数据输入框</button>
+                       <button  class="icon-ueditor" plain="true" onclick="exePlugin('extdig-ueditor')">富文本输入框</button>
+                       <button  class="icon-user" plain="true" onclick="exePlugin('extdig-user')">用户选择框</button>
+                       <button  class="icon-group" plain="true" onclick="exePlugin('extdig-group')">用户组选择框</button>
+                       <button  class="icon-upload" plain="true" onclick="exePlugin('upload-panel')">上传控件</button>
+                       <button  class="icon-hidden" plain="true" onclick="exePlugin('extdig-hidden')">隐藏域控件</button>
+                       <button  class="icon-buttonedit" plain="true" onclick="exePlugin('extdig-buttonedit')">按钮输入框</button>
+                       <button  class="icon-dep" plain="true" onclick="exePlugin('extdig-dep')">部门选择控件</button>
+                       <button  class="rx-grid" plain="true" onclick="exePlugin('rx-grid')">表格控件</button>
+                       <button  class="icon-treeselect" plain="true" onclick="exePlugin('extdig-treeselect')">下拉树选择控件</button>
+                       <button  class="icon-btn" plain="true" onclick="exePlugin('extdig-button')">自定义按钮</button>
                    </td>
                </tr>
          </table>
@@ -73,12 +75,6 @@ html,body
 			})
 		});
 		
-		$(function(){
-			
-			
-			
-			typeChanged();
-		});
 		
 		function bindMd(obj){
 			if(obj.checked){

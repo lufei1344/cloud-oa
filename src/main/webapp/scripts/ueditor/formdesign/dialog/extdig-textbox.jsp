@@ -5,27 +5,29 @@
 <html>
 <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	 	<title>文本框-mini-textbox</title>
-	 	<script src="${ctxPath}/scripts/boot.js" type="text/javascript"></script>
-	 	<script src="${ctxPath}/scripts/common/form.js" type="text/javascript"></script>
+	 	<title>文本框-textbox</title>
+	 	<link   type="text/css"  href="${ctxPath}/scripts/ueditor/formdesign/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/js/jquery.min.js"></script>
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/js/bootstrap.min.js"></script>
+	 	<script src="${ctxPath}/scripts/ueditor/formdesign/validate/jquery.validate.min.js"></script>
+        <script src="${ctxPath}/scripts/ueditor/formdesign/validate/messages_zh.min.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/dialogs/internal.js"></script>
-	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/form-design/config/plugin-libs.js"></script>
-	 	<link href="${ctxPath}/styles/form.css" rel="stylesheet" type="text/css" />
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/FormUtil.js"></script>
 </head>
 <body>
 	<div style="width:100%;text-align: center">
 		<div style="margin-left:auto;margin-right: auto;padding:5px;">
-			<form id="miniForm">
-				<table class="table-detail" cellspacing="1" cellpadding="1">
+			<form id="form">
+				<table class="table table-bordered" cellspacing="1" cellpadding="1">
 					<caption>文本框属性配置</caption>
 					<tr>
 						<th>字段备注*</th>
 						<td>
-							<input class="mini-textbox" name="label" required="true" vtype="maxLength:100,chinese"  style="width:90%" emptytext="请输入字段备注" />
+							<input class="form-control" name="label"   style="width:90%" minlength="2" type="text" class="form-control" required="" aria-required="true" />
 						</td>
 						<th>字段标识*</th>
 						<td>
-							<input name="name" class="mini-treeselect" url="${ctxPath}/bpm/bm/bpmFormModel/getModelAttTree.do?modelId=${param['modelId']}" multiSelect="false"  valueFromSelect="false" emptytext="请输入字段标识，为英文开头或与数字组合" style="width:90%"
+							<input name="name" class="form-control" url="${ctxPath}/bpm/bm/bpmFormModel/getModelAttTree.do?modelId=${param['modelId']}" multiSelect="false"  valueFromSelect="false" emptytext="请输入字段标识，为英文开头或与数字组合" style="width:90%"
 						        textField="key" valueField="key" parentField="parentId"  allowInput="true" onvalidation="onKeyValidation" required="true"
 						        onvaluechanged="fieldChange"
 						        showRadioButton="true" showFolderCheckBox="false"/>
@@ -34,30 +36,30 @@
 					<tr>
 						<th>字符长度</th>
 						<td colspan="3">
-							<input id="minlen" name="minlen" class="mini-spinner"  minValue="0" maxValue="50" value="0" />&nbsp;-&nbsp;<input id="maxlen" name="maxlen" class="mini-spinner"  minValue="1" maxValue="1024" value="50" />
+							<input id="minlen" name="minlen" class="form-control"  minValue="0" maxValue="50" value="0" />&nbsp;-&nbsp;<input id="maxlen" name="maxlen" class="mini-spinner"  minValue="1" maxValue="1024" value="50" />
 						</td>
 					</tr>
 					<tr>
 						<th>校验规则</th>
 						<td>
-							<input name="onvalidation" class="mini-combobox" style="width:80%" textField="name" valueField="value" 
+							<input name="onvalidation" class="form-control" style="width:80%" textField="name" valueField="value" 
 		    				url="${ctxPath}/sys/core/sysDic/getByDicKey.do?dicKey=_FieldValidateRule"  allowInput="false" showNullItem="true" nullItemText="请选择..."/>
 						</td>
 						<th>必填*</th>
 						<td>
-							<input class="mini-checkbox" name="required" id="required"/>是
+							<input class="form-control" name="required" id="required"/>是
 						</td>
 					</tr>
 					<tr>
 						<th>允许文本输入</th>
 						<td>
-							<input class="mini-checkbox" name="allowinput" id="allowinput" value="true"/>是
+							<input class="form-control" name="allowinput" id="allowinput" value="true"/>是
 						</td>
 						<th>
 							默认值
 						</th>
 						<td>
-							<input class="mini-textbox" name="value" style="width:90%"/>
+							<input class="form-control" name="value" style="width:90%"/>
 						</td>
 					</tr>
 					<tr>
@@ -84,11 +86,10 @@
 	</div>
 	<script type="text/javascript">
 
-		mini.parse();
-		var form=new mini.Form('miniForm');
+		
 		//编辑的控件的值
 		var oNode = null,
-		thePlugins = 'mini-textbox';
+		thePlugins = 'extdig-textbox';
 		
 		window.onload = function() {
 			//若控件已经存在，则设置回调其值
@@ -103,7 +104,7 @@
 		        	formData[attrs[i].name]=attrs[i].value;
 		        }
 		        
-		        form.setData(formData);
+		        setFormData("form",formData);
 		    }
 		}
 		//取消按钮
@@ -114,18 +115,18 @@
 		};
 		//确认
 		dialog.onok = function (){
+			/*
 			form.validate();
 	        if (form.isValid() == false) {
 	            return false;
 	        }
-	        
-	        var formData=form.getData();
+	        */
+	        var formData=getFormData("form");
 	        var isCreate=false;
 		    //控件尚未存在，则创建新的控件，否则进行更新
 		    if( !oNode ) {
 		        try {
 		            oNode = createElement('input',name);
-		            oNode.setAttribute('class','mini-textbox rxc');
 		            //需要设置该属性，否则没有办法其编辑及删除的弹出菜单
 		            oNode.setAttribute('plugins',thePlugins);
 		        } catch (e) {
@@ -140,7 +141,7 @@
 		    }
 		    
 		  	//设置校验规则
-		  	oNode.setAttribute('vtype','rangeLength:'+formData['minlen']+','+formData['maxlen']);
+		  	//oNode.setAttribute('vtype','rangeLength:'+formData['minlen']+','+formData['maxlen']);
 		  	
 		    for(var key in formData){
             	oNode.setAttribute(key,formData[key]);

@@ -1,5 +1,5 @@
 //基础目录
-UE.FormDesignBaseUrl = 'form-design';
+UE.FormDesignBaseUrl = 'formdesign';
 //配置扩展的控件
 var extPlugins=[{
             	 name:'extdig-textbox',
@@ -157,7 +157,8 @@ function registerPlugin(index){
 		me.commands[thePlugins] = {
 			//两参数可不配置,ModelId为外部配置的业务实体的Id
 			execCommand:function (pluginName) {
-				var modelId=getModelId();
+				//var modelId=getModelId();
+				var modelId="";
 				var dialog = new UE.ui.Dialog({
 					iframeUrl:this.options.UEDITOR_HOME_URL + UE.FormDesignBaseUrl+'/dialog/'+pluginName+'.jsp?modelId='+modelId,
 					name:thePlugins,

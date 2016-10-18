@@ -6,17 +6,7 @@
  * @param name
  * @returns
  */
-function createElement(type, name){     
-    var element = null;     
-    try {        
-        element = document.createElement('<'+type+' name="'+name+'">');     
-    } catch (e) {}   
-    if(element==null) {     
-        element = document.createElement(type);     
-        element.name = name;     
-    } 
-    return element;     
-}
+
 
 
 function fieldChange(){
