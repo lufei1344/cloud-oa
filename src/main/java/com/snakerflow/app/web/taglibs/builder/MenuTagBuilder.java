@@ -98,19 +98,16 @@ public class MenuTagBuilder implements TagBuilder {
 			if((treeNodes == null || treeNodes.isEmpty()) && StringUtils.isEmpty(menu.getDescription())) {
 				continue;
 			}
-			buffer.append("<dl>");
-			buffer.append("<dt id='sidebar_goods_manage'><i class='pngFix'></i>");
+			buffer.append("<li>");
+			buffer.append("<a href=\"#\"><i class=\"fa fa-home\"></i><span class=\"nav-label\">");
 			buffer.append(menu.getName());
-			buffer.append("</dt>");
-			buffer.append("<dd>");
-			buffer.append("<ul>");
+			buffer.append("</span><span class=\"fa arrow\"></span></a>");
+			
 			/**
 			 * 有子菜单时，将子菜单添加到当前节点上
 			 */
 			buildMenuTreeNode(buffer, treeNodes);
-			buffer.append("</ul>");
-			buffer.append("</dd>");
-			buffer.append("</dl>");
+			buffer.append("</li>");
 		}
 	}
 
@@ -124,16 +121,18 @@ public class MenuTagBuilder implements TagBuilder {
 		if (treeNodes == null) {
 			return;
 		}
+		buffer.append("<ul class=\"nav nav-second-level\">");
 		for (Menu menu : treeNodes) {
 			buffer.append("<li>");
-			buffer.append("<a href='");
+			buffer.append("<a  class=\"J_menuItem\" href='");
 			buffer.append(servletContext.getContextPath());
 			buffer.append(menu.getDescription());
-			buffer.append("' target='mainFrame' ");
+			buffer.append("'  ");
 			buffer.append(">");
 			buffer.append(menu.getName());
 			buffer.append("</a>");
 			buffer.append("</li>");
 		}
+		buffer.append("</ul>");
 	}
 }

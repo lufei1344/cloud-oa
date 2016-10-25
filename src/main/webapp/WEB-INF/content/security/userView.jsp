@@ -1,78 +1,80 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ include file="/common/taglibs.jsp"%>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html lang="en">
-	<head>
-		<title>帐号查看</title>
-		<%@ include file="/common/meta.jsp"%>
-		<link rel="stylesheet" href="${ctx}/styles/css/style.css"
-			type="text/css" media="all" />
-		<script src="${ctx}/styles/js/jquery-1.8.3.min.js" type="text/javascript"></script>
-	</head>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>H+ 后台主题UI框架 - 主页</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="${ctx}/scripts/hplus/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctx}/scripts/hplus/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="${ctx}/scripts/hplus/css/animate.min.css" rel="stylesheet">
+    <link href="${ctx}/scripts/hplus/css/style.min.css" rel="stylesheet">
+    
+    <script type="text/javascript" src="${ctx}/scripts/hplus/js/jquery.min.js"></script>
+    <script type="text/javascript" src="${ctx}/scripts/hplus/js/bootstrap.min.js"></script>
+</head>
 	<body>
-		<form id="inputForm" action="" method="post">
-			<input type="hidden" name="id" id="id" value="${id }"/>
-			<table class="table_all" align="center" border="0" cellpadding="0"
-				cellspacing="0">
+			<table class="table table-bordered" style="width: 60%;" align=center >
+			<caption style="text-align: center;"><h2>账号信息查看</h2></caption>
 				<tr>
-					<td class="td_table_1">
+					<td>
 						<span>账号：</span>
 					</td>
-					<td class="td_table_2">
+					<td>
 						${user.username }&nbsp;
 					</td>
-					<td class="td_table_1">
+				</tr>
+				<tr>
+					<td>
 						<span>姓名：</span>
 					</td>
-					<td class="td_table_2">
+					<td>
 						${user.fullname }&nbsp;
 					</td>
 				</tr>
 				<tr>
-					<td class="td_table_1">
+					<td>
 						<span>邮箱：</span>
 					</td>
-					<td class="td_table_2" colspan="3">
+					<td>
 						${user.email }&nbsp;
 					</td>
 				</tr>
 				<tr>
-					<td class="td_table_1">
+					<td>
 						<span>部门：</span>
 					</td>
-					<td class="td_table_2" colspan="3">
+					<td>
 						${user.org.name }&nbsp;
 					</td>
 				</tr>
-			</table>
-			<table align="center" border="0" cellpadding="0"
-				cellspacing="0">
-				<tr align="left">
-					<td colspan="1">
-						<input type="button" class="button_70px" name="reback" value="返回"
-							onclick="history.back()">
-					</td>
-				</tr>
-			</table>
-			
-			<table class="table_all" align="center" border="0" cellpadding="0"
-				cellspacing="0">
 				<tr>
-					<td align=center width=45% class="td_list_1" nowrap>
+					<td align=center width=45% class="td_list_1" nowrap colspan="2">
 						<a href="javascript:sort('name','asc')">角色名称</a>
 					</td>
 				</tr>
 
 				<c:forEach items="${user.roles}" var="role">
 					<tr>
-						<td class="td_list_2" align=left nowrap>
+						<td colspan="2" align=left nowrap>
 							${role.name}&nbsp;
 						</td>
 					</tr>
 				</c:forEach>
 			</table>
-		</form>
+			<table align="center" border="0" cellpadding="0"
+				cellspacing="0">
+				<tr align="left">
+					<td colspan="1">
+						<input type="button" class="btn btn-sm btn-primary"  name="reback" value="返回"
+							onclick="history.back()">
+					</td>
+				</tr>
+			</table>
 	</body>
 </html>

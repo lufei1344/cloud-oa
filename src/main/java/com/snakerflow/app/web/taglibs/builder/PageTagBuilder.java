@@ -89,15 +89,27 @@ public class PageTagBuilder implements TagBuilder {
 			
 		}
 		StringBuffer sb = new StringBuffer();
-		sb.append("<td><div class='class1_ur4'>");
-		sb.append("<a href='javascript:jumpPage(1)' style='TEXT-DECORATION: none'>首页</a>&nbsp;&nbsp;");
-		sb.append("<a href='javascript:jumpPage(");
+		sb.append("<td><div class='btn-group'>");
+		sb.append("<a class='btn btn-white' href='javascript:jumpPage(1)' style='TEXT-DECORATION: none'>首页</a>&nbsp;&nbsp;");
+		sb.append("<a class='btn btn-white' href='javascript:jumpPage(");
 		sb.append(prePage);
-		sb.append(")' style='TEXT-DECORATION: none'>上一页</a>&nbsp;&nbsp;");
-		sb.append("<a href='javascript:jumpPage(");
+		sb.append(")' style='TEXT-DECORATION: none'><i class='fa fa-chevron-left'></i></a>&nbsp;&nbsp;");
+		
+		int pbegin = (pageNo - 2)<=0 ? 1 : (pageNo - 2);
+		int pend = totalPage;
+		pend = pend>(pbegin+5)?(pbegin+4):pend;
+		for(int i=pbegin; i<=pend; i++){
+			if(i == pageNo){
+				sb.append("<a class='btn btn-white active' >"+i+"</a>");				
+			}else{
+				sb.append("<a class='btn btn-white' href='javascript:jumpPage("+i+")' >"+i+"</a>");
+			}
+		}
+		
+		sb.append("<a class='btn btn-white' href='javascript:jumpPage(");
 		sb.append(nextPage);
-		sb.append(")' style='TEXT-DECORATION: none'>下一页</a>&nbsp;&nbsp;");
-		sb.append("<a href='javascript:jumpPage(");
+		sb.append(")' style='TEXT-DECORATION: none'><i class='fa fa-chevron-right'></i></a>&nbsp;&nbsp;");
+		sb.append("<a class='btn btn-white' href='javascript:jumpPage(");
 		sb.append(totalPages);
 		sb.append(")' style='TEXT-DECORATION: none'>末页</a>");
 		return sb.toString();
@@ -115,12 +127,12 @@ public class PageTagBuilder implements TagBuilder {
 		sb.append("<input maxLength=5 name='jumppage' size=2 value='");
 		sb.append("'/>");
 		sb.append("页 &nbsp;&nbsp;");
-		sb.append("<input type='button' name='pagesubmit' ");
-		sb.append("onclick='return gotoPage()' class='button_70px' ");
+		sb.append("<input class='btn btn-white' type='button' name='pagesubmit' ");
+		sb.append("onclick='return gotoPage()'  ");
 		sb.append("value='跳转'/></td>");
 		sb.append("<td>");
 		if(StringUtils.isNotEmpty(exportUrl)) {
-			sb.append("<input type='button' name='genExcel' class='button_100px' value='保存成Excel文件' onclick=\"exportExcel('");
+			sb.append("<input type='button' name='genExcel' class='btn btn-white' value='保存成Excel文件' onclick=\"exportExcel('");
 			sb.append(exportUrl);
 			sb.append("')\">");
 		}

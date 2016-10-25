@@ -1,113 +1,122 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ include file="/common/taglibs.jsp"%>
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html lang="en">
-	<head>
-		<title>帐号管理</title>
-		<%@ include file="/common/meta.jsp"%>
-		<link rel="stylesheet" href="${ctx}/styles/css/style.css" type="text/css" media="all" />
-		<link rel="stylesheet" type="text/css" href="${ctx}/styles/wbox/wbox/wbox.css" />
-		<script src="${ctx}/styles/js/jquery-1.8.3.min.js" type="text/javascript"></script>
-		<script type="text/javascript" src="${ctx}/styles/wbox/wbox.js"></script>
-		<script>
-		var iframewbox;
-	function openOrg() {
- 		iframewbox=$("#selectOrgBtn").wBox({
-			   	requestType: "iframe",
-			   	iframeWH:{width:800,height:400},
-			   	title:"选择上级部门",
-			   	show: true,
-				target:"${ctx}/security/org?lookup=1"
-			   });
-	}
-	
-	function callbackProcess(id, name) {
-		if(iframewbox) {
-			document.getElementById("parentOrgId").value=id;
-			document.getElementById("parentOrgName").value=name;
-			iframewbox.close();
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>H+ 后台主题UI框架 - 主页</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="${ctx}/scripts/hplus/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctx}/scripts/hplus/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="${ctx}/scripts/hplus/css/animate.min.css" rel="stylesheet">
+    <link href="${ctx}/scripts/hplus/css/style.min.css" rel="stylesheet">
+    
+    <script type="text/javascript" src="${ctx}/scripts/hplus/js/jquery.min.js"></script>
+    <script type="text/javascript" src="${ctx}/scripts/hplus/js/bootstrap.min.js"></script>
+    <script>
+		function openOrg() {
+			var index = parent.layer.open({
+				  type: 2,
+			      title: '部门选择',
+			      area: ['6500px', '400px'],
+			      content: '${ctx}/security/org?lookup=1'
+				});
+			parent.digCallBack = function(obj){
+				document.getElementById("parentOrgId").value=obj.id;
+				document.getElementById("parentOrgName").value=obj.name;
+				parent.layer.close(index);	
+			};
 		}
-	}
-</script>
-	</head>
+		
+	</script>
+</head>
 
 	<body>
 		<form id="inputForm" action="${ctx }/security/user/update" method="post">
 			<input type="hidden" name="id" id="id" value="${id }"/>
-		<table width="100%" border="0" align="center" cellpadding="0"
-				class="table_all_border" cellspacing="0" style="margin-bottom: 0px;border-bottom: 0px">
-			<tr>
-				<td class="td_table_top" align="center">
-					用户管理
-				</td>
-			</tr>
-		</table>
-		<table class="table_all" align="center" border="0" cellpadding="0"
-			cellspacing="0" style="margin-top: 0px">
+		<table class="table table-bordered" style="width: 90%;" align="center" >
+		<caption style="text-align: center;"><h2>用户管理</h2></caption>
 				<tr>
-					<td class="td_table_1">
-						<span>账号：</span>
+					<td style="text-align: right;">
+						账号：
 					</td>
-					<td class="td_table_2">
-						<input type="text" class="input_240" id="username" name="username"
-							value="${user.username }" />
+					<td>
+						<div class="col-sm-6">
+                            <input id="username" name="username" value="${user.username }" minlength="2" type="text" class="form-control" required="" aria-required="true">
+                        </div>	
 					</td>
-					<td class="td_table_1">
-						<span>姓名：</span>
+					<td style="text-align: right;">
+						姓名：
 					</td>
-					<td class="td_table_2">
-						<input type="text" class="input_240" id="fullname" name="fullname"
+					<td>
+						<div class="col-sm-6">
+						<input type="text" class="form-control" id="fullname" name="fullname"
 							value="${user.fullname }" />
+						</div>	
 					</td>
 				</tr>
 				<tr>
-					<td class="td_table_1">
-						<span>密码：</span>
+					<td style="text-align: right;">
+						密码：
 					</td>
-					<td class="td_table_2">
-						<input type="password" class="input_240" id="plainPassword" name="plainPassword"
+					<td>
+						<div class="col-sm-6">
+						<input type="password" class="form-control" id="plainPassword" name="plainPassword"
 							value="${user.plainPassword }" />
+						</div>	
 					</td>
-					<td class="td_table_1">
-						<span>确认密码：</span>
+					<td style="text-align: right;">
+						确认密码：
 					</td>
-					<td class="td_table_2">
-						<input type="password" class="input_240" id="passwordConfirm"
+					<td>
+						<div class="col-sm-6">
+						<input type="password" class="form-control" id="passwordConfirm"
 							name="passwordConfirm" value="${user.plainPassword }" />
+						</div>	
 					</td>
 				</tr>
 				<tr>
-					<td class="td_table_1">
-						<span>邮箱：</span>
+					<td style="text-align: right;">
+						邮箱：
 					</td>
-					<td class="td_table_2">
-						<input type="text" class="input_240" id="email" name="email"
+					<td>
+						<div class="col-sm-6">
+						<input type="text" class="form-control" id="email" name="email"
 							value="${user.email }" />
+						</div>	
 					</td>
-					<td class="td_table_1">
-						<span>性别：</span>
+					<td style="text-align: right;">
+						性别：
 					</td>
-					<td class="td_table_2">
+					<td>
+						<div class="col-sm-6">
 						<frame:select name="sex" type="radio" configName="sex" value="${user.sex == null ? '1' : user.sex }" cssClass="input_radio"/>
+						</div>
 					</td>
 				</tr>
 				<tr>
-					<td class="td_table_1">
-						<span>是否可用：</span>
+					<td style="text-align: right;">
+						是否可用：
 					</td>
-					<td class="td_table_2" colspan="3">
+					<td colspan="3">
+						<div class="col-sm-6">
 						<frame:select name="enabled" type="radio" configName="yesNo" value="${user.enabled == null ? '1' : user.enabled }" cssClass="input_radio"/>
+						</div>
 					</td>
 				</tr>
  				<tr>
-					<td class="td_table_1">
-						<span>部门：</span>
+					<td style="text-align: right;">
+						部门：
 					</td>
-					<td class="td_table_2" colspan="3">
+					<td colspan="3">
+					<div class="col-sm-6">
 						<input type="hidden" id="parentOrgId" name="parentOrgId" value="${user.org.id }">
-						<input type="text" id="parentOrgName" readonly="readonly" name="parentOrgName" class="input_520" value="${user.org.name }">
-						<input type='button' class='button_70px' value='选择部门' id="selectOrgBtn" onclick="openOrg()"/>
+						<input type="text" id="parentOrgName" readonly="readonly" name="parentOrgName" class="form-control" value="${user.org.name }">
+						<input type='button' class="btn btn-sm btn-primary" value='选择部门' id="selectOrgBtn" onclick="openOrg()"/>
+					</div>	
 					</td>
 				</tr>
 			</table>
@@ -115,34 +124,25 @@
 				cellspacing="0">
 				<tr align="left">
 					<td colspan="1">
-						<input type="submit" class="button_70px" name="submit" value="提交">
+						<input type="submit" class="btn btn-sm btn-primary" name="submit" value="提交">
 						&nbsp;&nbsp;
-						<input type="button" class="button_70px" name="reback" value="返回"
+						<input type="button" class="btn btn-sm btn-primary" name="reback" value="返回"
 							onclick="history.back()">
 					</td>
 				</tr>
 			</table>
 			
-			<table class="table_all" align="center" border="0" cellpadding="0"
-				cellspacing="0">
+			<table class="table table-bordered" style="width: 90%;" align="center">
 				<tr>
-					<td align=center width=10% class="td_list_1" nowrap>
-						<input type="checkbox" title="全选" id="selectAll">
-					</td>
-					<td align=center width=45% class="td_list_1" nowrap>
-						<a href="javascript:sort('name','asc')">角色名称</a>
+					<td width=45%  nowrap>
+						<input type="checkbox" title="全选" id="selectAll"><a href="javascript:sort('name','asc')">角色名称</a>
 					</td>
 				</tr>
 
 				<c:forEach items="${roles}" var="role">
 					<tr>
-						<td class="td_list_2" align=center nowrap>
-							<label class="checkbox">
-								<input type="checkbox" name="orderIndexs" value="${role.id}" ${role.selected== 1 ? 'checked=true' : '' }>
-							</label>
-						</td>
-						<td class="td_list_2" align=left nowrap>
-							${role.name}&nbsp;
+						<td  align=left nowrap>
+							<input type="checkbox" name="orderIndexs" value="${role.id}" ${role.selected== 1 ? 'checked=true' : '' }>${role.name}&nbsp;
 						</td>
 					</tr>
 				</c:forEach>

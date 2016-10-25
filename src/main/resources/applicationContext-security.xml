@@ -17,6 +17,7 @@
 				/login = anon
 				/logout = logout
 				/styles/** = anon
+				/scripts/** = anon
 				/common/** = anon
 				/index = authc
 			</value>

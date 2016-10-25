@@ -9,8 +9,8 @@
 	 	<link   type="text/css"  href="${ctxPath}/scripts/ueditor/formdesign/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/js/jquery.min.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/js/bootstrap.min.js"></script>
-	 	<script src="${ctxPath}/scripts/ueditor/formdesign/validate/jquery.validate.min.js"></script>
-        <script src="${ctxPath}/scripts/ueditor/formdesign/validate/messages_zh.min.js"></script>
+	 	<link   type="text/css"  href="${ctxPath}/scripts/ueditor/formdesign/validate/bootstrapValidator.min.css" rel="stylesheet" />
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/validate/bootstrapValidator.min.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/dialogs/internal.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/FormUtil.js"></script>
 </head>
@@ -85,7 +85,30 @@
 			</div>
 	</div>
 	<script type="text/javascript">
-
+	$("#form").bootstrapValidator({  
+        message: 'This value is not valid',  
+        //反馈图标  
+        feedbackIcons:faIcon,  
+        fields: {  
+        	label:{  
+                message:'登录名无效',  
+                validators:{  
+                    notEmpty:{  
+                        message:'登录名不能为空'  
+                    },  
+                    StringLength:{  
+                        min:5,  
+                        max:30,  
+                        message:'用户名长度大于6位并且小于30位'  
+                    },  
+                    regexp:{  
+                        regexp:/^[a-zA-Z0-9_]+$/,  
+                        message:'用户名只能由字母、数字和下划线'  
+                    }  
+                }  
+            }  
+        }  
+    });
 		
 		//编辑的控件的值
 		var oNode = null,
@@ -115,12 +138,10 @@
 		};
 		//确认
 		dialog.onok = function (){
-			/*
-			form.validate();
-	        if (form.isValid() == false) {
-	            return false;
-	        }
-	        */
+			 $('#form').data('bootstrapValidator').validate();  
+            if(!$('#form').data('bootstrapValidator').isValid()){  
+                return ;  
+            }  
 	        var formData=getFormData("form");
 	        var isCreate=false;
 		    //控件尚未存在，则创建新的控件，否则进行更新
