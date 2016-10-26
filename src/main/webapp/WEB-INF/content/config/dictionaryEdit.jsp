@@ -1,98 +1,106 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ include file="/common/taglibs.jsp"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
-	<head>
-		<title>配置管理</title>
-		<%@ include file="/common/meta.jsp"%>
-		<link rel="stylesheet" href="${ctx}/styles/css/style.css" type="text/css" media="all" />
-		<script src="${ctx}/styles/js/jquery-1.8.3.min.js" type="text/javascript"></script>
-	</head>
-
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>字典管理</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="${ctx}/scripts/hplus/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${ctx}/scripts/hplus/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="${ctx}/scripts/hplus/css/animate.min.css" rel="stylesheet">
+    <link href="${ctx}/scripts/hplus/css/style.min.css" rel="stylesheet">
+    
+    <script type="text/javascript" src="${ctx}/scripts/hplus/js/jquery.min.js"></script>
+    <script type="text/javascript" src="${ctx}/scripts/hplus/js/bootstrap.min.js"></script>
+</head>
 	<body>
 		<form id="inputForm" action="${ctx }/config/dictionary/update" method="post">
 			<input type="hidden" name="id" id="id" value="${id }"/>
-			<table width="100%" border="0" align="center" cellpadding="0"
-					class="table_all_border" cellspacing="0" style="margin-bottom: 0px;border-bottom: 0px">
+			<table  class="table table-bordered" style="width: 90%;" align="center" >
+		     <caption style="text-align: center;"><h2>字典管理</h2></caption>
 				<tr>
-					<td class="td_table_top" align="center">
-						配置管理
-					</td>
-				</tr>
-			</table>
-			<table class="table_all" align="center" border="0" cellpadding="0" cellspacing="0" style="margin-top: 0px">
-				<tr>
-					<td class="td_table_1">
+					<td style="text-align: right;">
 						<span>配置名称：</span>
 					</td>
-					<td class="td_table_2" colspan="3">
-						<input type="text" class="input_240" id="name" name="name"
+					<td>
+						<div class="col-sm-6">
+						<input type="text" class="form-control" id="name" name="name"
 							value="${dictionary.name }" />
+						</div>	
 					</td>
 				</tr>
 				<tr>
-					<td class="td_table_1">
+					<td style="text-align: right;">
 						<span>显示名称：</span>
 					</td>
-					<td class="td_table_2" colspan="3">
-						<input type="text" class="input_240" id="cnName" name="cnName"
+					<td>
+						<div class="col-sm-6">
+						<input type="text" class="form-control" id="cnName" name="cnName"
 							value="${dictionary.cnName }" />
+						</div>	
 					</td>
 				</tr>
 				<tr>
-					<td class="td_table_1">
+					<td style="text-align: right;">
 						<span>配置描述：</span>
 					</td>
-					<td class="td_table_2" colspan="3">
-						<input type="text" class="input_240" id="description" name="description"
-							value="${dictionary.description }" />
+					<td>
+						<div class="col-sm-6">
+						<textarea type="text" class="form-control" id="description" name="description"
+							>${dictionary.description }</textarea>
+						</div>	
 					</td>
 				</tr>
 			</table>
 			
-			<table class="table_all" align="center" border="0" cellpadding="0"
-				cellspacing="0">
+			<table class="table table-bordered" align="center">
 				<tr>
-					<td class="td_table_1">
+					<td style="text-align: right;">
 						<span>添加选项：</span>
 					</td>
-					<td class="td_table_2" colspan="3">
-						<input type="button" class="button_70px" value="添加选项" onclick="addItem()">
+					<td>
+						<input type="button" class="btn btn-sm btn-primary" value="添加选项" onclick="addItem()">
 					</td>
 				</tr>
 				<tr>
-					<td class="td_table_1">
+					<td style="text-align: right;">
 						<span>选项列表：</span>
 					</td>
-					<td class="td_table_2" colspan="3">
-						<table class="table_all" align="center" border="0" cellpadding="0" cellspacing="0" id="itemTable" style="margin: 0">
+					<td>
+						<table class="table table-bordered" align="center" id="itemTable">
+							<thead>
 							<tr>
-								<td align=center width=15% class="td_list_1" nowrap>
+								<th align=center width=15% >
 									序号
-								</td>
-								<td align=center width=25% class="td_list_1" nowrap>
+								</th>
+								<th align=center width=25% >
 									编号
-								</td>
-								<td align=center width=60% class="td_list_1" nowrap>
+								</th>
+								<th align=center width=50% >
 									名称
-								</td>
-								<td align=center width=10% class="td_list_1" nowrap>
+								</th>
+								<th align=center width=20% >
 									操作
-								</td>
+								</th>
 							</tr>
+							</thead>
 							<c:forEach var="item" items="${dictionary.dictionaryItems}" varStatus="s">
 								<tr>
-									<td class="td_list_2">
-										<input type="text" value="${item.orderby }" name='orderbys' size="2">
+									<td>
+										<input type="text" value="${item.orderby }" name='orderbys' class='form-control' size="2">
 									</td>
-									<td class="td_list_2">
-										<input type="text" value='${item.code }' name='codes' class='input_50' >
+									<td>
+										<input type="text" value='${item.code }' name='codes' class='form-control' >
 									</td>
-									<td class="td_list_2">
-										<input type="text" value='${item.name }' name='itemNames' class='input_520' >
+									<td>
+										<input type="text" value='${item.name }' name='itemNames' class='form-control' >
 									</td>
-									<td class="td_list_2">
-										<a href='javascript:void(0)' onclick='delRow(${item.orderby})' class='btnDel' title='删除'>删除</a>
+									<td>
+										<a href='javascript:void(0)' onclick='delRow(${item.orderby})' class='btn btn-sm btn-primary' title='删除'>删除</a>
 									</td>
 								</tr>
 								<c:set var="index" value="${item.orderby }"/>
@@ -105,9 +113,9 @@
 				cellspacing="0">
 				<tr align="left">
 					<td colspan="1">
-						<input type="submit" class="button_70px" name="submit" value="提交">
+						<input type="submit" class="btn btn-sm btn-primary" name="submit" value="提交">
 						&nbsp;&nbsp;
-						<input type="button" class="button_70px" name="reback" value="返回"
+						<input type="button" class="btn btn-sm btn-primary" name="reback" value="返回"
 							onclick="history.back()">
 					</td>
 				</tr>
@@ -117,27 +125,23 @@
 			var order = ${index + 1};
 			function addItem() {
 				var table = document.getElementById("itemTable");
-				var row = table.insertRow(-1);
-				var cell = row.insertCell(-1);
+				var row = table.insertRow(table.rows.length);
+				var cell = row.insertCell(0);
 				if(order) {
-					cell.innerHTML = "<input type='text' value='" + order + "' name='orderbys' size='2'>";
+					cell.innerHTML = "<input type='text' value='" + order + "' class='form-control' name='orderbys' size='2'>";
 				} else {
-					cell.innerHTML = "<input type='text' value='" + 1 + "' name='orderbys' size='2'>";
+					cell.innerHTML = "<input type='text' value='" + 1 + "' class='form-control' name='orderbys' size='2'>";
 				}
 				
-				cell.className = "td_list_2";
 				
-				cell = row.insertCell(-1);
-				cell.innerHTML = "<input type='text' value='' class='input_50' name='codes' >";
-				cell.className = "td_list_2";
+				cell = row.insertCell(1);
+				cell.innerHTML = "<input type='text' value='' class='form-control' name='codes' >";
 				
-				cell = row.insertCell(-1);
-				cell.innerHTML = "<input type='text' value='' class='input_520' name='itemNames' >";
-				cell.className = "td_list_2";
+				cell = row.insertCell(2);
+				cell.innerHTML = "<input type='text' value='' class='form-control' name='itemNames' >";
 				
-				cell = row.insertCell(-1);
-				cell.innerHTML = "<a href='javascript:void(0)' onclick='delRow(" + order + ")' class='btnDel' title='删除'>删除</a>";
-				cell.className = "td_list_2";
+				cell = row.insertCell(3);
+				cell.innerHTML = "<a href='javascript:void(0)' onclick='delRow(" + order + ")' class='btn btn-sm btn-primary' title='删除'>删除</a>";
 				order = order + 1;
 			}
 			

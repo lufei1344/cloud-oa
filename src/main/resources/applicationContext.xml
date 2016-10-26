@@ -63,6 +63,7 @@
 			    <value>com.snakerflow.framework.security.entity</value>
                 <value>com.snakerflow.framework.flow.entity</value>
                 <value>com.snakerflow.framework.config.entity</value>
+                <value>com.snakerflow.framework.form.entity</value>
                 <value>com.snakerflow.app.modules.entity</value>
 			</list>
 		</property>

@@ -135,6 +135,13 @@ var extPlugins=[{
                   	 tag:'a',
                   	 popHeight:320,
                   	 popWidth:650
+                },
+                {
+                  	 name:'extdig-save',
+                  	 text:'保存',
+                  	 tag:'a',
+                  	 popHeight:320,
+                  	 popWidth:650
                 }
              ];
 

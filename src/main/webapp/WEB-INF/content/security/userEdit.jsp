@@ -150,14 +150,16 @@
 		</form>
 	</body>
 	<script type="text/javascript">
-	$("#selectAll").click(function(){
-		var status = $(this).attr("checked");
-		if(status) {
-			$("input[name='orderIndexs']").attr("checked",true);
-		} else {
-			$("input[name='orderIndexs']").attr("checked",false);
-		}
-	    
+	$(function(){
+		$("#selectAll").click(function(){
+			var status = this.checked;
+			if(status) {
+				$("input[name='orderIndexs']").attr("checked",true);
+			} else {
+				$("input[name='orderIndexs']").attr("checked",false);
+			}
+		    
+		});
 	});
 	</script>
 </html>

@@ -57,8 +57,7 @@
 					</td>
 					<td>
 						<div class="col-sm-6">
-						<textarea  class="form-control" id="description" name="description"
-							>${role.description }</textarea>
+						<textarea  class="form-control" id="description" name="description">${role.description }</textarea>
 						</div>	
 					</td>
 				</tr>
@@ -78,13 +77,14 @@
 			<table class="table table-bordered" style="width: 90%;" align="center" >
 				<tr>
 					<td align=center width=70% class="td_list_1" nowrap>
-						<input type="checkbox" title="全选" id="selectAll"><a href="javascript:sort('name','asc')">权限名称</a>
+						<input type="checkbox" title="全选" id="selectAll"><a href="javascript:sort('name','asc')">&nbsp;权限名称</a>
 					</td>
 				</tr>
 				<c:forEach items="${authorities}" var="authority">
 					<tr>
 						<td class="td_list_2" align=left nowrap>
-							<input type="checkbox" name="orderIndexs" value="${authority.id}" ${authority.selected== 1 ? 'checked' : '' }>${authority.name}&nbsp;
+							<input type="checkbox" name="orderIndexs" value="${authority.id}" ${authority.selected== 1 ? 'checked' : '' }>
+							&nbsp;${authority.name}(${authority.description})&nbsp;
 						</td>
 					</tr>
 				</c:forEach>
@@ -93,14 +93,17 @@
 	</body>
 	
 	<script type="text/javascript">
-	$("#selectAll").click(function(){
-		var status = $(this).attr("checked");
-		if(status) {
-			$("input[name='orderIndexs']").attr("checked",true);
-		} else {
-			$("input[name='orderIndexs']").attr("checked",false);
-		}
-	    
+	$(function(){
+		$("#selectAll").click(function(){
+			var status = this.checked;
+			if(status) {
+				$("input[name='orderIndexs']").attr("checked",true);
+			} else {
+				$("input[name='orderIndexs']").attr("checked",false);
+			}
+		    
+		});
 	});
+	
 	</script>
 </html>

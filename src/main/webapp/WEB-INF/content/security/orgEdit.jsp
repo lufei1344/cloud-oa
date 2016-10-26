@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <title>H+ 后台主题UI框架 - 主页</title>
+    <title>机构管理</title>
     <link rel="shortcut icon" href="favicon.ico">
     <link href="${ctx}/scripts/hplus/css/bootstrap.min.css" rel="stylesheet">
     <link href="${ctx}/scripts/hplus/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
