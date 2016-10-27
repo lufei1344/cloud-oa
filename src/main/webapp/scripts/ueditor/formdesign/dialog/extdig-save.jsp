@@ -57,7 +57,12 @@
 				  wrapper: "span"
 			});
 		});
-		
+		window.onload = function() {
+			//若控件已经存在，则设置回调其值
+		   var doc = window.parent.parent;
+			alert($("#id",doc).val());
+		   $("#name").val($("#name",doc).val());
+		}
 		//编辑的控件的值
 		var oNode = null,
 		thePlugins = 'extdig-save';
