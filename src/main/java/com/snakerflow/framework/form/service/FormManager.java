@@ -1,6 +1,5 @@
 package com.snakerflow.framework.form.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jsoup.Jsoup;
@@ -46,7 +45,7 @@ public class FormManager {
     public void save(Form value) {
         formDao.save(value);
         long nid = Long.valueOf(value.getId());
-		if("form".equals(value.getType())){
+		if("html".equals(value.getType())){
 			//解析html
 			String eids = "";
 			if(value.getContentHtml() != null){
@@ -189,7 +188,9 @@ public class FormManager {
         return formDao.findPage(page, filters);
     }
 
-   
+    public List<Form> find(List<PropertyFilter> filters){
+    	return formDao.find(filters);
+    }
 
     
     /*

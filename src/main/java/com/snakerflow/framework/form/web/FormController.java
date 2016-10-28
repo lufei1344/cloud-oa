@@ -1,5 +1,6 @@
 package com.snakerflow.framework.form.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,6 +86,19 @@ public class FormController {
         return "redirect:/config/form";
     }
 
-   
+    @RequestMapping(value = "findForm")
+    @ResponseBody
+    public Object findForm(Long formType, Model model) {
+    	List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
+    	PropertyFilter f = new PropertyFilter("EQS_formType", formType.toString());
+    	filters.add(f);
+        return MsgUtils.returnOk("",formManager.find(filters));
+    }
+    @RequestMapping(value = "findFormField")
+    @ResponseBody
+    public Object findFormField(Long formid, Model model) {
+    	Form f = formManager.get(formid);
+    	return MsgUtils.returnOk("",f.getFields());
+    }
     
 }

@@ -249,7 +249,13 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/src/main/webapp/scripts/ueditor/jsp/lib/ueditor-1.1.1.jar </systemPath>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20160810</version>
+		</dependency>
+		
         <!-- test -->
         <dependency>
             <groupId>org.springframework</groupId>

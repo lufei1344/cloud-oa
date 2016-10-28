@@ -162,7 +162,7 @@ public class SelectTagBuilder implements TagBuilder {
 	 */
 	private void buildSelect(StringBuffer buffer) {
 		buffer.append("<select ");
-		buffer.append(" name=\"" + name + "\" ");
+		buffer.append(" name=\"" + name + "\" id=\"" + name + "\" ");
 		if(cssClass != null) {
 			buffer.append(" class=\"" + cssClass + "\" ");
 		}
@@ -173,7 +173,7 @@ public class SelectTagBuilder implements TagBuilder {
 			buffer.append(" readonly disabled ");
 		}
 		buffer.append(">");
-		buffer.append("<option value='' selected>------请选择------</option>");
+		buffer.append("<option value='' selected>-请选择-</option>");
 		
 		if(items != null && !items.isEmpty()) {
 			Iterator<String> it = items.keySet().iterator();

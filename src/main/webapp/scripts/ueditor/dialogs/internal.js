@@ -1,5 +1,9 @@
 (function () {
-    var parent = window.parent;
+	if(window.parent == null || window.frameElement == null){
+		return;
+	}
+	var parent = window.parent;
+    
     //dialog对象
     dialog = parent.$EDITORUI[window.frameElement.id.replace( /_iframe$/, '' )];
     //当前打开dialog的编辑器实例

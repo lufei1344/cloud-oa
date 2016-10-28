@@ -23,7 +23,8 @@ public class Form implements Serializable {
     private long id;
     private String name;
     private String displayName;
-    private String type;
+    private String type; //表单类别,html或doc
+    private String formType; //字典formType
     private String creator;
     private String createTime;
     private String contentHtml;
@@ -105,6 +106,14 @@ public class Form implements Serializable {
 
 	public void setFields(List<Field> fields) {
 		this.fields = fields;
+	}
+
+	public String getFormType() {
+		return formType;
+	}
+
+	public void setFormType(String formType) {
+		this.formType = formType;
 	}
     
 }

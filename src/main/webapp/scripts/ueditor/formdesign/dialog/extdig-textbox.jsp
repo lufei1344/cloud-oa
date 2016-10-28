@@ -1,41 +1,48 @@
 <%@page pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="ctxPath" value="${pageContext.request.contextPath}"/>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   		<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<meta name="renderer" content="webkit">
 	 	<title>文本框-textbox</title>
-	 	<link   type="text/css"  href="${ctxPath}/scripts/ueditor/formdesign/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/js/jquery.min.js"></script>
-	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/js/bootstrap.min.js"></script>
+	 	<link   type="text/css"  href="${ctxPath}/scripts/ueditor/formdesign/bootstrap/3.7/bootstrap.min.css" rel="stylesheet" />
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/3.7/jquery.min.js"></script>
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/3.7/bootstrap.min.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/dialogs/internal.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/FormUtil.js"></script>
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/DialogUtil.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/validate/jquery.validate.js"></script>
 	 	
 </head>
 <body>
 	<div style="width:100%;text-align: center">
 		<div style="margin-left:auto;margin-right: auto;padding:5px;">
-			<form id="form" class="form">
-				<table class="table table-bordered" cellspacing="1" cellpadding="1">
-					<caption>文本框属性配置</caption>
+			<form id="form" class="form-horizontal">
+				<table class="table table-bordered" >
+					<caption style="text-align:center"><h2>文本框属性配置</h2></caption>
 					<tr>
 						<td align="right">
-							中文名称:
+							中文名称(<font color="red">*</font>):
 						</td>
 						<td align="left">
+							<div class="col-xs-6">
 							<input type="text" name="cnname" value=""
-								id="cnname" class="form-control"  required data-msg-required="不能为空" data-rule-gt="true" data-gt="0"><font color="red">*</font>
-							
+								id="cnname" class="form-control"  required data-msg-required="不能为空" data-rule-gt="true" data-gt="0">
+								
+							</div>	
 						</td>
 					</tr>
 					<tr>
 						<td align="right">
-							英文名称:
+							英文名称(<font color="red">*</font>):
 						</td>
 						<td align="left">
-							<input type="text" name="enname" value="" id="enname" class="form-control" onblur="checkTextValid(this)" required data-msg-required="不能为空" data-rule-gt="true" data-gt="0"><font color="red">*</font>
+							<div class="col-xs-6">
+							<input type="text" name="enname" value="" id="enname" class="form-control" onblur="checkTextValid(this)" required data-msg-required="不能为空" data-rule-gt="true" data-gt="0">
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -43,15 +50,18 @@
 							数据类型:
 						</td>
 						<td align="left">
-							<select name="datatype" id="datatype" class="form-control" onchange="selelementtype(this)">
+							<div class="col-xs-4">
+							<select name="datatype"  id="datatype" class="form-control" onchange="selelementtype(this)">
 								<option value="char">文本</option>
 								<option value="num">数值</option>
 								<option value="date">日期</option>
 							</select>
-							<input name="auto" id="auto" type="checkbox" class="form-control" onclick="setAuto(this)" value="1" />
+							</div>
+							<input name="auto" id="auto" type="checkbox"  onclick="setAuto(this)" value="1" />
 							前缀<input style="display:none;width:60px;" name="autoprev" id="autoprev" value="" >
-							<input style="display:none;" id="autoprevbtn" class="btn" type="button" value="..." onclick="setPrev(this)"/>
-							<input name="autotype" id="autotype" class="form-control" type="checkbox" value="1" />自动取号
+							<input style="display:none;" id="autoprevbtn" class="btn btn-sm btn-info" type="button" value="..." onclick="setPrev(this)"/>
+							<input name="autotype" id="autotype"  type="checkbox" value="1" />自动取号
+							
 						</td>
 					</tr>
 					<tr id="trdateformat" style="display: none;">
@@ -59,23 +69,26 @@
 							日期格式:
 						</td>
 						<td align="left">
-							<input  name="dateformat" id="dateformat" class="form-control" value="yyyy年MM月dd日" style="width: 190px;"/><br/>
+							<div class="col-xs-6">
+							<input  name="dateformat" id="dateformat" class="form-control" value="yyyy年MM月dd日" /><br/>
 							yyyy年MM月dd日 HH时mm分ss秒
+							</div>
 						</td>
 					</tr>
 					<tr>
 						<td align="right">
-							列表表头:
+							显示类型:
 						</td>
 						<td align="left">
-							<input type="checkbox" class="form-control" name="showtitle" id="showtitle"/>
-							显示类型:
-							<select name="showtype" style="width:80px;" class="form-control" id="showtype">
+							<div class="col-xs-4">
+							<select name="showtype"  class="form-control" id="showtype">
 								<option value="input">输入框</option>
 								<option value="user">人员</option>
 								<option value="dept">部门</option>
 							</select>
-							
+							</div>
+							列表表头:
+							<input type="checkbox"  name="showtitle" id="showtitle"/>
 						</td>
 					</tr>
 					<tr>
@@ -84,7 +97,8 @@
 						</td>
 						<td align="left">
 							<input type="hidden" id="defaultvalue" value="" name="defaultvalue"/>&nbsp;&nbsp;
-							<input type="button" onclick="eledefshow(this)" class="btn btn-sm btn-info" value="..."/>
+							<span id="defaultvalueexp"></span>
+							<input type="button" onclick="setDefaultValue(this)" class="btn btn-sm btn-info" value="..."/>
 						</td>
 					</tr>
 					<tr>
@@ -92,20 +106,26 @@
 							控件大小:
 						</td>
 						<td align="left">
-							高<input type="text" class="form-control" value="0" name="mheight" style="width:80px"/>*
-							宽<input type="text" class="form-control" value="0" name="mwidth" style="width:80px"/>
-							单位<input type="text" class="form-control" value="px" name="munit" style="width:60px"/>
+								<label for="mheight" class="control-label">高</label>
+								<input type="text" style="width:80px;" value="0" name="mheight" />
+								</div>
+								<label for="mwidth" class="control-label">宽</label>
+								<input type="text" style="width:80px;" value="0" name="mwidth" />
+								<label for="munit" class="control-label">单位</label>
+								<input type="text" style="width:60px;"  value="px" name="munit"/>
+							</div>
 						</td>
 					</tr> 
 					<tr>
 						<td colspan="2" align="left">
-							<input type="checkbox" id="elevalidate" onclick="validateshow(this)" name="elevalidate"/><a href="javascript:void(0)" onclick="validateshow()">设置校验规则</a>
+							<input type="checkbox" id="chkvalidate" onclick="setValidate(this)" name="chkvalidate"/>
+							<a href="javascript:void(0)" onclick="setValidate()">设置校验规则</a>
 							<input type="hidden" name="validate" id="validate"/>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2" align="left">
-							<input type="checkbox" id="eleinput" name="eleinput" onclick="inputshow(this)"/><a href="javascript:void(0)" onclick="inputshow()">设置输入选择</a>
+							<input type="checkbox" id="chkselectrule" name="chkselectrule" onclick="setSelectRule(this)"/><a href="javascript:void(0)" onclick="setSelectRule()">设置输入选择</a>
 							<input type="hidden" name="selectrule" id="selectrule"/>
 						</td>
 						
@@ -156,8 +176,17 @@
 		        for(var i=0;i<attrs.length;i++){
 		        	formData[attrs[i].name]=attrs[i].value;
 		        }
-		        
 		        setFormData("form",formData);
+		        //默认值表达式
+				if(document.getElementById("defaultvalue").value != ""){
+					var o = string2Object(document.getElementById("defaultvalue").value);
+					alert(o.length);
+					var $exp =  $("#defaultvalueexp");
+					for(var i=0; i<o.length; i++){
+						var html = '<a onclick="cls(this)" val="'+object2String(o[i])+'">'+o[i].cnname+'</a>';
+						$exp.append(html);
+					}
+				}
 		    }
 		}
 		//取消按钮
@@ -168,10 +197,7 @@
 		};
 		//确认
 		dialog.onok = function (){
-			// $('#form').data('bootstrapValidator').validate();  
-            //if(!$('#form').data('bootstrapValidator').isValid()){  
-             //   return ;  
-            //}
+			
             if(!$("#form").valid()){
             	return false;
             }
@@ -222,58 +248,9 @@
             	
 		};
 		
-		//校验
-		function validateshow(obj){
-			if(typeof obj == 'undefined'){
-				obj = document.getElementById("elevalidate");
-				obj.checked = true;
-			}
-			if(obj.checked){
-				var o = new Object();
-				o.datatype = $("#eletype").val();
-				o.elevalidateval = $("#elevalidateval").val();
-				var ret=window.showModalDialog("../dialog/editvalidate.jsp",o,"dialogHeight:250px;dialogWidth:400px;status:0;");
-				if(typeof ret != 'undefined'){
-					$("#elevalidateval").val(ret);
-				}
-			}else{
-				//$("#elevalidateval").val("");
-			}
-			return true;
-		}
-		//默认值
-		function eledefshow(obj){
-				var o = new Object();
-				//o.kjarr = ww.kjarr;
-				o.eledef = $("#eledef").val();
-				o.gid = ww.gid;
-				var ret=window.showModalDialog("../dialog/editdef.jsp",o,"dialogHeight:470px;dialogWidth:600px;status:0;");
-				if(typeof ret != 'undefined'){
-					$("#eledef").val(ret.val);
-					$("#eledefexp").html(ret.html);
-				}
-		}
-		//输入选择
-		function inputshow(obj){
-			if(typeof obj == 'undefined'){
-				obj = document.getElementById("eleinput");
-				obj.checked = true;
-			}
-			if(obj.checked){
-				var o = new Object();
-				//o.kjarr = ww.kjarr;
-				o.eleinputval = $("#eleinputval").val();
-				o.gid = ww.gid;
-				var ret=window.showModalDialog("../dialog/editinputsel.jsp",o,"dialogHeight:400px;dialogWidth:400px;status:0;");
-				if(typeof ret != 'undefined'){
-					//alert(fc);
-					$("#eleinputval").val(ret);
-				}
-			}else{
-				//$("#elevalidateval").val("");
-			}
-			return true;
-		}
+		
+		
+		
 		//其他元素值
 		function othervalueshow(obj){
 			if(typeof obj == 'undefined'){

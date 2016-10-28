@@ -57,6 +57,10 @@
 	<script id="templateView" name="templateView" type="text/plain" style="width:100%;height:500px;"></script>
 								
 	<input type="hidden" id="id" value="${form.id}">
+	<input type="hidden" id="name" value="${form.name}">
+	<input type="hidden" id="displayName" value="${form.displayName}">
+	<input type="hidden" id="type" value="${form.type}">
+	<input type="hidden" id="formType" value="${form.formType}">
 	<textarea id="contentHtml" style="display: none;">${form.contentHtml }</textarea>
 	<script type="text/javascript">
 		
