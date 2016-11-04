@@ -21,8 +21,10 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -101,7 +103,31 @@ public class JdbcUtils {
 		}
 		return true;
 	}
-	
+	public static List<String> getColumnName(JdbcTemplate jdbcTemplate,String sql, List<Object> params) {
+		logger.info("sql=[" + sql + "]" + ",params=" + params);
+		List<String> list = new ArrayList<String>();
+		ResultSet rs = null;
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			conn = jdbcTemplate.getDataSource().getConnection();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			if (rs != null) {
+				ResultSetMetaData meta = rs.getMetaData();
+				for (int i = 1; i <= meta.getColumnCount(); i++) {
+					list.add(meta.getColumnLabel(i).toLowerCase());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeResultSet(rs);
+			closeStatement(stmt);
+			closeConnection(conn);
+		}
+		return list;
+	}
 	public static void closePreparedStatement(PreparedStatement pstmt) {
 		if (pstmt != null) {
 			try {

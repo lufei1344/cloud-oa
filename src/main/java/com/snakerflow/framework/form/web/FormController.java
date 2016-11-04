@@ -100,5 +100,9 @@ public class FormController {
     	Form f = formManager.get(formid);
     	return MsgUtils.returnOk("",f.getFields());
     }
-    
+    @RequestMapping(value = "parseSql")
+    @ResponseBody
+    public Object parseSql(String sql) {
+        return MsgUtils.returnOk("",formManager.parseSql(sql));
+    }
 }

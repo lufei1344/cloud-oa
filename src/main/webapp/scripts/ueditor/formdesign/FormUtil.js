@@ -163,3 +163,39 @@ function checkTextValid(obj){
 		}
 	}
 }
+//控件加载赋值
+function loadSetValue(oNode){
+	 //获得字段名称
+    var formData={};
+    var attrs=oNode.attributes;
+    
+    for(var i=0;i<attrs.length;i++){
+    	formData[attrs[i].name]=attrs[i].value;
+    }
+    setFormData("form",formData);
+    //默认值表达式
+	if(document.getElementById("defaultvalue").value != ""){
+		var o = string2Object(document.getElementById("defaultvalue").value);
+		var $exp =  $("#defaultvalueexp");
+		for(var i=0; i<o.length; i++){
+			var html = '<a onclick="cls(this)" val="'+object2String(o[i])+'">'+o[i].cnname+'</a>';
+			$exp.append(html);
+		}
+	}
+    //校验
+    if(typeof formData["chkvalidate"] != 'undefined' && formData["chkvalidate"] == "on"){
+    	$("#chkvalidate")[0].checked = true;
+    }
+    //输入选择
+    if(typeof formData["chkselectrule"] != 'undefined' && formData["chkselectrule"] == "on"){
+    	$("#chkselectrule")[0].checked = true;
+    }
+    //其他元素值
+    if(typeof formData["chkothervalue"] != 'undefined' && formData["chkothervalue"] == "on"){
+    	$("#chkothervalue")[0].checked = true;
+    }
+    //其他元素读写
+    if(typeof formData["chkotherread"] != 'undefined' && formData["chkotherread"] == "on"){
+    	$("#chkotherread")[0].checked = true;
+    }
+}

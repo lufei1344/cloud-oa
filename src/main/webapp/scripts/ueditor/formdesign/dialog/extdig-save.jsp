@@ -91,7 +91,6 @@
             	return false;
             }
             $("#contentHtml").val(editor.getContent());
-            alert($("#contentHtml").val());
             var url = "${ctxPath}/config/form/update";
 			$.ajax({
                 cache: true,
@@ -104,7 +103,11 @@
                     alert("Connection error");
                 },
                 success: function(data) {
-                	alert(data.msg);
+                	if(data.status == 1){
+                		alert("保存成功！");
+                	}else{
+                		alert("保存失败！");
+                	}
                 	
                 }
             });

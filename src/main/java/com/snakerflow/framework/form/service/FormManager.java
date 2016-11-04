@@ -17,6 +17,7 @@ import com.snakerflow.framework.form.dao.TwiceFieldDao;
 import com.snakerflow.framework.form.entity.Field;
 import com.snakerflow.framework.form.entity.Form;
 import com.snakerflow.framework.form.entity.TwiceField;
+import com.snakerflow.framework.orm.JdbcUtils;
 import com.snakerflow.framework.orm.Page;
 import com.snakerflow.framework.orm.PropertyFilter;
 
@@ -192,6 +193,9 @@ public class FormManager {
     	return formDao.find(filters);
     }
 
+    public List<String> parseSql(String sql){
+    	return JdbcUtils.getColumnName(jdbcTemplate, sql, null);
+    }
     
     /*
     public void submit(long formId, List<Field> fields, Map<String, Object> params,

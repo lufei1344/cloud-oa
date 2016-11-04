@@ -59,7 +59,6 @@ function setValidate(obj){
 				onclick:function () {
 					dialog.close(true);
 					var ret = window.parent.returnValue;
-					alert(ret);
 					if(typeof ret != 'undefined'){
 						$("#validate").val(ret);
 					}

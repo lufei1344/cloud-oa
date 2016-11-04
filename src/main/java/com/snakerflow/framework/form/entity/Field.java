@@ -2,6 +2,7 @@ package com.snakerflow.framework.form.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,13 +38,17 @@ public class Field implements Serializable {
     //校验规则
     private String validate;
     //输入选择
+    @Column(length=4000)
     private String selectRule;
     //默认值
+    @Column(length=4000)
     private String defaultValue;
     //日期格式
     private String dateFormat;
     //其他元素值
+    @Column(length=4000)
     private String otherValue;
+    @Column(length=4000)
     private String otherInput;
     //其他元素读写
     private String otherRead;

@@ -118,7 +118,7 @@
 					</tr> 
 					<tr>
 						<td colspan="2" align="left">
-							<input type="checkbox" id="chkvalidate" onclick="setValidate(this)" name="chkvalidate"/>
+							<input type="checkbox" id="chkvalidate" onclick="setValidate(this)"  name="chkvalidate"/>
 							<a href="javascript:void(0)" onclick="setValidate()">设置校验规则</a>
 							<input type="hidden" name="validate" id="validate"/>
 						</td>
@@ -132,14 +132,14 @@
 					</tr>
 					<tr>
 						<td colspan="2" align="left">
-							<input type="checkbox" id="eleothervalue" onclick="othervalueshow(this)" name="eleothervalue" /><a href="javascript:void(0)" onclick="othervalueshow()">影响其他元素的值</a>
+							<input type="checkbox" id="chkothervalue" onclick="othervalueshow(this)" name="chkothervalue" /><a href="javascript:void(0)" onclick="othervalueshow()">影响其他元素的值</a>
 							<input type="hidden" name="othervalue" id="eleothervalueval"/>
 						</td>
 						
 					</tr>
 					<tr>
 						<td colspan="2" align="left">
-							<input type="checkbox" id="eleotherread" name="eleotherread"  onclick="otherreadshow(this)"/><a href="javascript:void(0)" onclick="otherreadshow()">影响其他元素的读写属性</a>
+							<input type="checkbox" id="chkotherread" name="chkotherread"  onclick="otherreadshow(this)"/><a href="javascript:void(0)" onclick="otherreadshow()">影响其他元素的读写属性</a>
 							<input type="hidden" name="otherread" id="eleotherreadval"/>
 						</td>
 						
@@ -169,24 +169,9 @@
 		    if( UE.plugins[thePlugins].editdom ){
 		        //
 		    	oNode = UE.plugins[thePlugins].editdom;
-		        //获得字段名称
-		        var formData={};
-		        var attrs=oNode.attributes;
+		       //赋值
+		       loadSetValue(oNode);
 		        
-		        for(var i=0;i<attrs.length;i++){
-		        	formData[attrs[i].name]=attrs[i].value;
-		        }
-		        setFormData("form",formData);
-		        //默认值表达式
-				if(document.getElementById("defaultvalue").value != ""){
-					var o = string2Object(document.getElementById("defaultvalue").value);
-					alert(o.length);
-					var $exp =  $("#defaultvalueexp");
-					for(var i=0; i<o.length; i++){
-						var html = '<a onclick="cls(this)" val="'+object2String(o[i])+'">'+o[i].cnname+'</a>';
-						$exp.append(html);
-					}
-				}
 		    }
 		}
 		//取消按钮
