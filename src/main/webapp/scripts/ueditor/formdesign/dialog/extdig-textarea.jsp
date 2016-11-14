@@ -1,161 +1,170 @@
 <%@page pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="ctxPath" value="${pageContext.request.contextPath}"/>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	 	<title>多行文本框-mini-textarea</title>
-	 	<script src="${ctxPath}/scripts/boot.js" type="text/javascript"></script>
-	 	<script src="${ctxPath}/scripts/common/form.js" type="text/javascript"></script>
+   		<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<meta name="renderer" content="webkit">
+	 	<title>多行文本框</title>
+	 	<link   type="text/css"  href="${ctxPath}/scripts/ueditor/formdesign/bootstrap/3.7/bootstrap.min.css" rel="stylesheet" />
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/3.7/jquery.min.js"></script>
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/3.7/bootstrap.min.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/dialogs/internal.js"></script>
-	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/form-design/config/plugin-libs.js"></script>
-	 	<link href="${ctxPath}/styles/form.css" rel="stylesheet" type="text/css" />
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/FormUtil.js"></script>
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/DialogUtil.js"></script>
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/validate/jquery.validate.js"></script>
+	 	
 </head>
 <body>
 	<div style="width:100%;text-align: center">
 		<div style="margin-left:auto;margin-right: auto;padding:5px;">
-			<form id="miniForm">
-				<table class="table-detail" cellspacing="1" cellpadding="1">
-					<caption>多行文本框属性配置</caption>
+			<form id="form" class="form-horizontal">
+			<input type="hidden" name="datatype" id="datatype" value="char"/>
+			<input type="hidden" name="showtype" id="showtype" value="textarea"/>
+				<table class="table table-bordered" >
+					<caption style="text-align:center"><h2>多行文本框属性配置</h2></caption>
 					<tr>
-						<th>字段备注*</th>
-						<td>
-							<input class="mini-textbox" name="label" required="true" vtype="maxLength:100"  style="width:90%" emptytext="请输入字段备注" />
+						<td align="right">
+							中文名称(<font color="red">*</font>):
 						</td>
-						<th>字段标识*</th>
-						<td>
-							<input name="name" class="mini-treeselect" url="${ctxPath}/bpm/bm/bpmFormModel/getModelAttTree.do?modelId=${param['modelId']}" multiSelect="false"  valueFromSelect="false" emptytext="请输入字段标识，为英文开头或与数字组合" style="width:90%"
-						        textField="key" valueField="key" parentField="parentId"  allowInput="true" onvalidation="onKeyValidation" required="true"
-						        onvaluechanged="fieldChange"
-						        showRadioButton="true" showFolderCheckBox="false"/>
+						<td align="left">
+							<div class="col-xs-6">
+							<input type="text" name="cnname" value=""
+								id="cnname" class="form-control"  required data-msg-required="不能为空" data-rule-gt="true" data-gt="0">
+								
+							</div>	
 						</td>
 					</tr>
 					<tr>
-						<th>字符长度</th>
-						<td colspan="3">
-							<input id="minlen" name="minlen" class="mini-spinner"  minValue="0" maxValue="50" value="1" />&nbsp;-&nbsp;<input id="maxlen" name="maxlen" class="mini-spinner" minValue="1" maxValue="1024" value="25" />
+						<td align="right">
+							英文名称(<font color="red">*</font>):
+						</td>
+						<td align="left">
+							<div class="col-xs-6">
+							<input type="text" name="enname" value="" id="enname" class="form-control" onblur="checkTextValid(this)" required data-msg-required="不能为空" data-rule-gt="true" data-gt="0">
+							</div>
 						</td>
 					</tr>
 					<tr>
-						<th>允许文本输入</th>
-						<td>
-							<input class="mini-checkbox" name="allowinput" id="allowinput" checked="checked"/>是
+						<td align="right">
+							类型:
 						</td>
-						<th>必填*</th>
-						<td>
-							<input class="mini-checkbox" name="required" id="required"/>是
+						<td align="left">
+							<div class="col-xs-4">
+							<select name="exttype" id="exttype" class="form-control">
+							   <option value="mutitext">文本框</option>
+							   <option value="signtext">意见框</option>
+							   <option value="jointext">会签框</option>
+							</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td align="right">
+							默认值:
+						</td>
+						<td align="left">
+							<input type="hidden" id="defaultvalue" value="" name="defaultvalue"/>&nbsp;&nbsp;
+							<span id="defaultvalueexp"></span>
+							<input type="button" onclick="setDefaultValue(this)" class="btn btn-sm btn-info" value="..."/>
+						</td>
+					</tr>
+					<tr>
+						<td align="right">
+							控件大小:
+						</td>
+						<td align="left">
+								<label for="mheight" class="control-label">高</label>
+								<input type="text" style="width:80px;" value="0" name="mheight" />
+								</div>
+								<label for="mwidth" class="control-label">宽</label>
+								<input type="text" style="width:80px;" value="0" name="mwidth" />
+								<label for="munit" class="control-label">单位</label>
+								<input type="text" style="width:60px;"  value="px" name="munit"/>
+							</div>
+						</td>
+					</tr> 
+					<tr>
+						<td colspan="2" align="left">
+							<input type="checkbox" id="chkvalidate" onclick="setValidate(this)"  name="chkvalidate"/>
+							<a href="javascript:void(0)" onclick="setValidate()">设置校验规则</a>
+							<input type="hidden" name="validate" id="validate"/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" align="left">
+							<input type="checkbox" id="chkselectrule" name="chkselectrule" onclick="setSelectRule(this)"/><a href="javascript:void(0)" onclick="setSelectRule()">设置输入选择</a>
+							<input type="hidden" name="selectrule" id="selectrule"/>
 						</td>
 						
 					</tr>
 					<tr>
-						<th>
-							默认值
-						</th>
-						<td colspan="3">
-							<input class="mini-textbox" name="value" style="width:90%"/>
+						<td colspan="2" align="left">
+							<input type="checkbox" id="chkothervalue" onclick="othervalueshow(this)" name="chkothervalue" /><a href="javascript:void(0)" onclick="othervalueshow()">影响其他元素的值</a>
+							<input type="hidden" name="othervalue" id="eleothervalueval"/>
 						</td>
+						
 					</tr>
 					<tr>
-						<th>
-							控件长
-						</th>
-						<td colspan="3">
-							<input id="mwidth" name="mwidth" class="mini-spinner" style="width:80px" value="0" minValue="0" maxValue="1200"/>
-							
-							<input id="wunit" name="wunit" class="mini-combobox" style="width:50px" onvaluechanged="changeMinMaxWidth"
-							data="[{'id':'px','text':'px'},{'id':'%','text':'%'}]" textField="text" valueField="id"
-						    value="px"  required="true" allowInput="false" />
-
-							&nbsp;&nbsp;宽:<input id="mheight" name="mheight" class="mini-spinner" style="width:80px" value="0" minValue="0" maxValue="1200"/>
-							<input id="hunit" name="hunit" class="mini-combobox" style="width:50px" onvaluechanged="changeMinMaxHeight"
-							data="[{'id':'px','text':'px'},{'id':'%','text':'%'}]" textField="text" valueField="id"
-						    value="px"  required="true" allowInput="false" />
-						    
+						<td colspan="2" align="left">
+							<input type="checkbox" id="chkotherread" name="chkotherread"  onclick="otherreadshow(this)"/><a href="javascript:void(0)" onclick="otherreadshow()">影响其他元素的读写属性</a>
+							<input type="hidden" name="otherread" id="eleotherreadval"/>
 						</td>
+						
 					</tr>
+					
 				</table>
 			</form>
 			</div>
 	</div>
 	<script type="text/javascript">
-	
+		$(function(){
+			jQuery.validator.setDefaults({
+				  success: "valid"
+				});
+			$("#form").validate({
+				  debug: true,
+				  wrapper: "span"
+			});
+		});
 		
-		mini.parse();
-		var form=new mini.Form('miniForm');
 		//编辑的控件的值
 		var oNode = null,
-		thePlugins = 'mini-textarea';
-		
+		nodeInfo = {thePlugins : 'extdig-textarea',tag:"textarea",type:"textarea"};
+		//加载初始化
 		window.onload = function() {
 			//若控件已经存在，则设置回调其值
-		    if( UE.plugins[thePlugins].editdom ){
+		    if( UE.plugins[nodeInfo.thePlugins].editdom ){
 		        //
-		    	oNode = UE.plugins[thePlugins].editdom;
-		        //获得字段名称
-		        var formData={};
-		        var attrs=oNode.attributes;
+		    	oNode = UE.plugins[nodeInfo.thePlugins].editdom;
+		       //赋值
+		       loadSetValue(oNode);
 		        
-		        for(var i=0;i<attrs.length;i++){
-		        	formData[attrs[i].name]=attrs[i].value;
-		        }
-		        
-		        form.setData(formData);
 		    }
 		}
 		//取消按钮
 		dialog.oncancel = function () {
-		    if( UE.plugins[thePlugins].editdom ) {
-		        delete UE.plugins[thePlugins].editdom;
+		    if( UE.plugins[nodeInfo.thePlugins].editdom ) {
+		        delete UE.plugins[nodeInfo.thePlugins].editdom;
 		    }
 		};
 		//确认
 		dialog.onok = function (){
-			form.validate();
-	        if (form.isValid() == false) {
-	            return false;
-	        }
-	        var isCreate=false;
-	        var formData=form.getData();
-	        
-	        //创新新控件
-	        if( !oNode ) {
-	        	isCreate=true;
-		        try {
-		            oNode = createElement('textarea',name);
-		            oNode.setAttribute('class','mini-textarea rxc');
-		            //需要设置该属性，否则没有办法其编辑及删除的弹出菜单
-		            oNode.setAttribute('plugins',thePlugins);
-		        }catch(e){
-		        	alert('error');
-		        	return;
-		        }
-	        }
-	        //更新控件Attributes
-	        var style="";
-            if(formData.mwidth!=0){
-            	style+="width:"+formData.mwidth+formData.wunit;
+			
+            if(!$("#form").valid()){
+            	return false;
             }
-            if(formData.mheight!=0){
-            	if(style!=""){
-            		style+=";";
-            	}
-            	style+="height:"+formData.mheight+formData.hunit;
-            }
-            oNode.setAttribute('style',style);
-            
-            for(var key in formData){
-            	oNode.setAttribute(key,formData[key]);
-            }
-            var vtype=formData['rule']+';'?formData['rule']:'';
-		  	oNode.setAttribute('vtype',vtype+'rangeLength:'+formData['minlen']+','+formData['maxlen']);
-	    	
-	    	 if(isCreate){
-		        	editor.execCommand('insertHtml',oNode.outerHTML);
-		     }else{
-		        	delete UE.plugins[thePlugins].editdom;
-		     }
+	        var formData=getFormData("form");
+	        updateOrCreateNode(oNode,editor,formData);
+            	
 		};
+		
+		
+		
+		
+		
 	</script>
 </body>
 </html>

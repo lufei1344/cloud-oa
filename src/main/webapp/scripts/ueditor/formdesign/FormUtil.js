@@ -1,3 +1,8 @@
+/**
+ *  FormUtil.js说明
+ *  本js提供与Dom操作相关的方法
+ */
+//对象转字符串
 function object2String(obj) {
     var val, output = "";
     if (obj) {  
@@ -100,15 +105,22 @@ function setFormData(form,formData) {
 		$form.find("[name='"+key+"']").val(formData[key]);
     }
 }
-
-function createElement(type, name){     
+//创建节点
+function createElement(tag,ttype, name){     
     var element = null;     
-    try {        
-        element = document.createElement('<'+type+' name="'+name+'">');     
+    try {  
+    	if(tag == "input"){
+    		element = document.createElement('<'+tag+' type="'+ttype+'" name="'+name+'">');  
+    	}else{
+    		element = document.createElement('<'+tag+'  name="'+name+'">');  
+    	}
     } catch (e) {}   
     if(element==null) {     
-        element = document.createElement(type);     
-        element.name = name;     
+        element = document.createElement(tag);     
+        element.name = name; 
+        if(tag == "input"){
+        	element.setAttribute("type",ttype);
+        }
     } 
     return element;     
 }
@@ -182,7 +194,20 @@ function loadSetValue(oNode){
 			$exp.append(html);
 		}
 	}
-    //校验
+	//自增
+    if(typeof formData["auto"] != 'undefined' && formData["auto"] == "on"){
+    	$("#auto")[0].checked = true;
+    }
+    //自动取值
+    if(typeof formData["autotype"] != 'undefined' && formData["autotype"] == "on"){
+    	$("#autotype")[0].checked = true;
+    }
+    //标题显示
+    if(typeof formData["showtitle"] != 'undefined' && formData["showtitle"] == "on"){
+    	$("#showtitle")[0].checked = true;
+    }
+	
+	//校验
     if(typeof formData["chkvalidate"] != 'undefined' && formData["chkvalidate"] == "on"){
     	$("#chkvalidate")[0].checked = true;
     }
@@ -198,4 +223,51 @@ function loadSetValue(oNode){
     if(typeof formData["chkotherread"] != 'undefined' && formData["chkotherread"] == "on"){
     	$("#chkotherread")[0].checked = true;
     }
+}
+
+//更新控件
+function updateOrCreateNode(oNode,editor,formData){
+	 var isCreate=false;
+    //控件尚未存在，则创建新的控件，否则进行更新
+    if( !oNode ) {
+        try {
+            oNode = createElement(nodeInfo.tag,nodeInfo.type,name);
+            //需要设置该属性，否则没有办法其编辑及删除的弹出菜单
+            oNode.setAttribute('plugins',nodeInfo.thePlugins);
+        } catch (e) {
+            try {
+                editor.execCommand('error');
+            } catch ( e ) {
+                alert('控件异常，请联系技术支持');
+            }
+            return false;
+        }
+        isCreate=true;
+    }
+    
+  	//设置校验规则
+  	//oNode.setAttribute('vtype','rangeLength:'+formData['minlen']+','+formData['maxlen']);
+  	
+    for(var key in formData){
+    	oNode.setAttribute(key,formData[key]);
+     }
+	    
+	  	//更新控件Attributes
+     var style="";
+     if(formData.mwidth!=0){
+     	style+="width:"+formData.mwidth+formData.munit;
+     }
+     if(formData.mheight!=0){
+     	if(style!=""){
+     		style+=";";
+     	}
+     	style+="height:"+formData.mheight+formData.munit;
+     }
+     oNode.setAttribute('style',style);
+     
+     if(isCreate){
+         editor.execCommand('insertHtml',oNode.outerHTML);
+     }else{
+     	delete UE.plugins[nodeInfo.thePlugins].editdom;
+     }
 }

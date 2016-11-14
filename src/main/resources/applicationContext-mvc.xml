@@ -14,7 +14,7 @@
     <mvc:annotation-driven/>
     <!-- <context:annotation-config /> -->
     <mvc:default-servlet-handler/>
-    <context:component-scan base-package="com.snakerflow.framework.*.web,com.snakerflow.app.web,com.snakerflow.app.modules.web" />
+    <context:component-scan base-package="com.cloudoa.framework.*.web,com.cloudoa.app.web" />
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/content/" />

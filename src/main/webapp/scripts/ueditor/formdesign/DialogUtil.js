@@ -1,3 +1,7 @@
+/**
+ *  DialogUtil.js说明
+ *  本js提供弹出窗口有关的方法
+ */
 //默认值设置
 function setDefaultValue(obj){
 	var dialog = new UE.ui.Dialog({
@@ -90,13 +94,17 @@ function setSelectRule(obj){
 	}
 	if(obj.checked){
 		var o = new Object();
-		//o.kjarr = ww.kjarr;
 		o.selectrule = $("#selectrule").val();
+		var ruleurl = "/dialog/setselectrule.jsp";
+		var tag = nodeInfo.thePlugins;
+		if(tag == "extdig-select" || tag == "extdig-redio" || tag == "extdig-checkbox"){
+			ruleurl = "/dialog/setselectrule2.jsp";
+		}
 		var dialog = new UE.ui.Dialog({
-			iframeUrl:editor.options.UEDITOR_HOME_URL + UE.FormDesignBaseUrl+'/dialog/setselectrule.jsp',
+			iframeUrl:editor.options.UEDITOR_HOME_URL + UE.FormDesignBaseUrl+ruleurl,
 			name:"default",
 			editor:editor,
-			title: '设置校验规则',
+			title: '设置输入选择',
 			cssRules:"width:600px;height:300px;",
 			buttons:[
 			{
@@ -126,4 +134,41 @@ function setSelectRule(obj){
 		//$("#elevalidateval").val("");
 	}
 	return true;
+}
+
+//设置前置
+function setPrev(obj){
+	var o = new Object();
+	o.val = $("#autoprev").val();
+	var dialog = new UE.ui.Dialog({
+		iframeUrl:editor.options.UEDITOR_HOME_URL + UE.FormDesignBaseUrl+'/dialog/setautoprev.jsp',
+		name:"default",
+		editor:editor,
+		title: '设置前置',
+		cssRules:"width:600px;height:300px;",
+		buttons:[
+		{
+			className:'edui-okbutton',
+			label:'确定',
+			onclick:function () {
+				dialog.close(true);
+				var ret = window.parent.returnValue;
+				if(typeof ret != 'undefined'){
+					$("#autoprev").val(ret);
+				}
+			}
+		},
+		{
+			className:'edui-cancelbutton',
+			label:'取消',
+			onclick:function () {
+				dialog.close(false);
+			}
+		}]
+	});
+	
+	window.parent.dialogParameter = o;
+	dialog.render();
+	dialog.open();
+	
 }

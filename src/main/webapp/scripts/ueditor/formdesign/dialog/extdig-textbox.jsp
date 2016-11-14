@@ -21,6 +21,7 @@
 	<div style="width:100%;text-align: center">
 		<div style="margin-left:auto;margin-right: auto;padding:5px;">
 			<form id="form" class="form-horizontal">
+			<input type="hidden" name="showtype" id="showtype" value="input"/>
 				<table class="table table-bordered" >
 					<caption style="text-align:center"><h2>文本框属性配置</h2></caption>
 					<tr>
@@ -57,10 +58,10 @@
 								<option value="date">日期</option>
 							</select>
 							</div>
-							<input name="auto" id="auto" type="checkbox"  onclick="setAuto(this)" value="1" />
+							<input name="auto" id="auto" type="checkbox"  onclick="setAuto(this)"  />
 							前缀<input style="display:none;width:60px;" name="autoprev" id="autoprev" value="" >
 							<input style="display:none;" id="autoprevbtn" class="btn btn-sm btn-info" type="button" value="..." onclick="setPrev(this)"/>
-							<input name="autotype" id="autotype"  type="checkbox" value="1" />自动取号
+							<input name="autotype" id="autotype"  type="checkbox"  />自动取号
 							
 						</td>
 					</tr>
@@ -81,13 +82,13 @@
 						</td>
 						<td align="left">
 							<div class="col-xs-4">
-							<select name="showtype"  class="form-control" id="showtype">
+							<select name="exttype"  class="form-control" id="exttype">
 								<option value="input">输入框</option>
 								<option value="user">人员</option>
 								<option value="dept">部门</option>
 							</select>
 							</div>
-							列表表头:
+							标题显示:
 							<input type="checkbox"  name="showtitle" id="showtitle"/>
 						</td>
 					</tr>
@@ -162,13 +163,13 @@
 		
 		//编辑的控件的值
 		var oNode = null,
-		thePlugins = 'extdig-textbox';
-		
+		nodeInfo = {thePlugins : 'extdig-textbox',tag:"input",type:"input"};
+		//加载初始化
 		window.onload = function() {
 			//若控件已经存在，则设置回调其值
-		    if( UE.plugins[thePlugins].editdom ){
+		    if( UE.plugins[nodeInfo.thePlugins].editdom ){
 		        //
-		    	oNode = UE.plugins[thePlugins].editdom;
+		    	oNode = UE.plugins[nodeInfo.thePlugins].editdom;
 		       //赋值
 		       loadSetValue(oNode);
 		        
@@ -176,8 +177,8 @@
 		}
 		//取消按钮
 		dialog.oncancel = function () {
-		    if( UE.plugins[thePlugins].editdom ) {
-		        delete UE.plugins[thePlugins].editdom;
+		    if( UE.plugins[nodeInfo.thePlugins].editdom ) {
+		        delete UE.plugins[nodeInfo.thePlugins].editdom;
 		    }
 		};
 		//确认
@@ -187,106 +188,11 @@
             	return false;
             }
 	        var formData=getFormData("form");
-	        var isCreate=false;
-		    //控件尚未存在，则创建新的控件，否则进行更新
-		    if( !oNode ) {
-		        try {
-		            oNode = createElement('input',name);
-		            //需要设置该属性，否则没有办法其编辑及删除的弹出菜单
-		            oNode.setAttribute('plugins',thePlugins);
-		        } catch (e) {
-		            try {
-		                editor.execCommand('error');
-		            } catch ( e ) {
-		                alert('控件异常，请联系技术支持');
-		            }
-		            return false;
-		        }
-		        isCreate=true;
-		    }
-		    
-		  	//设置校验规则
-		  	//oNode.setAttribute('vtype','rangeLength:'+formData['minlen']+','+formData['maxlen']);
-		  	
-		    for(var key in formData){
-            	oNode.setAttribute(key,formData[key]);
-            }
-		    
-		  	//更新控件Attributes
-	        var style="";
-            if(formData.mwidth!=0){
-            	style+="width:"+formData.mwidth+formData.munit;
-            }
-            if(formData.mheight!=0){
-            	if(style!=""){
-            		style+=";";
-            	}
-            	style+="height:"+formData.mheight+formData.munit;
-            }
-            oNode.setAttribute('style',style);
-            
-            if(isCreate){
-	            editor.execCommand('insertHtml',oNode.outerHTML);
-            }else{
-            	delete UE.plugins[thePlugins].editdom;
-            }
+	        updateOrCreateNode(oNode,editor,formData);
             	
 		};
 		
 		
-		
-		
-		//其他元素值
-		function othervalueshow(obj){
-			if(typeof obj == 'undefined'){
-				obj = document.getElementById("eleothervalue");
-				obj.checked = true;
-			}
-			if(obj.checked){
-				var o = new Object();
-				//o.kjarr = ww.kjarr;
-				o.eleothervalue = $("#eleothervalueval").val();
-				var ret=window.showModalDialog("../dialog/editothervalue.jsp",o,"dialogHeight:200px;dialogWidth:400px;status:0;");
-				if(typeof ret != 'undefined'){
-					$("#eleothervalueval").val(ret);
-				}
-			}else{
-				//$("#elevalidateval").val("");
-			}
-			return true;
-		}
-		//其他元素读写
-		function otherreadshow(obj){
-				if(typeof obj == 'undefined'){
-					obj = document.getElementById("eleotherread");
-					obj.checked = true;
-				}
-				if(obj.checked){
-					var o = new Object();
-					//o.kjarr = ww.kjarr;
-					o.eleotherread = $("#eleotherreadval").val();
-					var ret=window.showModalDialog("../dialog/editotherread.jsp",o,"dialogHeight:200px;dialogWidth:400px;status:0;");
-					if(typeof ret != 'undefined'){
-						$("#eleotherreadval").val(ret);
-					}
-				}else{
-					//$("#elevalidateval").val("");
-				}
-				return true;
-		}
-		//其他元素输入
-		function otherinputshow(obj){
-				if(typeof obj == 'undefined'){
-					obj = document.getElementById("eleotherinput");
-					obj.checked = true;
-				}
-				if(obj.checked){
-					$("#treleotherinputval").show();
-				}else{
-					$("#treleotherinputval").hide();
-				}
-				return true;
-		}
 		//设置自动生成
 		function setAuto(obj){
 			if(typeof obj == 'undefined'){
@@ -312,15 +218,7 @@
 			}
 		}
 		
-		//设置前置
-		function setPrev(obj){
-			var o = new Object();
-			o.val = $("#autoprev").val();
-			var ret=window.showModalDialog("../dialog/editauto.jsp",o,"dialogHeight:300px;dialogWidth:400px;status:0;");
-			if(typeof ret != 'undefined'){
-				$("#autoprev").val(ret);
-			}
-		}
+		
 	</script>
 </body>
 </html>

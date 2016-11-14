@@ -12,7 +12,7 @@
 	
 	<context:annotation-config/>
 
-	<context:component-scan base-package="com.snakerflow" />	
+	<context:component-scan base-package="com.cloudoa" />	
 
 	<!-- 定义受环境影响易变的变量 -->
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -25,9 +25,7 @@
 		</property>
 	</bean>
 
-    <bean id="executor" class="com.snakerflow.framework.flow.service.ScriptsExecutor" init-method="run">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+  
 
 	<!-- 数据源配置,使用应用内的DBCP数据库连接池 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -60,22 +58,15 @@
 		</property>
 		<property name="packagesToScan">
 			<list>
-			    <value>com.snakerflow.framework.security.entity</value>
-                <value>com.snakerflow.framework.flow.entity</value>
-                <value>com.snakerflow.framework.config.entity</value>
-                <value>com.snakerflow.framework.form.entity</value>
-                <value>com.snakerflow.app.modules.entity</value>
+			    <value>com.cloudoa.framework.security.entity</value>
+                <value>com.cloudoa.framework.flow.entity</value>
+                <value>com.cloudoa.framework.config.entity</value>
+                <value>com.cloudoa.framework.form.entity</value>
 			</list>
 		</property>
 		<property name="mappingResources">
 			<list>
-				<value>hbm/snaker.task.hbm.xml</value>
-				<value>hbm/snaker.order.hbm.xml</value>
-				<value>hbm/snaker.ccorder.hbm.xml</value>
-				<value>hbm/snaker.process.hbm.xml</value>
-				<value>hbm/snaker.taskactor.hbm.xml</value>
-				<value>hbm/snaker.workitem.hbm.xml</value>
-				<value>hbm/snaker.surrogate.hbm.xml</value>
+			
 			</list>
 		</property> 
 	</bean>
@@ -115,13 +106,14 @@
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
-	<!-- or execution(* org.snaker.framework.flow.service..*.*(..))
+	<!-- or execution(* org.cloudoa.framework.flow.service..*.*(..))
 
 	 -->
 	<aop:config>
-		<aop:advisor advice-ref="txAdvice" pointcut="execution(* org.snaker.engine.core..*.*(..))
-		or execution(* com.snakerflow.app.modules.service..*.*(..))
-		or execution(* com.snakerflow.framework.*.service..*.*(..))"/>
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* com.cloudoa.app.modules.service..*.*(..))
+		or execution(* com.cloudoa.framework.*.service..*.*(..))"/>
 	</aop:config>
 	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<import resource="applicationContext-security.xml"/>
+	<import resource="applicationContext-activiti.xml"/>
 </beans>

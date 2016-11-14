@@ -50,6 +50,15 @@
 							<input type="text" name="displayName" value="" id="displayName" class="form-control"  required data-msg-required="不能为空" data-rule-gt="true" data-gt="0"><font color="red">*</font>
 						</td>
 					</tr>
+					<tr>
+						<td align="right">
+							标题:
+						</td>
+						<td align="left">
+							<input type="text" name="showTitle" value="" id="showTitle" class="form-control"  required data-msg-required="不能为空" data-rule-gt="true" data-gt="0">
+							<input type="button" class="btn btn-sm btn-primary" onclick="setTitle()" value="选择"/>
+						</td>
+					</tr>
 					
 					
 				</table>
@@ -114,7 +123,42 @@
             	
 		};
 		
-		
+		//设置前置
+		function setTitle(obj){
+			var o = new Object();
+			o.val = $("#showTitle").val();
+			var dialog = new UE.ui.Dialog({
+				iframeUrl:editor.options.UEDITOR_HOME_URL + UE.FormDesignBaseUrl+'/dialog/settitle.jsp',
+				name:"default",
+				editor:editor,
+				title: '设置标题',
+				cssRules:"width:600px;height:300px;",
+				buttons:[
+				{
+					className:'edui-okbutton',
+					label:'确定',
+					onclick:function () {
+						dialog.close(true);
+						var ret = window.parent.returnValue;
+						if(typeof ret != 'undefined'){
+							$("#showTitle").val(ret);
+						}
+					}
+				},
+				{
+					className:'edui-cancelbutton',
+					label:'取消',
+					onclick:function () {
+						dialog.close(false);
+					}
+				}]
+			});
+			
+			window.parent.dialogParameter = o;
+			dialog.render();
+			dialog.open();
+			
+		}
 	</script>
 </body>
 </html>

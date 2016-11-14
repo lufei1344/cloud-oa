@@ -23,120 +23,41 @@ var extPlugins=[{
             	 popWidth:640
              },
              {
-            	 name:'extdig-radiobuttonlist',
+            	 name:'extdig-radio',
             	 text:'单选按钮列表',
-            	 tag:'input',
-            	 popHeight:420,
-            	 popWidth:850
-             },
-             {
-            	 name:'extdig-checkboxlist',
-            	 text:'复选按钮列表',
-            	 tag:'input',
-            	 popHeight:420,
-            	 popWidth:850
-             },
-             {
-            	 name:'extdig-combobox',
-            	 text:'下拉列表',
-            	 tag:'input',
-            	 popHeight:420,
-            	 popWidth:850
-             },
-             {
-            	 name:'extdig-datepicker',
-            	 text:'日期选择框',
             	 tag:'input',
             	 popHeight:320,
             	 popWidth:640
              },
              {
-            	 name:'extdig-timespinner',
-            	 text:'时间输入框',
-            	 tag:'input',
-            	 popHeight:340,
+            	 name:'extdig-select',
+            	 text:'下拉列表',
+            	 tag:'select',
+            	 popHeight:320,
             	 popWidth:640
              },
              {
-            	 name:'extdig-monthpicker',
-            	 text:'月份输入框',
-            	 tag:'input',
-            	 popHeight:340,
-            	 popWidth:640
-             },
-             {
-            	 name:'extdig-spinner',
-            	 text:'数字输入框',
-            	 tag:'input',
-            	 popHeight:360,
-            	 popWidth:640
-             },
-             {
-            	 name:'extdig-ueditor',
-            	 text:'富文本',
-            	 tag:'textarea',
-            	 popHeight:360,
-            	 popWidth:640
-             },
-             {
-            	 name:'extdig-user',
-            	 text:'用户选择框',
-            	 tag:'input',
-            	 popHeight:260,
-            	 popWidth:640
-             },
-             {
-            	 name:'extdig-group',
-            	 text:'用户组选择框',
-            	 tag:'input',
-            	 popHeight:260,
-            	 popWidth:640
-             },
-             {
-            	 name:'upload-panel',
+            	 name:'extdig-upload',
             	 text:'附件上传',
             	 tag:'input',
-            	 popHeight:260,
+            	 popHeight:320,
             	 popWidth:640
-             },{
-            	 name:'rx-grid',
+             },
+             {
+            	 name:'extdig-grid',
             	 text:'明细表格',
             	 tag:'div',
             	 popHeight:460,
             	 popWidth:840
-             },{
+             },
+             {
             	 name:'extdig-hidden',
             	 text:'隐藏域',
             	 tag:'input',
             	 popHeight:250,
             	 popWidth:640 
-             },{
-            	 name:'extdig-buttonedit',
-            	 text:'按钮输入框',
-            	 tag:'input',
-            	 popHeight:300,
-            	 popWidth:640 
-             },{
-            	 name:'extdig-dep',
-            	 text:'部门',
-            	 tag:'input',
-            	 popHeight:250,
-            	 popWidth:640 
-               },
-               {
-              	 name:'extdig-treeselect',
-              	 text:'下拉树选择控件',
-              	 tag:'input',
-              	 popHeight:420,
-              	 popWidth:1000
-                 },{
-                  	 name:'extdig-button',
-                  	 text:'自定义按钮',
-                  	 tag:'a',
-                  	 popHeight:320,
-                  	 popWidth:650
-                },
-                {
+             },
+              {
                   	 name:'extdig-save',
                   	 text:'保存',
                   	 tag:'a',

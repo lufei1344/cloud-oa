@@ -6,7 +6,7 @@
   <packaging>war</packaging>
   
 <properties>
-        <snaker.version>2.5.1</snaker.version>
+        <activiti.version>5.16</activiti.version>
         <spring.version>3.1.3.RELEASE</spring.version>
         <hibernate.version>3.5.5-Final</hibernate.version>
         <shiro.version>1.2.1</shiro.version>
@@ -16,21 +16,17 @@
     </properties>
 
     <dependencies>
+    	<!-- activiti  -->
         <dependency>
-            <groupId>com.github.snakerflow</groupId>
-            <artifactId>snaker-core</artifactId>
-            <version>${snaker.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.snakerflow</groupId>
-            <artifactId>snaker-spring</artifactId>
-            <version>${snaker.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.snakerflow</groupId>
-            <artifactId>snaker-hibernate</artifactId>
-            <version>${snaker.version}</version>
-        </dependency>
+	      <groupId>org.activiti</groupId>
+	      <artifactId>activiti-engine</artifactId>
+	      <version>${activiti.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.activiti</groupId>
+	      <artifactId>activiti-spring</artifactId>
+	      <version>${activiti.version}</version>
+	    </dependency>
        
 			
         <!-- spring begin -->

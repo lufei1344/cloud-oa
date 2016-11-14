@@ -1,4 +1,4 @@
-import com.snakerflow.framework.orm.PropertyFilter;
+import com.cloudoa.framework.orm.PropertyFilter;
 
 public class T {
 

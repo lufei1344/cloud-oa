@@ -39,13 +39,13 @@
 						<input type="image" src="${ctx}/scripts/ueditor/formdesign/images/icons/formtextarea.gif"
 							onclick="exePlugin('extdig-textarea')" title="插入输入域">
 						<input type="image" src="${ctx}/scripts/ueditor/formdesign/images/icons/formradio.gif"
-							onclick="exePlugin('extdig-radiobuttonlist')" title="插入单选框">	
+							onclick="exePlugin('extdig-radio')" title="插入单选框">	
 						<input type="image" src="${ctx}/scripts/ueditor/formdesign/images/icons/formcheckbox.gif"
-							onclick="exePlugin('extdig-checkboxlist')" title="插入复选框">	
+							onclick="exePlugin('extdig-checkbox')" title="插入复选框">	
 						<input type="image" src="${ctx}/scripts/ueditor/formdesign/images/icons/formdropdown.gif"
-							onclick="exePlugin('extdig-combobox')" title="插入下拉框">	
+							onclick="exePlugin('extdig-select')" title="插入下拉框">	
 						<input type="image" src="${ctx}/scripts/ueditor/formdesign/images/icons/formFile.gif"
-							onclick="exePlugin('upload-panel')" title="插入上传文件">
+							onclick="exePlugin('extdig-upload')" title="插入上传文件">
 						<input type="image" src="${ctx}/scripts/ueditor/formdesign/images/icons/tableinsert.gif"
 							onclick="exePlugin('extdig-grid')" title="二维表">	
 						<input type="image" src="${ctx}/scripts/ueditor/formdesign/images/icons/save.png"
