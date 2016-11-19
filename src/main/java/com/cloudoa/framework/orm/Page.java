@@ -31,9 +31,11 @@ public class Page<T> {
 	//-- 分页参数 --//
 	protected int pageNo = 1;
 	protected int pageSize = -1;
+	protected int start = 0;
 	protected String orderBy = null;
 	protected String order = null;
 	protected boolean autoCount = true;
+	protected boolean asc;
 
 	//-- 返回结果 --//
 	protected List<T> result = Lists.newArrayList();
@@ -271,4 +273,26 @@ public class Page<T> {
 			return pageNo;
 		}
 	}
+
+	public boolean isAsc() {
+		return asc;
+	}
+
+	public void setAsc(boolean asc) {
+		this.asc = asc;
+	}
+
+	public int getStart() {
+		 if ((pageNo < 1) || (pageSize < 1)) {
+            start = -1;
+        } else {
+            start = (pageNo - 1) * pageSize;
+        }
+		return start;
+	}
+
+	public void setStart(int start) {
+		this.start = start;
+	}
+	
 }

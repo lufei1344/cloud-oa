@@ -29,7 +29,7 @@ import com.cloudoa.framework.utils.MsgUtils;
  * @since 0.1
  */
 @Controller
-@RequestMapping(value = "/config/form")
+@RequestMapping(value = "/form")
 public class FormController {
     public static final String PARA_PROCESSID = "processId";
     public static final String PARA_ORDERID = "orderId";
@@ -39,7 +39,7 @@ public class FormController {
     private FormManager formManager;
     
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "list",method = RequestMethod.GET)
     public String list(Model model, Page<Form> page, HttpServletRequest request, String lookup) {
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(request);
         //设置默认排序方式
@@ -50,25 +50,25 @@ public class FormController {
         page = formManager.findPage(page, filters);
         model.addAttribute("page", page);
         model.addAttribute("lookup", lookup);
-        return "config/formList";
+        return "form/formList";
     }
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
     public String create(Model model) {
         model.addAttribute("form", new Form());
-        return "config/formEdit";
+        return "form/formEdit";
     }
 
     @RequestMapping(value = "view/{id}", method = RequestMethod.GET)
     public String view(@PathVariable("id") Long id, Model model) {
         model.addAttribute("form", formManager.get(id));
-        return "config/formView";
+        return "form/formView";
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String edit(@PathVariable("id") Long id, Model model) {
         model.addAttribute("form", formManager.get(id));
-        return "config/formEdit";
+        return "form/formEdit";
     }
 
 
@@ -86,7 +86,7 @@ public class FormController {
     @RequestMapping(value = "delete/{id}")
     public String delete(@PathVariable("id") Long id) {
     	formManager.delete(id);
-        return "redirect:/config/form";
+        return "redirect:/form/list";
     }
 
     @RequestMapping(value = "findForm")
