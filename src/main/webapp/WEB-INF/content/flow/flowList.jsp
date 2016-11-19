@@ -72,9 +72,8 @@
 			<tr>
 				<th name="id">编号</th>
 		        <th  name="name">名称</th>
-		        <th  name="createTime">部署时间</th>
+		        <th  name="createTime">Key</th>
 		        <th  name="assignee">分类</th>
-		        <th >&nbsp;</th>
 				<th>
 					操作
 				</th>				
@@ -82,10 +81,9 @@
 			</thead>
 			<c:forEach items="${page.result}" var="item">
 		      <tr>
-		        <td><input type="checkbox" class="selectedItem" name="selectedItem" value="${item.id}"></td>
 			    <td>${item.id}</td>
-			    <td>${item.name}</td>
-			    <td><fmt:formatDate value="${item.deploymentTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+			    <td>${item.resourceName}</td>
+			    <td>${item.key }</td>
 			    <td>${item.category}</td>
 		        <td>
 		          <a href="${ctx}/flow/process/delete/${item.id }" class="glyphicon glyphicon-trash" title="删除" onclick="return confirmDel();">删除</a>

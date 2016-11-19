@@ -200,14 +200,14 @@
 		//alert(id);
 		if(!is_open_properties_panel)
 			_designer.layout('expand','east');
-		_properties_panel_obj.panel('refresh','processProperties.html');
+		_properties_panel_obj.panel('refresh','${ctx}/scripts/wfdesigner/wf/designer/processProperties.html');
 	}
 	function openFlowProperties(l){
 		//alert(id);
 		if(!is_open_properties_panel)
 			_designer.layout('expand','east');
 		line=l;
-		_properties_panel_obj.panel('refresh','flowProperties.html');
+		_properties_panel_obj.panel('refresh','${ctx}/scripts/wfdesigner/wf/designer/flowProperties.html');
 	}
 	function deleteModel(id){
 		var task = workflow.getFigure(id);
@@ -237,6 +237,7 @@
 				}
 			});
 		}else{
+			processName = processName.replace(".bpmn","");
 			var xml = workflow.toXML();
 			var data = {
 					processDescriptor:xml,
@@ -353,7 +354,7 @@
 	//解析
 	function parXml(){
 		var xml = jq("#descriptorarea").val();
-		if(xml != ""){
+		if(xml != "" && workflow != null){
 			workflow.parseXML(xml);
 		}
 	}
@@ -383,6 +384,7 @@
 			if(disabled)
 				workflow.setDisabled();
 			if(typeof processDefinitionId != "undefined" && processDefinitionId != null &&  processDefinitionId != "null" && processDefinitionId != "" && processDefinitionId != "NULL"){
+				workflow.webpath ="${ctx}/scripts/";
 				parXml();
 			}else{
 					var id = "process"+Sequence.create();
@@ -403,6 +405,8 @@
 			alert(e.message);
 		}
 	}
+	
 	createCanvas(false);
+	
 
 </script>

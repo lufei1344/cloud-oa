@@ -833,7 +833,7 @@ draw2d.MyCanvas.prototype.parseXML=function(data){
 			workflow.process.addVariable(variable);
 		});
 	startEvent.each(function(i){
-			var start = new draw2d.Start();
+			var start = new draw2d.Start(workflow.webpath+"wfdesigner/js/designer/icons/type.startevent.none.png");
 			start.id=jq(this).attr('id');
 			start.eventId=jq(this).attr('id');
 			start.eventName=jq(this).attr('name');
@@ -848,7 +848,7 @@ draw2d.MyCanvas.prototype.parseXML=function(data){
 			});
 		});
 	endEvent.each(function(i){
-			var end = new draw2d.End();
+			var end = new draw2d.End(workflow.webpath+"wfdesigner/js/designer/icons/type.endevent.none.png");
 			end.id=jq(this).attr('id');
 			end.eventId=jq(this).attr('id');
 			end.eventName=jq(this).attr('name');
