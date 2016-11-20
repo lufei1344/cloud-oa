@@ -84,7 +84,7 @@
 			    <td>${item.id}</td>
 			    <td>${item.resourceName}</td>
 			    <td>${item.key }</td>
-			    <td>${item.category}</td>
+			    <td><frame:select name="type" type="select" configName="formType" displayType="1" value="${item.category}" />&nbsp;</td>
 		        <td>
 		          <a href="${ctx}/flow/process/delete/${item.id }" class="glyphicon glyphicon-trash" title="删除" onclick="return confirmDel();">删除</a>
 				  <a href="javascript:void(0)" onclick="editDialog('${ctx}/flow/process/update/${item.id }')" class="glyphicon glyphicon-pencil" title="编辑">编辑</a>

@@ -35,8 +35,8 @@ public class TaskTest3 {
         InputStream inputStreamBpmn = this.getClass().getResourceAsStream(  
                 "会签.bpmn");  
         processEngine.getRepositoryService()//  
-                .createDeployment()//  
-                .addInputStream("会签.bpmn", inputStreamBpmn)//  
+                .createDeployment().category("发文")//  
+                .addInputStream("会签.bpmn", inputStreamBpmn).category("发文")////  
                 .deploy();  
        /* //2.启动流程  
         Map<String, Object> variables = new HashMap<String, Object>(); 

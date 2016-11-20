@@ -9,7 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.cloudoa.framework.form.dao.AutoPrevDao;
 import com.cloudoa.framework.form.dao.FieldDao;
@@ -28,8 +28,8 @@ import com.cloudoa.framework.orm.PropertyFilter;
  * @author yuqs
  * @since 0.1
  */
-@Component
-public class FormManager {
+@Service
+public class FormService {
     private static final String TABLE_PREFIX = "TBL_";
    
     @Autowired

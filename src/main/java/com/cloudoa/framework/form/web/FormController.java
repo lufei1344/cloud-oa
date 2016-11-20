@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudoa.framework.form.entity.AutoPrev;
 import com.cloudoa.framework.form.entity.Form;
-import com.cloudoa.framework.form.service.FormManager;
+import com.cloudoa.framework.form.service.FormService;
 import com.cloudoa.framework.orm.Page;
 import com.cloudoa.framework.orm.PropertyFilter;
 import com.cloudoa.framework.security.shiro.ShiroUtils;
@@ -36,7 +36,7 @@ public class FormController {
     public static final String PARA_TASKID = "taskId";
 
     @Autowired
-    private FormManager formManager;
+    private FormService formService;
     
 
     @RequestMapping(value = "list",method = RequestMethod.GET)
@@ -47,7 +47,7 @@ public class FormController {
             page.setOrderBy("id");
             page.setOrder(Page.ASC);
         }
-        page = formManager.findPage(page, filters);
+        page = formService.findPage(page, filters);
         model.addAttribute("page", page);
         model.addAttribute("lookup", lookup);
         return "form/formList";
@@ -61,13 +61,13 @@ public class FormController {
 
     @RequestMapping(value = "view/{id}", method = RequestMethod.GET)
     public String view(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("form", formManager.get(id));
+        model.addAttribute("form", formService.get(id));
         return "form/formView";
     }
 
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String edit(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("form", formManager.get(id));
+        model.addAttribute("form", formService.get(id));
         return "form/formEdit";
     }
 
@@ -78,14 +78,14 @@ public class FormController {
         form.setCreator(ShiroUtils.getUsername());
         form.setCreateTime(DateUtils.getCurrentTime());
         form.setFieldNum(0);
-        formManager.save(form);
+        formService.save(form);
         return MsgUtils.returnOk("");
     }
 
 
     @RequestMapping(value = "delete/{id}")
     public String delete(@PathVariable("id") Long id) {
-    	formManager.delete(id);
+    	formService.delete(id);
         return "redirect:/form/list";
     }
 
@@ -95,37 +95,37 @@ public class FormController {
     	List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
     	PropertyFilter f = new PropertyFilter("EQS_formType", formType.toString());
     	filters.add(f);
-        return MsgUtils.returnOk("",formManager.find(filters));
+        return MsgUtils.returnOk("",formService.find(filters));
     }
     @RequestMapping(value = "findFormField")
     @ResponseBody
     public Object findFormField(Long formid, Model model) {
-    	Form f = formManager.get(formid);
+    	Form f = formService.get(formid);
     	return MsgUtils.returnOk("",f.getFields());
     }
     @RequestMapping(value = "parseSql")
     @ResponseBody
     public Object parseSql(String sql) {
-        return MsgUtils.returnOk("",formManager.parseSql(sql));
+        return MsgUtils.returnOk("",formService.parseSql(sql));
     }
     @RequestMapping(value = "findAutoPrev")
     @ResponseBody
     public Object findAutoPrev() {
     	JSONObject jobj = new JSONObject();
-    	jobj.put("auto", formManager.findAutoPrev());
-    	jobj.put("depart", formManager.findAllOrg());
+    	jobj.put("auto", formService.findAutoPrev());
+    	jobj.put("depart", formService.findAllOrg());
     	return jobj.toString();
     }
     @RequestMapping(value = "saveAutoPrev")
     @ResponseBody
     public Object saveAutoPrev(AutoPrev prev) {
-    	prev = formManager.saveAutoPrev(prev);
+    	prev = formService.saveAutoPrev(prev);
     	return MsgUtils.returnOk("",prev);
     }
     @RequestMapping(value = "deleteAutoPrev")
     @ResponseBody
     public Object delAutoPrev(Long id) {
-    	formManager.deleteAutoPrev(id);
+    	formService.deleteAutoPrev(id);
     	return MsgUtils.returnOk("");
     }
 

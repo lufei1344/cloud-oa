@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudoa.framework.form.entity.AutoPrev;
 import com.cloudoa.framework.form.entity.Form;
-import com.cloudoa.framework.form.service.FormManager;
+import com.cloudoa.framework.form.service.FormService;
 import com.cloudoa.framework.orm.Page;
 import com.cloudoa.framework.orm.PropertyFilter;
 import com.cloudoa.framework.security.shiro.ShiroUtils;
@@ -36,7 +36,7 @@ public class TaskController {
     public static final String PARA_TASKID = "taskId";
 
     @Autowired
-    private FormManager formManager;
+    private FormService formManager;
     
 
     @RequestMapping(method = RequestMethod.GET)

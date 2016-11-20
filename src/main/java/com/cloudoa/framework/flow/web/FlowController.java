@@ -75,8 +75,8 @@ public class FlowController {
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
-    public Object update(String processDescriptor,String processName,String processVariables) {
-    	processService.processDefinitionDeployment(processName,processDescriptor,TenantHolder.TenantId);
+    public Object update(String processDescriptor,String processName,String category,String processVariables) {
+    	processService.processDefinitionDeployment(processName,processDescriptor,TenantHolder.TenantId,category);
         return MsgUtils.returnOk("");
     }
 

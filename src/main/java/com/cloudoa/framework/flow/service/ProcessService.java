@@ -94,7 +94,7 @@ public class ProcessService {
     /**
      * 流程定义发布
      */
-    public boolean processDefinitionDeployment(String name,String xml,String tenantId) {
+    public boolean processDefinitionDeployment(String name,String xml,String tenantId,String category) {
     	 
 		try {
 			RepositoryService repositoryService = processEngine
@@ -103,7 +103,7 @@ public class ProcessService {
 			bais = new ByteArrayInputStream(
 			         xml.getBytes("UTF-8"));
 			Deployment deployment = repositoryService.createDeployment().tenantId(tenantId)
-	                 .addInputStream(name+".bpmn", bais).name(name).deploy();
+	                 .addInputStream(name+".bpmn", bais).name(name).category(category).deploy();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return false;

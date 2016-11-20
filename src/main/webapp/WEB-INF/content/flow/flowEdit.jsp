@@ -220,34 +220,7 @@
 		workflow.getCommandStack().undo();
 	}
 	function saveProcessDef(){
-		var processName = jq("#processName").val();
-		if(processName == ""){
-			jq.messager.prompt("名称","",function(val){
-				if(val == ""){
-					return;
-				}else{
-					processName = val;
-					var xml = workflow.toXML();
-					var data = {
-							processDescriptor:xml,
-							processName:processName,
-							processVariables:workflow.process.getVariablesJSONObject()
-						};
-					saveFlow(data);
-				}
-			});
-		}else{
-			processName = processName.replace(".bpmn","");
-			var xml = workflow.toXML();
-			var data = {
-					processDescriptor:xml,
-					processName:processName,
-					processVariables:workflow.process.getVariablesJSONObject()
-				};
-			saveFlow(data);
-		}
-		
-		
+		jq('#win').window('open');
 	}
 	function saveFlow(data){
 		jq.ajax({
@@ -271,10 +244,39 @@
 	function exportProcessDef(obj){
 		//obj.href="${ctx}/wf/procdef/procdef!exportProcessDef.action?procdefId="+processDefinitionId+"&processName="+processDefinitionName;
 	}
-
+	function saveOk(){
+		var processName = jq("#processName").val();
+		if(processName == ""){
+			jq.messager.alert('信息','实例名称不能为空!','info');
+		}else{
+			processName = processName.replace(".bpmn","");
+			workflow.process.category=jq("#category").val();
+			workflow.process.name=processName;
+			var xml = workflow.toXML();
+			var data = {
+					processDescriptor:xml,
+					processName:processName,
+					category:jq("#category").val(),
+					processVariables:workflow.process.getVariablesJSONObject()
+				};
+			saveFlow(data);
+		}
+	}
 </script>
 
 <body id="designer" class="easyui-layout">
+	<!-- dialog -->
+	<div id="win" class="easyui-window" title="保存" style="width:300px;height:180px;" closed="true">
+		<form style="padding:10px 20px 10px 40px;">
+			<p>名称: <input type="text" name="processName" id="processName" value="${deploy.resourceName }"></p>
+			<p>类别: <frame:select name="category"  type="select" configName="formType" displayType="0" value="${deploy.category }" />&nbsp;</p>
+			<div style="padding:5px;text-align:center;">
+				<a href="javascript:void(0)" class="easyui-linkbutton" icon="icon-ok" onclick="saveOk()">确定</a>
+				<a href="#" class="easyui-linkbutton" icon="icon-cancel">取消</a>
+			</div>
+		</form>
+	</div>
+	<!-- flow -->
 	<div region="west" split="true" iconCls="palette-icon" title="流程元素" style="width:150px;">
 		<div class="easyui-accordion" fit="true" border="false">
 <!--				<div id="connection" title="Connection" iconCls="palette-menu-icon" class="palette-menu">-->
@@ -346,7 +348,6 @@
 	<!-- candidate configuration window -->
 	<div id="task-candidate-win" title="" style="width:750px;height:500px;">
 	</div>
-	<input type="hidden" name="processName" id="processName" value="${deploy.resourceName }"/>
 </body>
 </html>
 <script type="text/javascript">
