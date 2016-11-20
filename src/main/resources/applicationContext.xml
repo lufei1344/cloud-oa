@@ -58,10 +58,13 @@
 		</property>
 		<property name="packagesToScan">
 			<list>
-			    <value>com.cloudoa.framework.security.entity</value>
+			    <value>com.cloudoa.framework.*.entity</value>
+			    <!-- 
+                <value>com.cloudoa.framework.security.entity</value>
                 <value>com.cloudoa.framework.flow.entity</value>
                 <value>com.cloudoa.framework.config.entity</value>
                 <value>com.cloudoa.framework.form.entity</value>
+                 -->
 			</list>
 		</property>
 		<property name="mappingResources">

@@ -10,12 +10,35 @@
 	</bean>
 	<!-- activiti流程引擎 -->
    <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
-    <property name="dataSource" ref="dataSource" />
-    <property name="transactionManager" ref="txManager" />
-    <property name="databaseSchemaUpdate" value="true" />
-    <property name="jobExecutorActivate" value="false" />
-    <property name="activityFontName" value="宋体"/>
-	<property name="labelFontName" value="宋体"/>
+   		<!-- 数据库连接池 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 事务 -->
+		<property name="transactionManager" ref="txManager"/>
+		<!-- 数据库自动升级 -->
+		<property name="databaseSchemaUpdate" value="true" />
+		<!-- 不创建identity表 -->
+		<property name="dbIdentityUsed" value="false"/>
+		<!-- 作业执行器 -->
+		<property name="jobExecutorActivate" value="false" />
+		<!-- 历史级别 -->
+		<property name="history" value="audit" />
+	    <property name="activityFontName" value="宋体"/>
+		<property name="labelFontName" value="宋体"/>
+		<!-- 配置自定义用户 -->  
+	    <property name="customSessionFactories">   
+	        <list>   
+	             <bean class="com.cloudoa.framework.flow.ext.CustomGroupManagerFactory" >  
+	                <property name="groupEntityManager">  
+	                    <bean class="com.cloudoa.framework.flow.ext.CustomGroupManager"></bean>  
+	                </property>  
+	             </bean>  
+	             <bean class="com.cloudoa.framework.flow.ext.CustomUserManagerFactory" >  
+	                <property  name="userEntityManager">  
+	                    <bean id="userEntityManager" class="com.cloudoa.framework.flow.ext.CustomUserManager"></bean>  
+	                </property>  
+	             </bean>  
+	        </list>  
+	    </property>  
    </bean>
 
    <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
