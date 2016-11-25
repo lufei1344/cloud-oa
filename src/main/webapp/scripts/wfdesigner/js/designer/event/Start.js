@@ -72,6 +72,13 @@ draw2d.Start.prototype.toXML=function(){
 	var xml='<startEvent id="'+this.eventId+'" name="'+this.eventName+'" activiti:initiator="_wf_default_v_applicant"></startEvent>\n';
 	return xml;
 };
+draw2d.Start.prototype.toJSON=function(){
+	var o = new Object();
+	o.eventId = this.eventId;
+	o.eventName = this.eventName;
+	o.type = "Start";
+	return o;
+};
 draw2d.Start.prototype.toBpmnDI=function(){
 	var w=this.getWidth();
 	var h=this.getHeight();

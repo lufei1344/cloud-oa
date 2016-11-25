@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <title>流程管理</title>
+    <title>代办任务</title>
 
     <link rel="shortcut icon" href="favicon.ico"/>
     <link href="${ctx}/scripts/hplus/css/bootstrap.min.css" rel="stylesheet"/>
@@ -17,10 +17,35 @@
     
     <script type="text/javascript" src="${ctx}/scripts/hplus/js/jquery.min.js"></script>
     <script type="text/javascript" src="${ctx}/scripts/hplus/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="${ctx}/flowweb/showPage.js"></script>
     <script type="text/javascript">
     	function jumpPage(i){
     		$("#pageNo").val(i);
-    		$("#mainForm")[0].submit();
+    		var data =  $("#mainForm").serialize();
+    		var url = "${ctx}/flow/task/groupTasks";
+    		$.getJSON(url,data,function(redata){
+    			if(redata.status){
+    				var page = redata.obj;
+    				dataPage(page);
+    				showPage("page",page);
+    			}
+    		});
+    		
+    	}
+    	function dataPage(page){
+    		 var $table = $("#page");
+   		     var content = "";
+   		     for(var i=0; i<page.result.length; i++){
+   		    	content += "<tr>";
+   		    	content +="<td>"+page.result[i].id+"</td>";
+   		    	content +="<td>"+page.result[i].title+"</td>";
+   		    	content +="<td>"+page.result[i].name+"</td>";
+   		    	content +="<td>"+page.result[i].createtime+"</td>";
+   		    	content +="<td>"+page.result[i].fullname+"</td>";
+   		    	content +="<td><a href='javascript:void(0)' onclick='showViews(\""+page.result[i].id+"\",\""+page.result[i].executionid+"\",\""+page.result[i].processinstanceid+"\",\""+page.result[i].processdefinitionid+"\",\""+page.result[i].activityid+"\")'>处理</a>"+page.result[i].processinstanceid+"</td>";
+   		    	content += "</tr>";
+   		    }
+   		    $table.find("tbody").append(content);
     	}
     	function editDialog(url){
     		var index = parent.layer.open({
@@ -34,11 +59,19 @@
     		    });
     		parent.layer.full(index);
     	}
+    	$(function(){
+    		jumpPage(1);
+    	});
+    	
+    	function showViews(taskId,executionId,processInstanceId,processDefinitionId,activityId){
+    		var url = "${ctx}/form/views?taskId="+taskId+"&executionId="+executionId+"&forms=&fields=&processInstanceId="+processInstanceId+"&processDefinitionId="+processDefinitionId+"&activityId="+activityId;
+			window.open(url);
+    	}
     </script>
 </head>
 
 	<body>
-	<form id="mainForm" action="${ctx}/flow/list" method="get">
+	<form id="mainForm" action="${ctx}/flow/task/groupTasks" method="get">
 		<input type="hidden" name="lookup" value="${lookup}" />
 		<input type="hidden" name="pageNo" id="pageNo" value="${page.pageNo}"/>
 		<input type="hidden" name="orderBy" id="orderBy" value="${page.orderBy}"/>
@@ -67,33 +100,21 @@
             <hr/>
 		
 		 <div class="table-responsive">
-          <table class="table table-striped table-hover table-bordered">
+          <table class="table table-striped table-hover table-bordered" id="page">
 			<thead>
 			<tr>
 				<th name="id">编号</th>
-		        <th  name="name">名称</th>
-		        <th  name="createTime">Key</th>
-		        <th  name="assignee">分类</th>
+		        <th  name="name">标题</th>
+		        <th  name="createTime">节点</th>
+		        <th  name="assignee">时间</th>
+		        <th  name="assignee">提交人</th>
 				<th>
 					操作
 				</th>				
 			</tr>
 			</thead>
-			<c:forEach items="${page.result}" var="item">
-		      <tr>
-			    <td>${item.id}</td>
-			    <td>${item.resourceName}</td>
-			    <td>${item.key }</td>
-			    <td><frame:select name="type" type="select" configName="formType" displayType="1" value="${item.category}" />&nbsp;</td>
-		        <td>
-		          <a href="${ctx}/flow/process/delete/${item.id }" class="glyphicon glyphicon-trash" title="删除" onclick="return confirmDel();">删除</a>
-				  <a href="javascript:void(0)" onclick="editDialog('${ctx}/flow/process/update/${item.id }')" class="glyphicon glyphicon-pencil" title="编辑">编辑</a>
-				  <a href="${ctx}/flow/process/view/${item.id }" class="glyphicon glyphicon-search" title="查看">查看</a>
-				  <a href="javascript:void(0)" onclick="startInstance('${item.id}')" class="glyphicon glyphicon-search" title="查看">开启流程</a>
-		        </td>
-		      </tr>
-		      </c:forEach>
-			<frame:page curPage="${page.pageNo}" totalPages="${page.totalPages }" totalRecords="${page.totalCount }" lookup="${lookup }"/>
+			<tbody>
+			</tbody>
 		</table>
 		</div>
 		</div>
@@ -108,7 +129,7 @@
         	var data = {id:id};
         	$.getJSON(url,data,function(redata){
         		if(redata.status){
-        			var url = "${ctx}/form/views?taskId="+redata.obj.taskId+"&executionId="+redata.obj.executionId+"&forms=&fields=&processInstanceId="+redata.obj.processInstanceId+"&processDefinitionId="+redata.obj.processDefinitionId+"&activityId="+redata.obj.activityId;
+        			var url = "${ctx}/form/views?executionId="+redata.obj.id+"&forms=&fields=&processInstanceId="+redata.obj.processInstanceId+"&processDefinitionId="+redata.obj.processDefinitionId+"&activityId="+redata.obj.activityId;
         			window.open(url);
         		}else{
         			alert(redata.msg);

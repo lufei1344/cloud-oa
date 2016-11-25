@@ -192,46 +192,6 @@ public class FlowController {
     }
 
     *//**
-     * 新建流程.
-     *//*
-    @RequestMapping("console-create")
-    public String create() {
-        return "bpm/console-create";
-    }
-
-    *//**
-     * 准备上传流程定义.
-     *//*
-    @RequestMapping("console-process-input")
-    public String processInput() {
-        return "bpm/console-process-input";
-    }
-
-    *//**
-     * 上传发布流程定义.
-     *//*
-    @RequestMapping("console-process-upload")
-    public String processUpload(@RequestParam("file") MultipartFile file,
-            RedirectAttributes redirectAttributes) throws Exception {
-        String tenantId = tenantHolder.getTenantId();
-        String fileName = file.getOriginalFilename();
-        Deployment deployment = processEngine.getRepositoryService()
-                .createDeployment()
-                .addInputStream(fileName, file.getInputStream())
-                .tenantId(tenantId).deploy();
-        List<ProcessDefinition> processDefinitions = processEngine
-                .getRepositoryService().createProcessDefinitionQuery()
-                .deploymentId(deployment.getId()).list();
-
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            processEngine.getManagementService().executeCommand(
-                    new SyncProcessCmd(processDefinition.getId()));
-        }
-
-        return "redirect:/bpm/console-listProcessDefinitions.do";
-    }
-
-    *//**
      * 发布流程.
      *//*
     @RequestMapping("console-deploy")

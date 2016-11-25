@@ -68,6 +68,13 @@ draw2d.End.prototype.toXML=function(){
 	var xml='<endEvent id="'+this.eventId+'" name="'+this.eventName+'"></endEvent>\n';
 	return xml;
 };
+draw2d.End.prototype.toJSON=function(){
+	var o = new Object();
+	o.eventId = this.eventId;
+	o.eventName = this.eventName;
+	o.type = "End";
+	return o;
+};
 draw2d.End.prototype.toBpmnDI=function(){
 	var w=this.getWidth();
 	var h=this.getHeight();

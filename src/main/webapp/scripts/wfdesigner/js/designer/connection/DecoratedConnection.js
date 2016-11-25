@@ -55,6 +55,33 @@ draw2d.DecoratedConnection.prototype.toXML=function(){
 	xml = xml+'</sequenceFlow>\n';
 	return xml;
 };
+draw2d.DecoratedConnection.prototype.toJSON=function(){
+	var o = new Object();
+	var type=this.getSource().getParent().type;
+	if(type=='draw2d.Start'){
+		o.sourceId = this.getSource().getParent().eventId;
+	}	
+	else if(type=='draw2d.ExclusiveGateway'){
+		o.sourceId = this.getSource().getParent().gatewayId;
+	}else if(type=='draw2d.ParallelGateway'){
+		o.sourceId = this.getSource().getParent().gatewayId;
+	}else{
+		o.sourceId = this.getSource().getParent().taskId;
+	}
+	type=this.getTarget().getParent().type;
+	if(type=='draw2d.End'){
+		o.targetId = this.getTarget().getParent().eventId;
+	}else if(type=='draw2d.ExclusiveGateway'){
+		o.targetId = this.getTarget().getParent().gatewayId;
+	}else if(type=='draw2d.ParallelGateway'){
+		o.targetId = this.getTarget().getParent().gatewayId;
+	}else{
+		o.targetId = this.getTarget().getParent().taskId;
+	}
+	o.lineId = this.lineId;
+	o.lineName = trim(this.lineName);
+	return o;
+};
 draw2d.DecoratedConnection.prototype.setLabel=function(text){
 	if(this.label == null){
 		this.label=new draw2d.Label(text);

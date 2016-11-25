@@ -9,7 +9,7 @@
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 	<!-- activiti流程引擎 -->
-   <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+   <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration" depends-on="dataSource">
    		<!-- 数据库连接池 -->
 		<property name="dataSource" ref="dataSource" />
 		<!-- 事务 -->
@@ -29,12 +29,17 @@
 	        <list>   
 	             <bean class="com.cloudoa.framework.flow.ext.CustomGroupManagerFactory" >  
 	                <property name="groupEntityManager">  
-	                    <bean class="com.cloudoa.framework.flow.ext.CustomGroupManager"></bean>  
+	                    <bean class="com.cloudoa.framework.flow.ext.CustomGroupManager">
+	                    	<property name="orgDao" ref="orgDao"/>
+	                    	<property name="userDao" ref="userDao"/>
+	                    </bean>  
 	                </property>  
 	             </bean>  
 	             <bean class="com.cloudoa.framework.flow.ext.CustomUserManagerFactory" >  
 	                <property  name="userEntityManager">  
-	                    <bean id="userEntityManager" class="com.cloudoa.framework.flow.ext.CustomUserManager"></bean>  
+	                    <bean id="userEntityManager" class="com.cloudoa.framework.flow.ext.CustomUserManager">
+	                    	<property name="userDao" ref="userDao"/>
+	                    </bean>  
 	                </property>  
 	             </bean>  
 	        </list>  

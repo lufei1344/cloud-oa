@@ -1,26 +1,29 @@
 package com.cloudoa.framework.flow.web;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cloudoa.framework.form.entity.AutoPrev;
-import com.cloudoa.framework.form.entity.Form;
-import com.cloudoa.framework.form.service.FormService;
+import com.cloudoa.framework.flow.service.ProcessService;
 import com.cloudoa.framework.orm.Page;
-import com.cloudoa.framework.orm.PropertyFilter;
 import com.cloudoa.framework.security.shiro.ShiroUtils;
-import com.cloudoa.framework.utils.DateUtils;
 import com.cloudoa.framework.utils.MsgUtils;
 
 /**
@@ -31,102 +34,164 @@ import com.cloudoa.framework.utils.MsgUtils;
 @Controller
 @RequestMapping(value = "/flow/task")
 public class TaskController {
-    public static final String PARA_PROCESSID = "processId";
-    public static final String PARA_ORDERID = "orderId";
-    public static final String PARA_TASKID = "taskId";
-
-    @Autowired
-    private FormService formManager;
     
-
-    @RequestMapping(method = RequestMethod.GET)
-    public String list(Model model, Page<Form> page, HttpServletRequest request, String lookup) {
-        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(request);
-        //设置默认排序方式
-        if (!page.isOrderBySetted()) {
-            page.setOrderBy("id");
-            page.setOrder(Page.ASC);
-        }
-        page = formManager.findPage(page, filters);
-        model.addAttribute("page", page);
-        model.addAttribute("lookup", lookup);
-        return "config/formList";
-    }
-
-    @RequestMapping(value = "create", method = RequestMethod.GET)
-    public String create(Model model) {
-        model.addAttribute("form", new Form());
-        return "config/formEdit";
-    }
-
-    @RequestMapping(value = "view/{id}", method = RequestMethod.GET)
-    public String view(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("form", formManager.get(id));
-        return "config/formView";
-    }
-
-    @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
-    public String edit(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("form", formManager.get(id));
-        return "config/formEdit";
-    }
-
-
-    @RequestMapping(value = "update", method = RequestMethod.POST)
+    @Autowired
+    private ProcessService processService;
+    @Autowired
+    private ProcessEngine processEngine;
+    /**
+     * 开启流程
+     * @param model
+     * @param page
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="start")
     @ResponseBody
-    public Object update(Form form) {
-        form.setCreator(ShiroUtils.getUsername());
-        form.setCreateTime(DateUtils.getCurrentTime());
-        form.setFieldNum(0);
-        formManager.save(form);
-        return MsgUtils.returnOk("");
+    public Object start(String id, HttpServletRequest request) {
+    	Map<String,Object> vars = new HashMap<String,Object>();
+    	vars.put("users", ShiroUtils.getUserId().toString());//设置登录用户id  
+    	Task task = processService.startProcessInstance(id, vars);
+    	Map<String,Object> obj = new HashMap<String,Object>();
+    	obj.put("taskId", task.getId());
+    	obj.put("executionId", task.getExecutionId());
+    	obj.put("activityId", task.getTaskDefinitionKey());
+    	obj.put("processDefinitionId", task.getProcessDefinitionId());
+    	obj.put("processInstanceId", task.getProcessInstanceId());
+    	return MsgUtils.returnOk("",obj);
     }
-
-
-    @RequestMapping(value = "delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
-    	formManager.delete(id);
-        return "redirect:/config/form";
-    }
-
-    @RequestMapping(value = "findForm")
+    /**
+     * 流程提交人员选择
+     * @param model
+     * @param page
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="tonext")
     @ResponseBody
-    public Object findForm(Long formType, Model model) {
-    	List<PropertyFilter> filters = new ArrayList<PropertyFilter>();
-    	PropertyFilter f = new PropertyFilter("EQS_formType", formType.toString());
-    	filters.add(f);
-        return MsgUtils.returnOk("",formManager.find(filters));
+    public Object tonext(String processDefinitionId,String activityId, HttpServletRequest request) {
+    	return MsgUtils.returnOk("",processService.findProcessInstanceNextNode(processDefinitionId,activityId));
     }
-    @RequestMapping(value = "findFormField")
+    /**
+     * 流程提交
+     * @param model
+     * @param page
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="next")
     @ResponseBody
-    public Object findFormField(Long formid, Model model) {
-    	Form f = formManager.get(formid);
-    	return MsgUtils.returnOk("",f.getFields());
-    }
-    @RequestMapping(value = "parseSql")
-    @ResponseBody
-    public Object parseSql(String sql) {
-        return MsgUtils.returnOk("",formManager.parseSql(sql));
-    }
-    @RequestMapping(value = "findAutoPrev")
-    @ResponseBody
-    public Object findAutoPrev() {
-    	JSONObject jobj = new JSONObject();
-    	jobj.put("auto", formManager.findAutoPrev());
-    	jobj.put("depart", formManager.findAllOrg());
-    	return jobj.toString();
-    }
-    @RequestMapping(value = "saveAutoPrev")
-    @ResponseBody
-    public Object saveAutoPrev(AutoPrev prev) {
-    	prev = formManager.saveAutoPrev(prev);
-    	return MsgUtils.returnOk("",prev);
-    }
-    @RequestMapping(value = "deleteAutoPrev")
-    @ResponseBody
-    public Object delAutoPrev(Long id) {
-    	formManager.deleteAutoPrev(id);
+    public Object next(String taskId,String executionId,String title, HttpServletRequest request) {
+    	String users = request.getParameter("users");
+    	String next = request.getParameter("next");
+    	Map<String,Object> vars = new HashMap<String,Object>();
+    	vars.put("users", users);//提交的人员
+    	vars.put("next", next);//下一步节点
+    	processService.taskComplate(taskId,executionId,title,vars);
     	return MsgUtils.returnOk("");
+    }
+    /**
+     * 流程跟踪
+     * 
+     * @throws Exception
+     */
+    @RequestMapping("workspace-graphHistoryProcessInstance")
+    public void graphHistoryProcessInstance(
+            @RequestParam("processInstanceId") String processInstanceId,
+            HttpServletResponse response) throws Exception {
+       /* Command<InputStream> cmd = new HistoryProcessInstanceDiagramCmd(
+                processInstanceId);
+
+        InputStream is = processEngine.getManagementService().executeCommand(
+                cmd);
+        response.setContentType("image/png");
+
+        int len = 0;
+        byte[] b = new byte[1024];
+
+        while ((len = is.read(b, 0, 1024)) != -1) {
+            response.getOutputStream().write(b, 0, len);
+        }*/
+    }
+    /**
+     * 未结任务
+     * @param model
+     * @param page
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="runningProcessInstances")
+    @ResponseBody
+    public Object runningProcessInstances(Model model,@ModelAttribute Page page, HttpServletRequest request) {
+    	 page = processService.findRunningProcessInstances(ShiroUtils.getUserId().toString(), TenantHolder.TenantId,
+                 page);
+    	return MsgUtils.returnOk("",page);
+    }
+    /**
+     * 办结任务
+     * @param model
+     * @param page
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="completedProcessInstances")
+    @ResponseBody
+    public Object completedProcessInstances(Model model,@ModelAttribute Page page, HttpServletRequest request) {
+    	page = processService.findCompletedProcessInstances(ShiroUtils.getUserId().toString(), TenantHolder.TenantId,
+    			page);
+    	return MsgUtils.returnOk("",page);
+    }
+    
+    
+    /**
+     * 代领任务（组任务）
+     * 
+     * @return
+     * @throws IOException 
+     */
+    @RequestMapping("groupTasks")
+    @ResponseBody
+    public Object groupTasks(@ModelAttribute Page page, HttpServletRequest request,    
+            HttpServletResponse response) throws IOException {
+    	 String userId = ShiroUtils.getUserId().toString();
+         String tenantId = TenantHolder.TenantId;
+
+        page = processService.findGroupTasks(userId, tenantId, page);
+        
+        return MsgUtils.returnOk("",page);
+    }
+
+    /**
+     * 已办任务（历史任务）
+     * 
+     * @return
+     */
+    @RequestMapping("historyTasks")
+    @ResponseBody
+    public Object historyTasks(@ModelAttribute Page page, Model model) {
+    	 String userId = ShiroUtils.getUserId().toString();
+         String tenantId = TenantHolder.TenantId;
+        page = processService.findHistoryTasks(userId, tenantId, page);
+        model.addAttribute("page", page);
+
+        return MsgUtils.returnOk("",page);
+    }
+
+    private Page task2Map(Page page){
+    	List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
+        for(Task t : (List<Task>)page.getResult()){
+        	Map<String,Object> m = new HashMap<String,Object>();
+        	m.put("id", t.getId());
+        	m.put("name", t.getName());
+        	m.put("createTime", t.getCreateTime());
+        	m.put("executionId", t.getExecutionId());
+        	m.put("processDefinitionId", t.getProcessDefinitionId());
+        	m.put("processInstanceId", t.getProcessInstanceId());
+        	m.put("dueDate", t.getDueDate());
+        	result.add(m);
+        }
+        page.setResult(result);
+        return page;
     }
 
 }

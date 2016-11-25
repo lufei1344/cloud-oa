@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="1">
+    <process  id="process1480054158608" name="申请测试">
+        <startEvent  id="start" name="开始" activiti:initiator="_wf_default_v_applicant">
+        </startEvent>
+        <endEvent  id="end" name="结束">
+        </endEvent>
+        <userTask  id="task1480054188622" name="申请" activiti:candidateUsers="#{users}" >
+        </userTask>
+        <userTask  id="task1480054191178" name="经理审批" activiti:candidateUsers="#{users}" >
+        </userTask>
+        <userTask  id="task1480054195548" name="总经理审批" activiti:candidateUsers="#{users}" >
+        </userTask>
+        <sequenceFlow  id="flow1480054214772" name="flow1480054214772" sourceRef="start" targetRef="task1480054188622">
+        </sequenceFlow>
+        <sequenceFlow  id="flow1480054219237" name="提交经理审批" sourceRef="task1480054188622" targetRef="task1480054191178">
+            <conditionExpression  xsi:type="tFormalExpression">
+                <![CDATA[${next=='经理审批'}]]>
+            </conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow  id="flow1480054223075" name="提交总经理审批" sourceRef="task1480054188622" targetRef="task1480054195548">
+            <conditionExpression  xsi:type="tFormalExpression">
+                <![CDATA[${next=='总经理审批'}]]>
+            </conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow  id="flow1480054225603" name="flow1480054225603" sourceRef="task1480054195548" targetRef="end">
+        </sequenceFlow>
+        <sequenceFlow  id="flow1480054228013" name="flow1480054228013" sourceRef="task1480054191178" targetRef="end">
+        </sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_process1480054158608">
+        <bpmndi:BPMNPlane bpmnElement="process1480054158608" id="BPMNPlane_process1480054158608">
+            <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+                <omgdc:Bounds height="30" width="34" x="69" y="200"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+                <omgdc:Bounds height="30" width="30" x="838" y="196"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="task1480054188622" id="BPMNShape_task1480054188622">
+                <omgdc:Bounds height="60" width="130" x="217" y="186"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="task1480054191178" id="BPMNShape_task1480054191178">
+                <omgdc:Bounds height="60" width="130" x="513" y="136"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="task1480054195548" id="BPMNShape_task1480054195548">
+                <omgdc:Bounds height="60" width="130" x="516" y="253"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1480054214772" id="BPMNEdge_flow1480054214772">
+                <omgdi:waypoint x="99" y="215"/>
+                <omgdi:waypoint x="212" y="216"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow1480054219237" id="BPMNEdge_flow1480054219237">
+                <omgdi:waypoint x="352" y="216"/>
+                <omgdi:waypoint x="508" y="166"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow1480054223075" id="BPMNEdge_flow1480054223075">
+                <omgdi:waypoint x="352" y="216"/>
+                <omgdi:waypoint x="511" y="283"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow1480054225603" id="BPMNEdge_flow1480054225603">
+                <omgdi:waypoint x="651" y="283"/>
+                <omgdi:waypoint x="838" y="211"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow1480054228013" id="BPMNEdge_flow1480054228013">
+                <omgdi:waypoint x="648" y="166"/>
+                <omgdi:waypoint x="838" y="211"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

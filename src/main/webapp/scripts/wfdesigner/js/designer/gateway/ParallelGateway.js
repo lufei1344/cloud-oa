@@ -80,6 +80,13 @@ draw2d.ParallelGateway.prototype.toXML=function(){
 	var xml='<parallelGateway id="'+this.gatewayId+'" name="'+name+'"></parallelGateway>\n';
 	return xml;
 };
+draw2d.ParallelGateway.prototype.toJSON=function(){
+	var o = new Object();
+	o.gatewayId = this.gatewayId;
+	o.gatewayName = trim(this.gatewayName);
+	o.type = "ParallelGateway";
+	return o;
+};
 draw2d.ParallelGateway.prototype.toBpmnDI=function(){
 	var w=this.getWidth();
 	var h=this.getHeight();

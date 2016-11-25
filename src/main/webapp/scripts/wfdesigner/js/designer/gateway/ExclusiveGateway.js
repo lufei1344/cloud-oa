@@ -80,6 +80,13 @@ draw2d.ExclusiveGateway.prototype.toXML=function(){
 	var xml='<exclusiveGateway id="'+this.gatewayId+'" name="'+name+'"></exclusiveGateway>\n';
 	return xml;
 };
+draw2d.ExclusiveGateway.prototype.toJSON=function(){
+	var o = new Object();
+	o.gatewayId = this.gatewayId;
+	o.gatewayName = trim(this.gatewayName);
+	o.type = "ExclusiveGateway";
+	return o;
+};
 draw2d.ExclusiveGateway.prototype.toBpmnDI=function(){
 	var w=this.getWidth();
 	var h=this.getHeight();

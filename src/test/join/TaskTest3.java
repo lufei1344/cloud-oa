@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
@@ -22,34 +21,50 @@ public class TaskTest3 {
   
     public static void main(String[] args){
     	TaskTest3 t = new TaskTest3();
-    	t.deployementAndStartProcess();
+    	//t.deployementAndStartProcess();
     	//t.findPersonalTaskList();
-    	//t.findGroupTaskList();
+    	t.findGroupTaskList();
     	//t.completeTask();
+    	//t.findSignData();
+    	//t.deployementAndStartProcess2();
     }
     
     /**部署流程定义+启动流程实例：3905*/  
     @Test  
-    public void deployementAndStartProcess() {  
+    public void deployementAndStartProcess2() {  
         //1.发布流程  
-        InputStream inputStreamBpmn = this.getClass().getResourceAsStream(  
-                "会签.bpmn");  
-        processEngine.getRepositoryService()//  
-                .createDeployment().category("发文")//  
-                .addInputStream("会签.bpmn", inputStreamBpmn).category("发文")////  
-                .deploy();  
-       /* //2.启动流程  
+        
+        //2.启动流程  
         Map<String, Object> variables = new HashMap<String, Object>(); 
         
-        variables.put("touser", "大大,中中,小小");//会签不起作用  
-        List<String> list = new ArrayList<String>();
-        list.add("1");
-        list.add("2");
-        variables.put("touserList", list);
+        variables.put("users", "1,2,3");//会签不起作用  
         ProcessInstance pi = processEngine.getRuntimeService()//  
-                .startProcessInstanceByKey("会签",variables);  
-        System.out.println("pid:" + pi.getId());  */
+                .startProcessInstanceByKey("process1479698618758",variables);  
+        System.out.println("pid:" + pi.getId());  
   
+    }  
+    /**部署流程定义+启动流程实例：3905*/  
+    @Test  
+    public void deployementAndStartProcess() {  
+    	//1.发布流程  
+    	InputStream inputStreamBpmn = this.getClass().getResourceAsStream(  
+    			"会签.bpmn");  
+    	processEngine.getRepositoryService()//  
+    	.createDeployment().category("发文")//  
+    	.addInputStream("会签.bpmn", inputStreamBpmn).category("发文")////  
+    	.deploy();  
+    	//2.启动流程  
+    	Map<String, Object> variables = new HashMap<String, Object>(); 
+    	
+    	variables.put("touser", "1,2,3");//会签不起作用  
+    	List<String> list = new ArrayList<String>();
+    	list.add("1");
+    	list.add("2");
+    	variables.put("touserList", list);
+    	ProcessInstance pi = processEngine.getRuntimeService()//  
+    			.startProcessInstanceByKey("会签",variables);  
+    	System.out.println("pid:" + pi.getId());  
+    	
     }  
   
     /**查询我的个人任务,没有执行结果*/  
@@ -98,17 +113,17 @@ public class TaskTest3 {
     @Test  
     public void completeTask() {  
         // 任务ID  
-        String taskId = "5021";  
+        String taskId = "5001";  
         processEngine.getTaskService()//  
                 .complete(taskId);  
         System.out.println("完成任务：" + taskId);  
     }  
   
-    /**查询正在执行的组任务列表*/  
+   /* *//**查询正在执行的组任务列表*//*  
     @Test  
     public void findGroupCandidate() {  
         // 任务ID  
-        String taskId = "3708";  
+        String taskId = "5001";  
         List<IdentityLink> list = processEngine.getTaskService()//  
                 .getIdentityLinksForTask(taskId);  
         if (list != null && list.size() > 0) {  
@@ -123,7 +138,7 @@ public class TaskTest3 {
         }  
     }  
   
-    /**查询历史的组任务列表*/  
+    *//**查询历史的组任务列表*//*  
     @Test  
     public void findHistoryGroupCandidate() {  
         // 流程实例ID  
@@ -141,7 +156,7 @@ public class TaskTest3 {
             }  
         }  
     }  
-    /**查询会签*/  
+    *//**查询会签*//*  
     @Test  
     public void findSignData() {  
     	// 流程实例ID  
@@ -158,5 +173,5 @@ public class TaskTest3 {
     			System.out.println("#########################################");  
     		}  
     	}  
-    }  
+    }*/  
 } 

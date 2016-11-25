@@ -174,27 +174,28 @@
 		//workflow.getCommandStack().execute(new draw2d.CommandAdd(workflow,task,x,y,parent));
 		workflow.addModel(model,x,y);
 	}
-	
+	var cxt = "${ctx}/scripts/wfdesigner/wf/designer/";
 	function openTaskProperties(t){
+		
 		if(!is_open_properties_panel)
 			_designer.layout('expand','east');
 		task=t;
 		if(task.type=="draw2d.UserTask")
-			_properties_panel_obj.panel('refresh','userTaskProperties.html');
+			_properties_panel_obj.panel('refresh',cxt+'userTaskProperties.html');
 		else if(task.type=="draw2d.ManualTask")
-			_properties_panel_obj.panel('refresh','manualTaskProperties.html');
+			_properties_panel_obj.panel('refresh',cxt+'manualTaskProperties.html');
 		else if(task.type=="draw2d.ServiceTask")
-			_properties_panel_obj.panel('refresh','serviceTaskProperties.html');
+			_properties_panel_obj.panel('refresh',cxt+'serviceTaskProperties.html');
 		else if(task.type=="draw2d.ScriptTask")
-			_properties_panel_obj.panel('refresh','scriptTaskProperties.html');
+			_properties_panel_obj.panel('refresh',cxt+'scriptTaskProperties.html');
 		else if(task.type=="draw2d.ReceiveTask")
-			_properties_panel_obj.panel('refresh','receiveTaskProperties.html');
+			_properties_panel_obj.panel('refresh',cxt+'receiveTaskProperties.html');
 		else if(task.type=="draw2d.MailTask")
-			_properties_panel_obj.panel('refresh','mailTaskProperties.html');
+			_properties_panel_obj.panel('refresh',cxt+'mailTaskProperties.html');
 		else if(task.type=="draw2d.BusinessRuleTask")
-			_properties_panel_obj.panel('refresh','businessRuleTaskProperties.html');
+			_properties_panel_obj.panel('refresh',cxt+'businessRuleTaskProperties.html');
 		else if(task.type=="draw2d.CallActivity")
-			_properties_panel_obj.panel('refresh','callActivityProperties.html');
+			_properties_panel_obj.panel('refresh',cxt+'callActivityProperties.html');
 	}
 	function openProcessProperties(id){
 		//alert(id);
@@ -220,6 +221,8 @@
 		workflow.getCommandStack().undo();
 	}
 	function saveProcessDef(){
+		jq("#processName").val(workflow.process.name);
+		jq("#category").val(workflow.process.category);
 		jq('#win').window('open');
 	}
 	function saveFlow(data){
@@ -253,10 +256,14 @@
 			workflow.process.category=jq("#category").val();
 			workflow.process.name=processName;
 			var xml = workflow.toXML();
+			var jsonstr = workflow.toJSON();
+			alert(jsonstr);
+			return;
 			var data = {
 					processDescriptor:xml,
 					processName:processName,
 					category:jq("#category").val(),
+					//processJson:
 					processVariables:workflow.process.getVariablesJSONObject()
 				};
 			saveFlow(data);
@@ -376,7 +383,7 @@
 		}
 	});
 	
-	
+	var webpath ="${ctx}/scripts/";
 	function createCanvas(disabled){
 		try{
 			//initCanvas();
@@ -385,7 +392,6 @@
 			if(disabled)
 				workflow.setDisabled();
 			if(typeof processDefinitionId != "undefined" && processDefinitionId != null &&  processDefinitionId != "null" && processDefinitionId != "" && processDefinitionId != "NULL"){
-				workflow.webpath ="${ctx}/scripts/";
 				parXml();
 			}else{
 					var id = "process"+Sequence.create();

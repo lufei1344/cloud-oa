@@ -112,14 +112,15 @@ function deleteListener(id){
 function saveProcessProperties(){
 	process.id=jq('#id').val();
 	process.name=jq('#name').val();
-	process.category=jq('#category').val();
+	process.category=jq('#pcategory').val();
 	process.documentation=jq('#documentation').val();
 	jq.messager.alert('Info','Save Successfully!','info');
 }
 function populateProcessProperites(){
 	jq('#id').val(process.id);
 	jq('#name').val(process.name);
-	jq('#category').val(process.category);
+	jq('#pcategory').html(jq('#category').html());
+	jq('#pcategory').val(process.category);
 	jq('#documentation').val(process.documentation);
 	loadProcessListeners();
 	loadProcessVariables();
@@ -232,8 +233,8 @@ function processVariablesActionFormatter(value,rowData,rowIndex){
 						<td><input type="text" id="name" name="name" size="50" value=""/></td>
 					</tr>
 					<tr>
-						<td align="right">命名空间:</td>
-						<td><input type="text" id="category" name="category" size="50" value=""/></td>
+						<td align="right">类别:</td>
+						<td><select type="text" id="pcategory" name="category" ></select></td>
 					</tr>
 					<tr>
 						<td align="right">描述:</td>

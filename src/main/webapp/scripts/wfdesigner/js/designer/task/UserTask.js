@@ -116,6 +116,16 @@ draw2d.UserTask.prototype.toXML=function(){
 	xml=xml+this.getEndElementXML();
 	return xml;
 }
+draw2d.UserTask.prototype.toJSON=function(){
+	var o = new Object();
+	for(var key in this){
+		if(typeof this[key] != 'function' && typeof this[key] != 'draw2d.ArrayList'
+			&& typeof this[key] != 'object'){
+			o[key] = this[key];
+		}
+	}
+	return o;
+}
 draw2d.UserTask.prototype.getCandidateUser=function(sso){
 	for(var i=0;i<this.candidateUsers.getSize();i++){
 		var candidate = this.candidateUsers.get(i);

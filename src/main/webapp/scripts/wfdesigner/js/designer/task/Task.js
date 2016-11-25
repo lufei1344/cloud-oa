@@ -19,6 +19,7 @@ draw2d.Task = function(configPropCallback) {
 	this._collection=null;
 	this._elementVariable=null;
 	this._completionCondition=null;
+	this.nodeType="";//任务类型单人，多人，多人会签
 	this.openPropertiesCallBack=configPropCallback;
 	this.setIcon();
 };

@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
@@ -31,12 +34,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.cloudoa.framework.flow.cmd.FindNextActivitiesCmd;
 import com.cloudoa.framework.orm.Page;
+import com.cloudoa.framework.security.dao.UserDao;
+import com.cloudoa.framework.security.entity.User;
+import com.cloudoa.framework.security.shiro.ShiroUtils;
+import com.cloudoa.framework.utils.DbConn;
 @Component
 public class ProcessService {
     private Logger logger = LoggerFactory.getLogger(ProcessService.class);
     @Autowired
     private ProcessEngine processEngine;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private DbConn db;
 
     public String startProcess(String userId, String businessKey,
             String processDefinitionId, Map<String, Object> processParameters) {
@@ -65,9 +77,9 @@ public class ProcessService {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
         long count = repositoryService.createDeploymentQuery()
-                .deploymentTenantId(tenantId).count();
+                .count();
         List<Deployment> deployments = repositoryService
-                .createDeploymentQuery().deploymentTenantId(tenantId)
+                .createDeploymentQuery()
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(deployments);
         page.setTotalCount(count);
@@ -81,10 +93,9 @@ public class ProcessService {
         RepositoryService repositoryService = processEngine
                 .getRepositoryService();
         long count = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionTenantId(tenantId).count();
+                .count();
         List<ProcessDefinition> processDefinitions = repositoryService
                 .createProcessDefinitionQuery()
-                .processDefinitionTenantId(tenantId)
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(processDefinitions);
         page.setTotalCount(count);
@@ -102,7 +113,7 @@ public class ProcessService {
 	         ByteArrayInputStream bais;
 			bais = new ByteArrayInputStream(
 			         xml.getBytes("UTF-8"));
-			Deployment deployment = repositoryService.createDeployment().tenantId(tenantId)
+			Deployment deployment = repositoryService.createDeployment()
 	                 .addInputStream(name+".bpmn", bais).name(name).category(category).deploy();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -111,7 +122,7 @@ public class ProcessService {
          return true;
     }
     /**
-     * 获取定义
+     * 获取流程定义
      */
     public ProcessDefinition findDefinition(String id) {
     	 RepositoryService repositoryService = processEngine
@@ -122,7 +133,7 @@ public class ProcessService {
          return processDefinition;
     }
     /**
-     * 获取定义
+     * 获取部署定义
      */
     public Deployment findDefinitionDeployment(String id) {
     	Deployment deployment = null;
@@ -158,6 +169,63 @@ public class ProcessService {
     }
    
     /**
+     * 开启流程实例
+     * @param key
+     * @param users
+     * @return
+     */
+    public Task startProcessInstance(String id,Map<String,Object> users){
+    	ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceById(id,users);
+    	Task task = processEngine.getTaskService().createTaskQuery().processInstanceId(pi.getId()).taskCandidateUser(ShiroUtils.getUserId().toString()).singleResult();
+    	return task;
+    }
+    /**
+     * 得到下一步节点
+     * @return [{id:id,name:name,users:[]}]
+     */
+    public List<Map<String,Object>> findProcessInstanceNextNode(String processDefinitionId,String activityId){
+    	FindNextActivitiesCmd cmd = new FindNextActivitiesCmd(
+                processDefinitionId, activityId);
+
+    	List<PvmActivity> pvmActivities = processEngine.getManagementService().executeCommand(cmd);
+    	List<Map<String,Object>> nodes = new ArrayList<Map<String,Object>>();
+		for (PvmActivity pvmActivity : pvmActivities) {
+            Map<String,Object> node = new HashMap<String,Object>();
+            node.put("id", pvmActivity.getId());
+            node.put("name", pvmActivity.getProperty("name"));
+            node.put("users", this.findNodeUser(pvmActivity.getId()));//该节点可以处理的用户,先测试用，以后改为配置
+            nodes.add(node);
+        }
+		return nodes;
+    }
+    
+    public List<Map<String,Object>> findNodeUser(String activityId){
+    	List<User> us = userDao.findBy("sex", "1");
+    	List<Map<String,Object>> users = new ArrayList<Map<String,Object>>();
+    	for(int i=0; i<us.size(); i++){
+    		 Map<String,Object> u = new HashMap<String,Object>();
+    		 u.put("id", us.get(i).getId());
+    		 u.put("fullname", us.get(i).getFullname());
+    		 u.put("orgname", us.get(i).getOrg().getName());
+    		 u.put("orgid", us.get(i).getOrg().getId());
+    		 users.add(u);
+    	}
+    	return users;
+    }
+   /**
+    * 任务处理
+    * @param taskId   任务id
+    * @param executionId 实例id
+    * @param title  标题
+    * @param vars	变量，users提交人，next下一步
+    */
+    public void taskComplate(String taskId,String executionId,String title,Map<String,Object> vars){
+    	processEngine.getRuntimeService().setProcessInstanceName(executionId,title);
+    	processEngine.getTaskService().complete(taskId, vars);
+    	//processEngine.getManagementService()..executeCommand(new JumpTaskCmd(executionId,activityId,vars,"测试标题"));
+    }
+    
+    /**
      * 未结流程.
      */
     public Page findRunningProcessInstances(String userId, String tenantId,
@@ -166,11 +234,11 @@ public class ProcessService {
 
         // TODO: 改成通过runtime表搜索，提高效率
         long count = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceTenantId(tenantId).startedBy(userId)
+                .startedBy(userId)
                 .unfinished().count();
         HistoricProcessInstanceQuery query = historyService
                 .createHistoricProcessInstanceQuery()
-                .processInstanceTenantId(tenantId).startedBy(userId)
+                .startedBy(userId)
                 .unfinished();
 
         if (page.getOrderBy() != null) {
@@ -204,11 +272,11 @@ public class ProcessService {
         HistoryService historyService = processEngine.getHistoryService();
 
         long count = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceTenantId(tenantId).startedBy(userId).finished()
+                .startedBy(userId).finished()
                 .count();
         List<HistoricProcessInstance> historicProcessInstances = historyService
                 .createHistoricProcessInstanceQuery().startedBy(userId)
-                .processInstanceTenantId(tenantId).finished()
+                .finished()
                 .listPage((int) page.getStart(), page.getPageSize());
 
         page.setResult(historicProcessInstances);
@@ -217,36 +285,17 @@ public class ProcessService {
         return page;
     }
 
-    /**
-     * 参与流程.
-     */
-    public Page findInvolvedProcessInstances(String userId, String tenantId,
-            Page page) {
-        HistoryService historyService = processEngine.getHistoryService();
-
-        // TODO: finished(), unfinished()
-        long count = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceTenantId(tenantId).involvedUser(userId).count();
-        List<HistoricProcessInstance> historicProcessInstances = historyService
-                .createHistoricProcessInstanceQuery()
-                .processInstanceTenantId(tenantId).involvedUser(userId)
-                .listPage((int) page.getStart(), page.getPageSize());
-
-        page.setResult(historicProcessInstances);
-        page.setTotalCount(count);
-
-        return page;
-    }
+    
 
     /**
-     * 待办任务（个人任务）.
+     * 待办任务（个人任务）.在本项目中不适用，所有代办都为taskCandidateUser
      */
     public Page findPersonalTasks(String userId, String tenantId, Page page) {
         TaskService taskService = processEngine.getTaskService();
 
-        long count = taskService.createTaskQuery().taskTenantId(tenantId)
+        long count = taskService.createTaskQuery()
                 .taskAssignee(userId).active().count();
-        List<Task> tasks = taskService.createTaskQuery().taskTenantId(tenantId)
+        List<Task> tasks = taskService.createTaskQuery()
                 .taskAssignee(userId).active()
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(tasks);
@@ -258,17 +307,41 @@ public class ProcessService {
     /**
      * 代领任务（组任务）.
      */
-    public Page findGroupTasks(String userId, String tenantId, Page page) {
-        TaskService taskService = processEngine.getTaskService();
+    public Page findGroupTasks(String userId, String tenantId, Page<Map<String,Object>> page) {
+        /*TaskService taskService = processEngine.getTaskService();
 
         long count = taskService.createTaskQuery().taskTenantId(tenantId)
                 .taskCandidateUser(userId).active().count();
         List<Task> tasks = taskService.createTaskQuery().taskTenantId(tenantId)
                 .taskCandidateUser(userId).active()
                 .listPage((int) page.getStart(), page.getPageSize());
+       
+      
         page.setResult(tasks);
         page.setTotalCount(count);
-
+*/		String sql = "select distinct"+
+					"		res.id_ as id,"+
+					"		res.rev_ as rev,"+
+					"		res.execution_id_ as executionId,"+
+					"		res.proc_def_id_ as processDefinitionId,"+
+					"		res.name_ as name,"+
+					"		res.task_def_key_ as activityId,"+
+					"		res.create_time_ as createtime,"+
+					"		res.proc_inst_id_ as processInstanceId,"+
+					 "		e.name_ as title,u.fullname,u.id as userid"+
+					"	from"+
+					"		act_ru_task res"+
+					"	inner join act_ru_identitylink i on i.task_id_ = res.id_"+
+					"	inner join act_ru_execution e on res.execution_id_=e.id_"+
+					"	inner join sec_user u on i.user_id_=u.id"+
+					"	where"+
+					"		res.assignee_ is null"+
+					"	and i.type_ = 'candidate'"+
+					"	and i.user_id_ = "+userId+
+					"	and res.suspension_state_ = 1"+
+					"	order by"+
+					"		res.id_ asc";
+		page = db.getPage(page, new StringBuffer(sql), null);
         return page;
     }
 
@@ -279,9 +352,9 @@ public class ProcessService {
         HistoryService historyService = processEngine.getHistoryService();
 
         long count = historyService.createHistoricTaskInstanceQuery()
-                .taskTenantId(tenantId).taskAssignee(userId).finished().count();
+                .taskAssignee(userId).finished().count();
         List<HistoricTaskInstance> historicTaskInstances = historyService
-                .createHistoricTaskInstanceQuery().taskTenantId(tenantId)
+                .createHistoricTaskInstanceQuery()
                 .taskAssignee(userId).finished()
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(historicTaskInstances);
@@ -296,10 +369,10 @@ public class ProcessService {
     public Page findDelegatedTasks(String userId, String tenantId, Page page) {
         TaskService taskService = processEngine.getTaskService();
 
-        long count = taskService.createTaskQuery().taskTenantId(tenantId)
+        long count = taskService.createTaskQuery()
                 .taskOwner(userId).taskDelegationState(DelegationState.PENDING)
                 .count();
-        List<Task> tasks = taskService.createTaskQuery().taskTenantId(tenantId)
+        List<Task> tasks = taskService.createTaskQuery()
                 .taskOwner(userId).taskDelegationState(DelegationState.PENDING)
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(tasks);
@@ -315,10 +388,10 @@ public class ProcessService {
             Page page) {
         TaskService taskService = processEngine.getTaskService();
 
-        long count = taskService.createTaskQuery().taskTenantId(tenantId)
-                .taskCandidateOrAssigned(userId).count();
-        List<Task> tasks = taskService.createTaskQuery().taskTenantId(tenantId)
-                .taskCandidateOrAssigned(userId)
+        long count = taskService.createTaskQuery()
+                .taskCandidateUser(userId).count();
+        List<Task> tasks = taskService.createTaskQuery()
+                .taskCandidateUser(userId)
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(tasks);
         page.setTotalCount(count);
@@ -334,9 +407,9 @@ public class ProcessService {
     public Page findProcessInstances(String tenantId, Page page) {
         RuntimeService runtimeService = processEngine.getRuntimeService();
         long count = runtimeService.createProcessInstanceQuery()
-                .processInstanceTenantId(tenantId).count();
+                .count();
         List<ProcessInstance> processInstances = runtimeService
-                .createProcessInstanceQuery().processInstanceTenantId(tenantId)
+                .createProcessInstanceQuery()
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(processInstances);
         page.setTotalCount(count);
@@ -349,9 +422,9 @@ public class ProcessService {
      */
     public Page findTasks(String tenantId, Page page) {
         TaskService taskService = processEngine.getTaskService();
-        long count = taskService.createTaskQuery().taskTenantId(tenantId)
+        long count = taskService.createTaskQuery()
                 .count();
-        List<Task> tasks = taskService.createTaskQuery().taskTenantId(tenantId)
+        List<Task> tasks = taskService.createTaskQuery()
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(tasks);
         page.setTotalCount(count);
@@ -368,10 +441,9 @@ public class ProcessService {
         HistoryService historyService = processEngine.getHistoryService();
 
         long count = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceTenantId(tenantId).count();
+                .count();
         List<HistoricProcessInstance> historicProcessInstances = historyService
                 .createHistoricProcessInstanceQuery()
-                .processInstanceTenantId(tenantId)
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(historicProcessInstances);
         page.setTotalCount(count);
@@ -386,10 +458,9 @@ public class ProcessService {
         HistoryService historyService = processEngine.getHistoryService();
 
         long count = historyService.createHistoricActivityInstanceQuery()
-                .activityTenantId(tenantId).count();
+               .count();
         List<HistoricActivityInstance> historicActivityInstances = historyService
                 .createHistoricActivityInstanceQuery()
-                .activityTenantId(tenantId)
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(historicActivityInstances);
         page.setTotalCount(count);
@@ -404,9 +475,9 @@ public class ProcessService {
         HistoryService historyService = processEngine.getHistoryService();
 
         long count = historyService.createHistoricTaskInstanceQuery()
-                .taskTenantId(tenantId).count();
+                .count();
         List<HistoricTaskInstance> historicTaskInstances = historyService
-                .createHistoricTaskInstanceQuery().taskTenantId(tenantId)
+                .createHistoricTaskInstanceQuery()
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(historicTaskInstances);
         page.setTotalCount(count);
@@ -421,10 +492,9 @@ public class ProcessService {
         ManagementService managementService = processEngine
                 .getManagementService();
 
-        long count = managementService.createJobQuery().jobTenantId(tenantId)
+        long count = managementService.createJobQuery()
                 .count();
         List<Job> jobs = managementService.createJobQuery()
-                .jobTenantId(tenantId)
                 .listPage((int) page.getStart(), page.getPageSize());
         page.setResult(jobs);
         page.setTotalCount(count);

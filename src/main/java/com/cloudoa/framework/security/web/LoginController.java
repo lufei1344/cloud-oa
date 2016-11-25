@@ -59,4 +59,9 @@ public class LoginController {
 	public String loginForm() {
 		return "security/login";
 	}
+	@RequestMapping(value = "/logout" ,method = RequestMethod.GET)
+	public String logout() {
+		SecurityUtils.getSubject().logout();
+		return "security/login";
+	}
 }

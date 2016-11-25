@@ -1,6 +1,7 @@
 package com.cloudoa.framework.form.web;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,6 @@ import com.cloudoa.framework.form.service.FormService;
 import com.cloudoa.framework.orm.Page;
 import com.cloudoa.framework.orm.PropertyFilter;
 import com.cloudoa.framework.security.shiro.ShiroUtils;
-import com.cloudoa.framework.utils.DateUtils;
 import com.cloudoa.framework.utils.MsgUtils;
 
 /**
@@ -64,7 +64,7 @@ public class FormController {
         model.addAttribute("form", formService.get(id));
         return "form/formView";
     }
-
+   
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String edit(@PathVariable("id") Long id, Model model) {
         model.addAttribute("form", formService.get(id));
@@ -76,7 +76,7 @@ public class FormController {
     @ResponseBody
     public Object update(Form form) {
         form.setCreator(ShiroUtils.getUsername());
-        form.setCreateTime(DateUtils.getCurrentTime());
+        form.setCreateTime(null);
         form.setFieldNum(0);
         formService.save(form);
         return MsgUtils.returnOk("");
@@ -122,11 +122,36 @@ public class FormController {
     	prev = formService.saveAutoPrev(prev);
     	return MsgUtils.returnOk("",prev);
     }
+    /**
+     * 删除自增序列
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "deleteAutoPrev")
     @ResponseBody
     public Object delAutoPrev(Long id) {
     	formService.deleteAutoPrev(id);
     	return MsgUtils.returnOk("");
     }
+    /**
+     * 流程表单打开
+     * @param model
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "views", method = RequestMethod.GET)
+    public String views(Model model,HttpServletRequest request) {
+    	String formsid = request.getParameter("forms");
+    	List<Form> forms = new ArrayList<Form>();
+    	if(formsid != ""){
+    		String[] ids = formsid.split(",");
+    		for(String id : ids){
+    			forms.add(formService.get(Long.valueOf(id)));
+    		}
+    	}
+    	model.addAttribute("forms", forms);
+    	return "form/views";
+    }
+
 
 }

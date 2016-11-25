@@ -41,7 +41,7 @@ draw2d.MyCanvas.prototype.getContextMenu=function(){
 	if(this.readOnly)return null;
 	var menu =new draw2d.ContextMenu(100, 50);
 	var data = {workflow:this};
-	menu.appendMenuItem(new draw2d.ContextMenuItem("Properties", "properties-icon",data,function(x,y)
+	menu.appendMenuItem(new draw2d.ContextMenuItem("属性", "properties-icon",data,function(x,y)
 	{
 		var data = this.getData();
 		var workflow = data.workflow;
@@ -145,6 +145,24 @@ draw2d.MyCanvas.prototype.toXML=function(){
 	xml=xml+this.getDefinitionsEndXML();
 	xml=formatXml(xml);
 	return xml;
+};
+draw2d.MyCanvas.prototype.toJSON=function(){
+	var json = new Object();
+	json.id = this.process.id;
+	json.name = this.process.name;
+	json.nodes = [];
+	json.lines = [];
+	var models = this.getFigures();
+	for(var i=0;i<models.getSize();i++){
+		var model=models.get(i);
+		json.nodes.push(model.toJSON());
+	}
+	var lines = this.getLines();
+	for(var i=0;i<lines.getSize();i++){
+		var line = lines.get(i);
+		json.lines.push(line.toJSON());
+	}
+	return JSON.stringify(json);
 };
 draw2d.MyCanvas.prototype.parseXMLbak=function(data){
 	var BPMNShape = (jq.browser.webkit) ? 'BPMNShape' : 'bpmndi\\:BPMNShape';
@@ -833,7 +851,7 @@ draw2d.MyCanvas.prototype.parseXML=function(data){
 			workflow.process.addVariable(variable);
 		});
 	startEvent.each(function(i){
-			var start = new draw2d.Start(workflow.webpath+"wfdesigner/js/designer/icons/type.startevent.none.png");
+			var start = new draw2d.Start(webpath+"wfdesigner/js/designer/icons/type.startevent.none.png");
 			start.id=jq(this).attr('id');
 			start.eventId=jq(this).attr('id');
 			start.eventName=jq(this).attr('name');
@@ -848,7 +866,7 @@ draw2d.MyCanvas.prototype.parseXML=function(data){
 			});
 		});
 	endEvent.each(function(i){
-			var end = new draw2d.End(workflow.webpath+"wfdesigner/js/designer/icons/type.endevent.none.png");
+			var end = new draw2d.End(webpath+"wfdesigner/js/designer/icons/type.endevent.none.png");
 			end.id=jq(this).attr('id');
 			end.eventId=jq(this).attr('id');
 			end.eventName=jq(this).attr('name');

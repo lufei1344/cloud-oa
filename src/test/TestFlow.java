@@ -12,6 +12,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
+import com.cloudoa.framework.security.shiro.ShiroUtils;
 import com.cloudoa.framework.utils.SpringUtil;
 
 
@@ -21,9 +22,9 @@ public class TestFlow {
 		//new TestFlow().deployProcess();
 		//new TestFlow().processPic();
 		//new TestFlow().processPicHeight();
-		new TestFlow().deployProcess();
-		//new TestFlow().startInstance();
-		//new TestFlow().task("apply", null);
+		//new TestFlow().deployProcess();
+		new TestFlow().startInstance();
+		//new TestFlow().task1();
 		//new TestFlow().task("leader", null);
 		//new TestFlow().task("boss", null);
 	}
@@ -49,10 +50,10 @@ public class TestFlow {
 		//System.out.println(deploy.getName()+""+deploy.getId());
 		
 		 InputStream inputStreamBpmn = this.getClass().getResourceAsStream(  
-	                "ceshi.bpmn");  
+	                "申请.bpmn");  
 	        processEngine.getRepositoryService()//  
 	                .createDeployment()//  
-	                .addInputStream("ceshi.bpmn", inputStreamBpmn)//  
+	                .addInputStream("申请.bpmn", inputStreamBpmn)//  
 	                .deploy();  
 	}
 	//开启实例
@@ -66,8 +67,11 @@ public class TestFlow {
 	//开启实例
 	public void startInstance(){
 		ProcessEngine processEngine = SpringUtil.getBean("processEngine");
-		ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("myLeaveProcess");
-		System.out.println(pi.getName());
+		Map<String,Object> vars = new HashMap<String,Object>();
+    	vars.put("users", "1");//设置登录用户id  
+		//ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("process1479871613269",vars);
+		ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceById("process1479871613269:1:4",vars);
+		System.out.println(pi.getId());
 	}
 	//任务办理
 	public void task(String name,Map<String,Object> var){
@@ -85,6 +89,18 @@ public class TestFlow {
 			}
 			System.out.println(tasks.get(i).getId());
 			processEngine.getTaskService().complete(tasks.get(i).getId(), var);
+			
+		}
+	}
+	//任务办理
+	public void task1(){
+		ProcessEngine processEngine = SpringUtil.getBean("processEngine");
+		List<Task> tasks = processEngine.getTaskService().createTaskQuery().processDefinitionKey("process1479871613269").taskCandidateUser("1").list();
+		for(int i=0; i<tasks.size(); i++){
+			tasks.get(i);
+			
+			System.out.println(tasks.get(i).getId());
+			//processEngine.getTaskService().complete(tasks.get(i).getId(), var);
 			
 		}
 	}
