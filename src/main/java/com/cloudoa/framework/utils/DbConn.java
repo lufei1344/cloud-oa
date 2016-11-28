@@ -25,6 +25,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1644,8 +1645,10 @@ public class DbConn {
 		else if (propertyType == boolean.class||propertyType == Boolean.class)
 			method.invoke(obj, (Object[]) new Boolean[] { new Boolean(rs
 					.getBoolean(columnName)) });
-		else if (propertyType == Date.class) {
+		else if (propertyType == Date.class || propertyType == java.sql.Date.class) {
 			method.invoke(obj, (Object[]) new Date[] { rs.getDate(columnName) });
+		}else if (propertyType == Timestamp.class) {
+			method.invoke(obj, (Object[]) new Date[] { rs.getTimestamp(columnName) });
 		}
 	}
 }

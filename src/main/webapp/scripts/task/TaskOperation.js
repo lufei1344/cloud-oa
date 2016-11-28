@@ -32,7 +32,7 @@ TaskOperation.prototype.confirmStartProcess = function() {
 };
 
 TaskOperation.prototype.completeTask = function() {
-	var url = ROOT_URL+"/scripts/task/next.jsp?taskId="+(params.taskId ?  params.taskId : "")+"&executionId="+params.executionId+"&processInstanceId="+params.processInstanceId+"&processDefinitionId="+params.processDefinitionId+"&activityId="+params.activityId;
+	var url = ROOT_URL+"/web/next.jsp?taskId="+(params.taskId ?  params.taskId : "")+"&executionId="+params.executionId+"&processInstanceId="+params.processInstanceId+"&processDefinitionId="+params.processDefinitionId+"&activityId="+params.activityId;
 	var index = layer.open({
 		  type: 2,
 	      title: '提交任务',

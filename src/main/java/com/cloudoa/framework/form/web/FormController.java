@@ -1,12 +1,12 @@
 package com.cloudoa.framework.form.web;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cloudoa.framework.form.entity.AutoPrev;
 import com.cloudoa.framework.form.entity.Form;
 import com.cloudoa.framework.form.service.FormService;
@@ -140,17 +141,22 @@ public class FormController {
      * @return
      */
     @RequestMapping(value = "views", method = RequestMethod.GET)
-    public String views(Model model,HttpServletRequest request) {
+    @ResponseBody
+    public Object views(Model model,HttpServletRequest request) {
     	String formsid = request.getParameter("forms");
+    	String executionId = request.getParameter("executionId");
     	List<Form> forms = new ArrayList<Form>();
     	if(formsid != ""){
     		String[] ids = formsid.split(",");
     		for(String id : ids){
-    			forms.add(formService.get(Long.valueOf(id)));
+    			forms.add(formService.get(Long.valueOf(id),executionId));
     		}
     	}
-    	model.addAttribute("forms", forms);
-    	return "form/views";
+    	//model.addAttribute("forms", forms);
+    	//return "form/views";
+    	Map<String,Object> obj = new HashMap<String,Object>();
+    	obj.put("forms", forms);
+    	return JSONObject.toJSONString(MsgUtils.returnOk("",obj));
     }
 
 

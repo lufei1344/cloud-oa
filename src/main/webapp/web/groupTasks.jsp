@@ -64,7 +64,7 @@
     	});
     	
     	function showViews(taskId,executionId,processInstanceId,processDefinitionId,activityId){
-    		var url = "${ctx}/form/views?taskId="+taskId+"&executionId="+executionId+"&forms=&fields=&processInstanceId="+processInstanceId+"&processDefinitionId="+processDefinitionId+"&activityId="+activityId;
+    		var url = "${ctx}/web/views.jsp?taskId="+taskId+"&executionId="+executionId+"&forms=&fields=&processInstanceId="+processInstanceId+"&processDefinitionId="+processDefinitionId+"&activityId="+activityId;
 			window.open(url);
     	}
     </script>

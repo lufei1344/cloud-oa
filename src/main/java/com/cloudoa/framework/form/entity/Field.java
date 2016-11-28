@@ -1,6 +1,7 @@
 package com.cloudoa.framework.form.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * 表单字段实体类
@@ -56,6 +60,24 @@ public class Field implements Serializable {
     private String otherInput;
     //其他元素读写
     private String otherRead;
+    
+    private String charValue;
+    @Transient
+    private double numValue;
+    @Transient
+    @JSONField (format="yyyy-MM-dd HH:mm:ss")  
+    private Timestamp   dateValue;
+    
+/*    private FormData data;
+    @OneToOne(cascade = CascadeType.REFRESH )
+	@JoinColumn(name="id",referencedColumnName="field_id")
+	public FormData getData() {
+		return data;
+	}
+
+	public void setData(FormData data) {
+		this.data = data;
+	}*/
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
@@ -201,5 +223,32 @@ public class Field implements Serializable {
 	public void setExtType(String extType) {
 		this.extType = extType;
 	}
+	@Transient
+	public String getCharValue() {
+		return charValue;
+	}
+
+	public void setCharValue(String charValue) {
+		this.charValue = charValue;
+	}
+	@Transient
+	public double getNumValue() {
+		return numValue;
+	}
+
+	public void setNumValue(double numValue) {
+		this.numValue = numValue;
+	}
+	@Transient
+	public Timestamp getDateValue() {
+		return dateValue;
+	}
+
+	public void setDateValue(Timestamp dateValue) {
+		this.dateValue = dateValue;
+	}
+
+	
+	
     
 }

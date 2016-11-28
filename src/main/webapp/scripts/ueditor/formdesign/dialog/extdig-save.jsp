@@ -100,7 +100,7 @@
             	return false;
             }
             $("#contentHtml").val(editor.getContent());
-            var url = "${ctxPath}/config/form/update";
+            var url = "${ctxPath}/form/update";
 			$.ajax({
                 cache: true,
                 type: "POST",

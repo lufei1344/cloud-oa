@@ -22,6 +22,7 @@ import com.cloudoa.framework.form.entity.TwiceField;
 import com.cloudoa.framework.orm.JdbcUtils;
 import com.cloudoa.framework.orm.Page;
 import com.cloudoa.framework.orm.PropertyFilter;
+import com.cloudoa.framework.utils.DbConn;
 
 /**
  * 动态表单管理类
@@ -37,6 +38,8 @@ public class FormService {
    
     @Autowired
     private FieldDao fieldDao;
+    @Autowired
+    private DbConn db;
     
     @Autowired
     private TwiceFieldDao twiceFieldDao;
@@ -190,6 +193,21 @@ public class FormService {
         Form form = formDao.get(id);
         form.setFields(fieldDao.findBy("formId", form.getId()));
         return form;
+    }
+    public Form get(Long id,String executionId) {
+    	Form form = formDao.get(id,false);
+    	//List<Field> fs = fieldDao.find("from Field AS A left join A.data AS B WHERE  a.id=? and b.executionId=?", id,executionId);
+    	List<Field> fs = this.getField(id, executionId);
+    	form.setFields(fs);
+    	return form;
+    }
+    public List<Field> getField(Long id,String executionId) {
+    	String sql = "select a.id,a.cnname,a.enname,a.form_id formId,a.data_type dataType,a.show_type showType,"
+    				+"a.ext_type extType,a.show_title showTitle,a.auto_prev autoPrev,a.auto,a.auto_Type autoType,"
+    				+"a.validate,a.select_rule selectRule,a.default_value defaultValue,a.date_format dateFormat,"
+    				+ "b.char_value charvalue,b.num_value numvalue,b.date_value datevalue from df_field a left join df_form_data b on a.id=b.field_id and b.execution_id=? where a.form_id=?";;
+    	List<Field> fs = db.getObjects(sql, Field.class, new Object[]{executionId,id});
+    	return fs;
     }
 
   

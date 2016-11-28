@@ -33,6 +33,42 @@
     	getParams();
     	var ROOT_URL = '${ctx}';
     	var taskOperation = new TaskOperation();
+    	var viewsdata;
+    	function show(){
+    		var url = ROOT_URL+"/form/views"+window.location.search;
+    		$.getJSON(url,function(redata){
+    			if(redata.status){
+    				viewsdata = redata.obj;
+    				var forms = redata.obj.forms;
+    				var title = "";
+        			var content = "";
+        			for(var i=0; i<forms.length; i++){
+        				if(i == 0){
+        					title +='<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true" id="'+forms[i].id+'">'+forms[i].name+'</a>'+
+    	                        	'</li>'
+    	                    content +='<div id="tab-1" class="tab-pane active">'+
+    			                    '        <div class="panel-body">'+forms[i].contentHtml+
+    			                    '        </div>'+
+    			                    '</div>'
+        				}else{
+        					title +='<li><a data-toggle="tab" href="#tab-'+(i+1)+'" aria-expanded="true" id="'+forms[i].id+'">'+forms[i].name+'</a>'+
+		                        	'</li>'
+		                    content +='<div id="tab-'+(i+1)+'" class="tab-pane">'+
+				                    '        <div class="panel-body">'+forms[i].contentHtml+
+				                    '        </div>'+
+				                    '</div>'
+        				}
+        			}
+        			$("#title").html(title);
+        			$("#content").html(content);
+    			}else{
+    				alert(redata.msg);
+    			}
+    		});
+    	}
+    	$(function(){
+    		show();
+    	});
     </script>
 
 </head>
@@ -62,7 +98,7 @@
                    </div>
                    <div class="ibox-content">
                        	  <div class="tabs-container">
-		                    <ul class="nav nav-tabs">
+		                    <ul class="nav nav-tabs" id="title">
 		                    	<c:forEach items="${forms}" var="form" varStatus="status">
 		                    	<c:if test="${status.index ==0}">
 			                    	<li class="active"><a data-toggle="tab" href="#tab-${status.index+1 }" aria-expanded="true">${form.name }</a>
@@ -74,7 +110,7 @@
 		                    	</c:if>
 		                        </c:forEach>
 		                    </ul>
-		                    <div class="tab-content">
+		                    <div class="tab-content" id="content">
 		                    	<c:forEach items="${forms}" var="form" varStatus="status">
 		                    	<c:if test="${status.index ==0}">
 			                    	<div id="tab-${status.index+1 }" class="tab-pane active">

@@ -161,6 +161,17 @@ public class SimpleHibernateDao<T, PK extends Serializable> {
 		Assert.notNull(id, "id不能为空");
 		return (T) getSession().load(entityClass, id);
 	}
+	/**
+	 * 按id获取对象.
+	 */
+	public T get(final PK id,boolean lazy) {
+		Assert.notNull(id, "id不能为空");
+		if(lazy){
+			return this.get(id);
+		}else{
+			return (T) getSession().get(entityClass, id);
+		}
+	}
 
 	/**
 	 * 按id列表获取对象列表.
