@@ -5,8 +5,9 @@
         </startEvent>
         <endEvent  id="end" name="End">
         </endEvent>
-        <userTask  id="task1467702361794" name="task1467702361794" activiti:candidateUsers="#{touser}">
-        	<multiInstanceLoopCharacteristics  activiti:elementVariable="touser" activiti:collection="touserList" >
+        <userTask  id="task1467702361794" name="task1467702361794" activiti:candidateUsers="#{users}">
+        	<multiInstanceLoopCharacteristics  isSequential="false" activiti:elementVariable="users" activiti:collection="users" >
+        	<completionCondition>${nrOfInstances == nrOfCompletedInstances }</completionCondition>
             </multiInstanceLoopCharacteristics>
         </userTask>
         <sequenceFlow  id="flow1467702389862" name="flow1467702389862" sourceRef="start" targetRef="task1467702361794">

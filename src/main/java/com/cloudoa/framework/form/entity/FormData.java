@@ -31,6 +31,8 @@ public class FormData implements Serializable {
     private String charValue; 
     private String numValue;
     private java.sql.Timestamp dateValue;
+    private String writer;
+    private java.sql.Timestamp writerTime;
 	public long getId() {
 		return id;
 	}
@@ -72,6 +74,18 @@ public class FormData implements Serializable {
 	}
 	public void setDateValue(java.sql.Timestamp dateValue) {
 		this.dateValue = dateValue;
+	}
+	public String getWriter() {
+		return writer;
+	}
+	public void setWriter(String writer) {
+		this.writer = writer;
+	}
+	public java.sql.Timestamp getWriterTime() {
+		return writerTime;
+	}
+	public void setWriterTime(java.sql.Timestamp writerTime) {
+		this.writerTime = writerTime;
 	}
     
     

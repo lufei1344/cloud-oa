@@ -1,23 +1,26 @@
 package com.cloudoa.framework.flow.web;
 
-import java.io.InputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.cloudoa.framework.flow.service.ProcessService;
 import com.cloudoa.framework.orm.Page;
@@ -62,7 +65,42 @@ public class FlowController {
     public String create(Model model) {
         return "flow/flowEdit";
     }
-
+    @RequestMapping(value = "upload", method = RequestMethod.GET)
+    public String upload(Model model) {
+    	return "flow/upload";
+    }
+    @RequestMapping(value = "saveUpload", method = RequestMethod.POST)
+    @ResponseBody
+    public Object saveUpload(HttpServletRequest request,HttpServletResponse response) throws IllegalStateException, IOException {
+    	String processName = request.getParameter("processName");
+    	String category = request.getParameter("category");
+    	List<String> files = this.saveFile(request);
+    	for(int i=0;i<files.size(); i++){
+    		processService.processDefinitionDeployment(processName,category,files.get(i));
+    	}
+        return MsgUtils.returnOk("");
+    }
+    
+    private List<String> saveFile(HttpServletRequest request) throws IllegalStateException, IOException{
+    	CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
+    	List<String> files = new ArrayList<String>();
+        //判断 request 是否有文件上传,即多部分请求  
+        if(multipartResolver.isMultipart(request)){  
+            //转换成多部分request    
+            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request;  
+            //取得request中的所有文件名  
+            Iterator<String> iter = multiRequest.getFileNames();
+            int i = 0;
+            while(iter.hasNext()){  
+                  
+                //取得上传文件  
+                MultipartFile file = multiRequest.getFile(iter.next());
+                files.add(request.getSession(true).getServletContext().getRealPath("/")+file.getName());
+                file.transferTo(new File(files.get(files.size()-1))); 
+            }
+        } 
+        return files;
+    }
     
     @RequestMapping(value = "update/{id}", method = RequestMethod.GET)
     public String edit(@PathVariable("id") String id, Model model) {
@@ -82,8 +120,10 @@ public class FlowController {
 
 
     @RequestMapping(value = "delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        return "redirect:/flow/process";
+    @ResponseBody
+    public Object delete(@PathVariable("id") String id) {
+    	processService.deleteProcessDefinitionDeployment(id);
+        return MsgUtils.returnOk("");
     }
    
     /**

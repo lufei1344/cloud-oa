@@ -38,7 +38,7 @@
 </head>
 
 	<body>
-	<form id="mainForm" action="${ctx}/flow/list" method="get">
+	<form id="mainForm" action="${ctx}/flow/process" method="get">
 		<input type="hidden" name="lookup" value="${lookup}" />
 		<input type="hidden" name="pageNo" id="pageNo" value="${page.pageNo}"/>
 		<input type="hidden" name="orderBy" id="orderBy" value="${page.orderBy}"/>
@@ -55,13 +55,13 @@
                     
                 </div>
 				<div class="col-sm-6">	
-				  <div class="input-group">
                        <span class="input-group-btn">
 						<shiro:hasPermission name="MENUEDIT">
-						<a type='button' href="javascript:void(0);" onclick="editDialog('${ctx}/flow/process/create')" class="btn btn-sm btn-primary" >新建</a>
+						<input type='button'  onclick="editDialog('${ctx}/flow/process/create')" class="btn btn-sm btn-primary" value="新建" />
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type='button' onclick="editDialog('${ctx}/flow/process/upload')" class="btn btn-sm btn-primary" value="上传" />
 						</shiro:hasPermission>
                        </span>
-                       </div>	
                    </div>    
             </div>
             <hr/>
@@ -86,7 +86,7 @@
 			    <td>${item.key }</td>
 			    <td><frame:select name="type" type="select" configName="formType" displayType="1" value="${item.category}" />&nbsp;</td>
 		        <td>
-		          <a href="${ctx}/flow/process/delete/${item.id }" class="glyphicon glyphicon-trash" title="删除" onclick="return confirmDel();">删除</a>
+		          <a href="javascript:void(0)" class="glyphicon glyphicon-trash" title="删除" onclick="confirmDel(this,'${item.deploymentId}')">删除</a>
 				  <a href="javascript:void(0)" onclick="editDialog('${ctx}/flow/process/update/${item.id }')" class="glyphicon glyphicon-pencil" title="编辑">编辑</a>
 				  <a href="${ctx}/flow/process/view/${item.id }" class="glyphicon glyphicon-search" title="查看">查看</a>
 				  <a href="javascript:void(0)" onclick="startInstance('${item.id}')" class="glyphicon glyphicon-search" title="查看">开启流程</a>
@@ -99,16 +99,29 @@
 		</div>
 	</form>
     <script>
-        function confirmForm(formId) {
-            window.returnValue = formId;
-            window.close();
+        function confirmDel(obj,id) {
+        	var index = parent.layer.confirm('确定要删除吗？', {
+		        		  btn: ['确定','取消'] //按钮
+		        		}, function(){
+		        		    var url = "${ctx}/flow/process/delete/"+id;
+		        		    $.getJSON(url,function(redata){
+		        		    	if(redata.status){
+		        		    		$(obj).parent().parent().remove();
+		        		    	}else{
+		        		    		param.layer.msg(redata.msg);
+		        		    	}
+		        		    	parent.layer.close(index);
+		        		    });
+		        		}, function(){
+		        			parent.layer.close(index);
+		        		});
         }
         function startInstance(id){
         	var url = "${ctx}/flow/task/start";
         	var data = {id:id};
         	$.getJSON(url,data,function(redata){
         		if(redata.status){
-        			var url = "${ctx}/form/views?taskId="+redata.obj.taskId+"&executionId="+redata.obj.executionId+"&forms=&fields=&processInstanceId="+redata.obj.processInstanceId+"&processDefinitionId="+redata.obj.processDefinitionId+"&activityId="+redata.obj.activityId;
+        			var url = "${ctx}/web/views.jsp?taskId="+redata.obj.taskId+"&executionId="+redata.obj.executionId+"&forms=&fields=&processInstanceId="+redata.obj.processInstanceId+"&processDefinitionId="+redata.obj.processDefinitionId+"&activityId="+redata.obj.activityId;
         			window.open(url);
         		}else{
         			alert(redata.msg);

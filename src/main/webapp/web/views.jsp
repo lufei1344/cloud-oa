@@ -96,6 +96,8 @@
                            </a>
                        </div>
                    </div>
+                   <iframe name="formsubmit" id="formsubmit" style="display: none;"></iframe>
+                    <form action="${ctx}/form/saveFormData" id="form" method="post" enctype="multipart/form-data" target="formsubmit">
                    <div class="ibox-content">
                        	  <div class="tabs-container">
 		                    <ul class="nav nav-tabs" id="title">
@@ -132,6 +134,7 @@
 		                    </div>
 		                </div>
                    </div>
+                   </form>
                </div>
         </div>
     </div>

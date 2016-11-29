@@ -7,7 +7,8 @@ import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 
 import com.cloudoa.framework.security.dao.OrgDao;
 import com.cloudoa.framework.security.dao.UserDao;
-import com.cloudoa.framework.security.entity.Org;  
+import com.cloudoa.framework.security.entity.Org;
+import com.cloudoa.framework.security.entity.User;  
 /** 
  * 自定义的Activiti用户组管理器 
  * 
@@ -21,7 +22,8 @@ public class CustomGroupManager extends GroupEntityManager {
 	    public List<Group> findGroupsByUser(String userId) {
 
 	        List<Group> groups = new ArrayList<Group>();
-	        Org  org = userDao.get(Long.valueOf(userId)).getOrg();
+	        User u = userDao.get(Long.valueOf(userId),false);
+	        Org org = (u != null ? u.getOrg() : null);
 	        if(org != null){
 	        	ExtGroup groupEntity = new ExtGroup(org.getId().toString());
 	            groupEntity.setName(org.getName());

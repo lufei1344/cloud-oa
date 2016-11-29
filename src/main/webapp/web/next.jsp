@@ -41,7 +41,7 @@
     			var users = "";
     			for(var i=0; i<nodes.length; i++){
     				if(i == 0){
-    					title +='<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true" id="'+nodes[i].id+'">'+nodes[i].name+'</a>'+
+    					title +='<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true" id="'+nodes[i].id+'" multiInstance="'+nodes[i].multiInstance+'">'+nodes[i].name+'</a>'+
 	                        	'</li>'
 	                    users +='<div id="tab-1" class="tab-pane active">'+
 			                    '        <div class="full-height-scroll">'+
@@ -49,12 +49,12 @@
                                 '            <table class="table table-striped table-hover">'+
                                 '                <tbody>';
 			            for(var n=0; n<nodes[i].users.length;n++){
-			            	users += "<tr><td id='"+nodes[i].users[n].id+"'><input type='radio' name='user'  title='"+nodes[i].users[n].fullname+"' value='"+nodes[i].users[n].id+"'/>"+nodes[i].users[n].fullname+"</td></tr>";
+			            	users += "<tr><td id='"+nodes[i].users[n].id+"'><input type='checkbox' name='user'  title='"+nodes[i].users[n].fullname+"' value='"+nodes[i].users[n].id+"'/>"+nodes[i].users[n].fullname+"</td></tr>";
 			            }           
 			                    
                         users += '  </tbody></table></div></div></div>';
     				}else{
-    					title +='<li><a data-toggle="tab" href="#tab-'+(i+1)+'" aria-expanded="true" id="'+nodes[i].id+'">'+nodes[i].name+'</a>'+
+    					title +='<li><a data-toggle="tab" href="#tab-'+(i+1)+'" aria-expanded="true" id="'+nodes[i].id+'"  multiInstance="'+nodes[i].multiInstance+'">'+nodes[i].name+'</a>'+
                     			'</li>'
 		                users +='<div id="tab-'+(i+1)+'" class="tab-pane">'+
 			                    '        <div class="full-height-scroll">'+
@@ -95,6 +95,7 @@
     		}
     		data.taskId = params.taskId;
     		data.activityId = $node.attr("id");
+    		data.multiInstance = $node.attr("multiInstance");
     		data.users = users.join(",");
     		data.next = $node.text();
     		var url = "${ctx}/flow/task/next";

@@ -84,8 +84,18 @@ public class TaskController {
     public Object next(String taskId,String executionId,String title, HttpServletRequest request) {
     	String users = request.getParameter("users");
     	String next = request.getParameter("next");
+    	String multiInstance = request.getParameter("multiInstance");
     	Map<String,Object> vars = new HashMap<String,Object>();
     	vars.put("users", users);//提交的人员
+    	if("1".equals(multiInstance)){
+    		//会签
+    		String[] sus = users.split(",");
+    		List<String> us = new ArrayList<String>();
+    		for(String s : sus){
+    			us.add(s);
+    		}
+    		vars.put("users", us);//提交的人员
+    	}
     	vars.put("next", next);//下一步节点
     	processService.taskComplate(taskId,executionId,title,vars);
     	return MsgUtils.returnOk("");

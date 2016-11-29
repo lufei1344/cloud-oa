@@ -2,6 +2,8 @@ package com.cloudoa.framework.flow.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -60,14 +62,6 @@ public class ProcessService {
                 .startProcessInstanceById(processDefinitionId, businessKey,
                         processParameters);
 
-        /*
-         * // {流程标题:title}-{发起人:startUser}-{发起时间:startTime} String processDefinitionName =
-         * processEngine.getRepositoryService() .createProcessDefinitionQuery()
-         * .processDefinitionId(processDefinitionId).singleResult() .getName(); String processInstanceName =
-         * processDefinitionName + "-" + userConnector.findById(userId).getDisplayName() + "-" + new
-         * SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
-         * processEngine.getRuntimeService().setProcessInstanceName( processInstance.getId(), processInstanceName);
-         */
         return processInstance.getId();
     }
     /**
@@ -105,21 +99,52 @@ public class ProcessService {
     /**
      * 流程定义发布
      */
-    public boolean processDefinitionDeployment(String name,String xml,String tenantId,String category) {
+    public boolean processDefinitionDeployment(String name,String category,String file) {
     	 
 		try {
 			RepositoryService repositoryService = processEngine
 	                 .getRepositoryService();
-	         ByteArrayInputStream bais;
-			bais = new ByteArrayInputStream(
-			         xml.getBytes("UTF-8"));
+	        InputStream is = new FileInputStream(new File(file));
 			Deployment deployment = repositoryService.createDeployment()
-	                 .addInputStream(name+".bpmn", bais).name(name).category(category).deploy();
-		} catch (UnsupportedEncodingException e) {
+	                 .addInputStream(name+".bpmn", is).name(name).category(category).deploy();
+			is.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
          return true;
+    }
+    /**
+     * 流程定义发布
+     */
+    public boolean processDefinitionDeployment(String name,String xml,String tenantId,String category) {
+    	
+    	try {
+    		RepositoryService repositoryService = processEngine
+    				.getRepositoryService();
+    		ByteArrayInputStream bais;
+    		bais = new ByteArrayInputStream(
+    				xml.getBytes("UTF-8"));
+    		Deployment deployment = repositoryService.createDeployment()
+    				.addInputStream(name+".bpmn", bais).name(name).category(category).deploy();
+    	} catch (UnsupportedEncodingException e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    	return true;
+    }
+    /**
+     * 流程定义删除
+     */
+    public boolean deleteProcessDefinitionDeployment(String deploymentId) {
+    	
+    	try {
+            processEngine.getRepositoryService().deleteDeployment(deploymentId, true);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		return false;
+    	}
+    	return true;
     }
     /**
      * 获取流程定义
@@ -193,6 +218,7 @@ public class ProcessService {
             Map<String,Object> node = new HashMap<String,Object>();
             node.put("id", pvmActivity.getId());
             node.put("name", pvmActivity.getProperty("name"));
+            node.put("multiInstance", pvmActivity.getProperty("multiInstance")!=null ? 1 : 0);
             node.put("users", this.findNodeUser(pvmActivity.getId()));//该节点可以处理的用户,先测试用，以后改为配置
             nodes.add(node);
         }
@@ -220,7 +246,7 @@ public class ProcessService {
     * @param vars	变量，users提交人，next下一步
     */
     public void taskComplate(String taskId,String executionId,String title,Map<String,Object> vars){
-    	processEngine.getRuntimeService().setProcessInstanceName(executionId,title);
+    	//processEngine.getRuntimeService().setProcessInstanceName(executionId,title);
     	processEngine.getTaskService().complete(taskId, vars);
     	//processEngine.getManagementService()..executeCommand(new JumpTaskCmd(executionId,activityId,vars,"测试标题"));
     }

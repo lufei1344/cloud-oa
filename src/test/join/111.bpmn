@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="">
+    <process  id="会签" name="会签">
+        <startEvent  id="start" name="开始" activiti:initiator="_wf_default_v_applicant">
+        </startEvent>
+        <endEvent  id="end" name="结束">
+        </endEvent>
+        <userTask  id="task1480405798071" name="测试会签" activiti:candidateUsers="#{users}" >
+            <multiInstanceLoopCharacteristics  activiti:elementVariable="users" activiti:collection="users" >
+                <completionCondition>${nrOfInstances == nrOfCompletedInstances }</completionCondition>
+            </multiInstanceLoopCharacteristics>
+        </userTask>
+        <sequenceFlow  id="flow1480405802249" name="flow1480405802249" sourceRef="start" targetRef="task1480405798071">
+        </sequenceFlow>
+        <sequenceFlow  id="flow1480405807376" name="flow1480405807376" sourceRef="task1480405798071" targetRef="end">
+        </sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_会签">
+        <bpmndi:BPMNPlane bpmnElement="会签" id="BPMNPlane_会签">
+            <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+                <omgdc:Bounds height="30" width="30" x="117" y="152"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+                <omgdc:Bounds height="30" width="30" x="470" y="154"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="task1480405798071" id="BPMNShape_task1480405798071">
+                <omgdc:Bounds height="60" width="93" x="255" y="139"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1480405802249" id="BPMNEdge_flow1480405802249">
+                <omgdi:waypoint x="147" y="167"/>
+                <omgdi:waypoint x="250" y="169"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow1480405807376" id="BPMNEdge_flow1480405807376">
+                <omgdi:waypoint x="353" y="169"/>
+                <omgdi:waypoint x="470" y="169"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

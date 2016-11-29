@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">  
+  <process id="multiInstances" name="流程会签测试" isExecutable="true">  
+    <startEvent id="startevent1" name="Start"></startEvent>  
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="A001"></sequenceFlow>  
+    <serviceTask id="A001" name="设置下一环节的人" activiti:class="com.huan.activiti.liuyang.会签.AssgineeMultiInstancePer"></serviceTask>  
+    <userTask id="B001" name="会签环节" activiti:assignee="${per}">  
+      <extensionElements>  
+        <activiti:taskListener event="complete" class="com.huan.activiti.liuyang.会签.TestLinstener"></activiti:taskListener>  
+      </extensionElements>  
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="pers" activiti:elementVariable="per">  
+        <completionCondition>${mulitiInstance.completeTask(execution)}</completionCondition>  
+      </multiInstanceLoopCharacteristics>  
+    </userTask>  
+    <sequenceFlow id="flow2" sourceRef="A001" targetRef="B001"></sequenceFlow>  
+    <userTask id="C001" name="会签后的环节" activiti:assignee="钱七"></userTask>  
+    <sequenceFlow id="flow3" sourceRef="B001" targetRef="C001"></sequenceFlow>  
+    <endEvent id="endevent1" name="End"></endEvent>  
+    <sequenceFlow id="flow4" sourceRef="C001" targetRef="endevent1"></sequenceFlow>  
+  </process>  
+  <bpmndi:BPMNDiagram id="BPMNDiagram_multiInstances">  
+    <bpmndi:BPMNPlane bpmnElement="multiInstances" id="BPMNPlane_multiInstances">  
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">  
+        <omgdc:Bounds height="35.0" width="35.0" x="100.0" y="240.0"></omgdc:Bounds>  
+      </bpmndi:BPMNShape>  
+      <bpmndi:BPMNShape bpmnElement="A001" id="BPMNShape_A001">  
+        <omgdc:Bounds height="71.0" width="117.0" x="190.0" y="222.0"></omgdc:Bounds>  
+      </bpmndi:BPMNShape>  
+      <bpmndi:BPMNShape bpmnElement="B001" id="BPMNShape_B001">  
+        <omgdc:Bounds height="55.0" width="105.0" x="380.0" y="230.0"></omgdc:Bounds>  
+      </bpmndi:BPMNShape>  
+      <bpmndi:BPMNShape bpmnElement="C001" id="BPMNShape_C001">  
+        <omgdc:Bounds height="55.0" width="105.0" x="561.0" y="230.0"></omgdc:Bounds>  
+      </bpmndi:BPMNShape>  
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">  
+        <omgdc:Bounds height="35.0" width="35.0" x="740.0" y="240.0"></omgdc:Bounds>  
+      </bpmndi:BPMNShape>  
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">  
+        <omgdi:waypoint x="135.0" y="257.0"></omgdi:waypoint>  
+        <omgdi:waypoint x="190.0" y="257.0"></omgdi:waypoint>  
+      </bpmndi:BPMNEdge>  
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">  
+        <omgdi:waypoint x="307.0" y="257.0"></omgdi:waypoint>  
+        <omgdi:waypoint x="380.0" y="257.0"></omgdi:waypoint>  
+      </bpmndi:BPMNEdge>  
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">  
+        <omgdi:waypoint x="485.0" y="257.0"></omgdi:waypoint>  
+        <omgdi:waypoint x="561.0" y="257.0"></omgdi:waypoint>  
+      </bpmndi:BPMNEdge>  
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">  
+        <omgdi:waypoint x="666.0" y="257.0"></omgdi:waypoint>  
+        <omgdi:waypoint x="740.0" y="257.0"></omgdi:waypoint>  
+      </bpmndi:BPMNEdge>  
+    </bpmndi:BPMNPlane>  
+  </bpmndi:BPMNDiagram>  
+</definitions> 

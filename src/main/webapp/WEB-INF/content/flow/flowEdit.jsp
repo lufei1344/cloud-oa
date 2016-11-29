@@ -258,7 +258,7 @@
 			var xml = workflow.toXML();
 			var jsonstr = workflow.toJSON();
 			alert(jsonstr);
-			return;
+			//return;
 			var data = {
 					processDescriptor:xml,
 					processName:processName,
@@ -276,7 +276,7 @@
 	<div id="win" class="easyui-window" title="保存" style="width:300px;height:180px;" closed="true">
 		<form style="padding:10px 20px 10px 40px;">
 			<p>名称: <input type="text" name="processName" id="processName" value="${deploy.resourceName }"></p>
-			<p>类别: <frame:select name="category"  type="select" configName="formType" displayType="0" value="${deploy.category }" />&nbsp;</p>
+			<p>类别: <frame:select name="category"  type="select"  configName="formType" displayType="0" value="${deploy.category }" />&nbsp;</p>
 			<div style="padding:5px;text-align:center;">
 				<a href="javascript:void(0)" class="easyui-linkbutton" icon="icon-ok" onclick="saveOk()">确定</a>
 				<a href="#" class="easyui-linkbutton" icon="icon-cancel">取消</a>
