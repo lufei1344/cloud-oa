@@ -81,7 +81,7 @@
 				oo.column = table.rows[i].cells[0].getAttribute("elementid");
 				//alert(oo.column);
 				oo.columnname = table.rows[i].cells[0].innerText;
-				oo.elementid = $(table.rows[i].cells[1]).find("select").length==0 ? "" : $(table.rows[i].cells[1]).find("select")[0].value;
+				oo.enname = $(table.rows[i].cells[1]).find("select").length==0 ? "" : $(table.rows[i].cells[1]).find("select")[0].value;
 				valset.push(oo); 
 			}
 			o.valset = valset;
@@ -136,7 +136,7 @@
 							'	<td>'+selecthtml+'</td>'+
 							'</tr>';
 						 var $html = $(html);
-						 $html.find("select").val(oo.elementid);							
+						 $html.find("select").val(oo.enname);							
 						 $(table).append($html);			
 					}
 				}

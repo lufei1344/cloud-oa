@@ -21,29 +21,29 @@
 	
 	   function exitDialog(){
 		   seltab = $("#myTab li[class='active'] a").attr("id");
-		var o = new Object();
-		if(seltab == "tsys"){
-			o.type = "sys";
-			o.show = [];
-			$("#radval").find("li").each(function(){
-				var oo = new Object();
-				var $a = $($(this).find("a:first")[0]);
-				oo.type = $a.attr("type");
-				oo.show = $a.text();
-				oo.key = $a.attr("key");
-				o.show.push(oo);
-			});
-		}
-		
-		if(seltab == "tsql"){
-			o.type = "sql";
-			o.sql = $("#sql").val();
-		}
-		if(seltab == "tdict"){
-			o.type = "dict";
-			o.dictname = $("#dict_name").val();
-		}
-		window.parent.returnValue = encodeURIComponent(JSON.stringify(o));
+			var o = new Object();
+			if(seltab == "tsys"){
+				o.type = "sys";
+				o.show = [];
+				$("#radval").find("li").each(function(){
+					var oo = new Object();
+					var $a = $($(this).find("a:first")[0]);
+					oo.type = $a.attr("type");
+					oo.show = $a.text();
+					oo.key = $a.attr("key");
+					o.show.push(oo);
+				});
+			}
+			
+			if(seltab == "tsql"){
+				o.type = "sql";
+				o.sql = $("#sql").val();
+			}
+			if(seltab == "tdict"){
+				o.type = "dict";
+				o.dictname = $("#dict_name").val();
+			}
+			window.parent.returnValue = encodeURIComponent(JSON.stringify(o));
 	}
 	
 	//回填

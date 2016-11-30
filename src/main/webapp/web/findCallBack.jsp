@@ -76,7 +76,12 @@
    		    $table.find("tbody").html(content);
     	}
     	function getValue(index){
-    		window.returnValue = pagedata.result[index];
+    		var o = pagedata.result[index];
+    		for(key in o){
+    			var k = key.substring(0,key.indexOf("#")).toUpperCase();
+    			o[k] = o[key];
+    		}
+    		window.returnValue = o;
     		window.close();
     	}
     	$(function(){

@@ -192,7 +192,7 @@ FormViews.prototype.getSysValue = function(key){
 }
 //默认值处理
 FormViews.prototype.setDefalutValue = function(e){
-	if(e.defaultVlaue != ""){
+	if(e.defaultValue != ""){
 		//只有第一次未填值时默认值起作用
 		if(e[e.dataType+"Value"] == ""){
 			e.defaultValue = decodeURIComponent(e.defaultValue);
@@ -342,7 +342,7 @@ FormViews.prototype.initForms = function() {
 					obj.onclick = function(e){
 						return function(){
 							var o = new Object();
-						    var fc=window.showModalDialog(this.ROOT_URL+"/web/findCallBack.jsp?sql="+encodeURIComponent(e.e_SelectRule.sql),o,"dialogHeight:600px;dialogWidth:850px;status:0;");
+						    var fc=window.showModalDialog(ROOT_URL+"/web/findCallBack.jsp?sql="+encodeURIComponent(e.selectRule.sql),o,"dialogHeight:600px;dialogWidth:850px;status:0;");
 						    if(typeof fc != 'undefined'){
 								var e_SelectRule = e.selectRule;
 								for(var t=0; t<e_SelectRule.valset.length; t++){
