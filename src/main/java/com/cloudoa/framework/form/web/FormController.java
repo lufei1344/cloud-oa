@@ -6,15 +6,16 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -210,6 +211,75 @@ public class FormController {
     	return JSONObject.toJSONString(MsgUtils.returnOk("",list));
     }
     
+     //input输入选择
+  	@RequestMapping(value = "/findCallBack")	
+  	@ResponseBody
+  	public Object findCallBack(HttpServletRequest request,HttpServletResponse response,Page<Map<String,Object>> page){
+  		try{
+			String sql = request.getParameter("sql"); //sql语句
+			if(sql != null && !"".equals(sql)){
+				
+				sql = sql.replaceAll("\\[userid\\]", ShiroUtils.getUserId().toString())
+						.replaceAll("\\[deptid\\]", ShiroUtils.getOrgId().toString());
+				//搜索条件
+				Enumeration em = request.getParameterNames();
+				String where = "",key;
+				while(em.hasMoreElements()){
+					key =  (String)em.nextElement();
+					if(key.startsWith("col_") && !"".equals(request.getParameter(key))){
+						where +=  key.substring(4)+ " like '%"+request.getParameter(key)+"%' and ";
+					}
+				}
+				if(!"".equals(where)){
+					where += "  1=1";
+					if(sql.toLowerCase().contains("where")){
+						sql += " and "+ where;
+					}else{
+						sql += " where "+where;
+					}
+				}
+				if(page == null){
+					page = new Page<Map<String,Object>>();
+				}
+				page = db.getPage(page, new StringBuffer(sql), null);
+				List<Map<String,Object>> data = page.getResult();
+				Map<String,Object> obj = new HashMap<String,Object>();
+				obj.put("page", page);
+				if(data!= null && data.size()>0){
+					Set<String> keys = data.get(0).keySet();
+					List<Map<String,String>> kkey = new ArrayList<Map<String,String>>();
+					String[] ks;
+					for(String k : keys){
+						ks = k.split("#");
+						Map<String,String> m = new HashMap<String,String>();
+						if("rowid".equals(k)){
+							continue;
+						}
+						if(ks.length>1){//sql
+							m.put("columnkey", k);
+							m.put("kkey", ks[0]);
+							m.put("show", ks[1]);
+						}else{
+							m.put("columnkey", k);
+							m.put("kkey", k);
+							m.put("show", ks[0]);
+						}
+						kkey.add(m);
+					}
+					obj.put("keys", kkey);
+			    }
+			
+			
+				return MsgUtils.returnOk("", obj);
+			}else{
+				return MsgUtils.returnError("查询不可为空");
+			}
+  		}catch(Exception e){
+  			logger.error(e.getMessage(),e);
+  			return MsgUtils.returnError(e.getMessage());
+  		}
+  		
+  	}
     /**
 	 * 保存表单数据
 	 * @param request 

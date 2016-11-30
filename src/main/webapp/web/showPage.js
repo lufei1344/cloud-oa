@@ -1,6 +1,7 @@
 function showPage(id,page,keys){
     var $table = $("#"+id);
-    var footer = "<table class='table' border='0' cellpadding='0' cellspacing='0'><tr><td><div align='left'>总共<font color='red'>"+page.totalCount+"</font>条记录&nbsp; 共<font color='red'>"+page.totalPages+"</font>页&nbsp; 当前所在第<font color='red'>"+page.pageNo+"</font>页</div>";
+    $("#_page").remove();
+    var footer = "<table id='_page' class='table' border='0' cellpadding='0' cellspacing='0'><tr><td><div align='left'>总共<font color='red'>"+page.totalCount+"</font>条记录&nbsp; 共<font color='red'>"+page.totalPages+"</font>页&nbsp; 当前所在第<font color='red'>"+page.pageNo+"</font>页</div>";
 	
     var prePage = 0, nextPage = 0, pageNo = 1, totalPage = 1;
     pageNo = page.pageNo;

@@ -218,10 +218,6 @@
 							<table style="width: 100%;  font-size: 13px; text-align: center;"
 			border="0" cellpadding="5" cellspacing="1" bordercolor="gray" >
 								<tr>
-									<td align="right">流程变量</td>
-									<td><input id="lcbl" style="width:80px;" /><input type="button" onclick="sellcbl()" value="确定"/></td>
-								</tr>
-								<tr>
 									<td align="right">常量</td>
 									<td><input id="cl" style="width:80px;"/><input type="button" onclick="selcl()" value="确定"/></td>
 								</tr>
@@ -240,8 +236,8 @@
 									<a href="javascript:void(0)" onClick="addFuhao(this)">&lt;=</a>&nbsp;&nbsp;
 									<a href="javascript:void(0)" onClick="addFuhao(this)">==</a>&nbsp;&nbsp;
 									<a href="javascript:void(0" onclick="addFuhao(this)">&lt;&gt;</a>&nbsp;&nbsp;
-									<a href="javascript:void(0)" onClick="addFuhao(this)">and</a>&nbsp;&nbsp;
-									<a href="javascript:void(0)" onClick="addFuhao(this)">or</a>
+									<a href="javascript:void(0)" onClick="addFuhao(this)">&&</a>&nbsp;&nbsp;
+									<a href="javascript:void(0)" onClick="addFuhao(this)">||</a>
 									</td>
 								</tr>
 							</table>

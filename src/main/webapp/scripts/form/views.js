@@ -164,16 +164,31 @@ FormViews.prototype.getDictData = function(sql){
 	return data;
 }
 //获取本表单值
-FormViews.prototype.getBbdValue = function(){
+FormViews.prototype.getBbdValue = function(e){
 	
 }
 //获取应用表单值
-FormViews.prototype.getYybdValue = function(){
+FormViews.prototype.getYybdValue = function(e){
 	
 }
 //获取系统变量值
-FormViews.prototype.getSysValue = function(){
-	
+FormViews.prototype.getSysValue = function(key){
+	if(key == "dept"){//部门
+		return this.sysValue.org.name;
+	}
+	if(key == "post"){//岗位
+		return this.sysValue.org.name;
+	}
+	if(key == "user"){//用户名
+		return this.sysValue.fullname;
+	}
+	if(key == "time"){//时间
+		return new Date().format("yyyy-MM-dd HH:mm:ss");
+	}
+	if(key == "date"){//日期
+		return new Date().format("yyyy-MM-dd");
+	}
+	return "";
 }
 //默认值处理
 FormViews.prototype.setDefalutValue = function(e){
@@ -321,38 +336,34 @@ FormViews.prototype.initForms = function() {
 			//input
 			if(e.extType == "input" || e.showType == "textarea"){
 				if(e.selectRule != "" && e.selectRule != "null"){
-					eval("e.selectRule="+decodeURIComponent(e.e_SelectRule));
+					e.selectRule = decodeURIComponent(e.selectRule);
+					e.selectRule = string2Object(e.selectRule);
 					//点击事件
 					obj.onclick = function(e){
 						return function(){
 							var o = new Object();
-							if(e.selectRule.type == "sql"){
-								e.e_SelectRule.sql = replaceSql(e.selectRule.sql);
-							}
-							//alert(e.e_SelectRule.sql);
-						var fc=window.showModalDialog(cxt+"/findCallBack.html?userid="+userid+"&exapleId="+exampleId+"&eid="+e.id+"&sql="+encodeURIComponent(e.e_SelectRule.sql),o,"dialogHeight:600px;dialogWidth:850px;status:0;");
-						if(typeof fc != 'undefined'){
-							//var e_SelectRule = string2Object($(this).attr("eleinputval"));
-							var e_SelectRule = e.e_SelectRule;
-							for(var t=0; t<e_SelectRule.valset.length; t++){
-								var vs = e_SelectRule.valset[t];
-								var $ele = $("#"+vs.elementid);
-								if($ele.attr("elementtype") == 'date'){
-									$ele.val(new Date(Date.parse(fc[vs.column].replace(/-/g,"/"))).format($ele.attr("dateformat")));
-								}else{
-									if($ele[0].tagName == "INPUT" && $ele.attr("type") == "radio"){
-										//赋值
-											$("input[name='"+e.e_English_Name+"'][value='"+fc[vs.column]+"']").attr("checked","checked");
-									}else if($ele[0].tagName == "INPUT" && $ele.attr("type") == "checkbox"){
-										$ele.attr("checked","checked");
+						    var fc=window.showModalDialog(this.ROOT_URL+"/web/findCallBack.jsp?sql="+encodeURIComponent(e.e_SelectRule.sql),o,"dialogHeight:600px;dialogWidth:850px;status:0;");
+						    if(typeof fc != 'undefined'){
+								var e_SelectRule = e.selectRule;
+								for(var t=0; t<e_SelectRule.valset.length; t++){
+									var vs = e_SelectRule.valset[t];
+									var $ele = $("#"+vs.enname);
+									if($ele.attr("datatype") == 'date'){
+										$ele.val(new Date(Date.parse(fc[vs.column].replace(/-/g,"/"))).format($ele.attr("dateformat")));
 									}else{
-										//input,textarea,select
-										$ele.val(fc[vs.column]);
+										if($ele[0].tagName == "INPUT" && $ele.attr("type") == "radio"){
+											//赋值
+												$("input[name='"+e.enname+"'][value='"+fc[vs.column]+"']").attr("checked","checked");
+										}else if($ele[0].tagName == "INPUT" && $ele.attr("type") == "checkbox"){
+											$ele.attr("checked","checked");
+										}else{
+											//input,textarea,select
+											$ele.val(fc[vs.column]);
+										}
 									}
+									
 								}
-								
 							}
-						}
 						};
 					}(e);
 				}

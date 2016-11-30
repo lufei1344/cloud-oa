@@ -17,7 +17,7 @@
     
     <script type="text/javascript" src="${ctx}/scripts/hplus/js/jquery.min.js"></script>
     <script type="text/javascript" src="${ctx}/scripts/hplus/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="${ctx}/flowweb/showPage.js"></script>
+    <script type="text/javascript" src="${ctx}/web/showPage.js"></script>
     <script type="text/javascript">
     	function jumpPage(i){
     		$("#pageNo").val(i);
