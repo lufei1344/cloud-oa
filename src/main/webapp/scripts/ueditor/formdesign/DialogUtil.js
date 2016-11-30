@@ -97,9 +97,10 @@ function setSelectRule(obj){
 		o.selectrule = $("#selectrule").val();
 		var ruleurl = "/dialog/setselectrule.jsp";
 		var tag = nodeInfo.thePlugins;
-		if(tag == "extdig-select" || tag == "extdig-redio" || tag == "extdig-checkbox"){
+		if(tag == "extdig-select" || tag == "extdig-radio" || tag == "extdig-checkbox"){
 			ruleurl = "/dialog/setselectrule2.jsp";
 		}
+		//alert(ruleurl);
 		var dialog = new UE.ui.Dialog({
 			iframeUrl:editor.options.UEDITOR_HOME_URL + UE.FormDesignBaseUrl+ruleurl,
 			name:"default",

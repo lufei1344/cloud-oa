@@ -25,8 +25,12 @@
 	</bean>
 
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="cacheManager" ref="memoryConstrainedCacheManager" />
 		<property name="realm" ref="dbRealm" />
 	</bean>
+	
+	<!-- 用户授权信息Cache（本机内存实现） -->  
+	<bean id="memoryConstrainedCacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />   
 
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
 

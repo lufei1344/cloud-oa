@@ -175,6 +175,22 @@ public class FormController {
     	obj.put("forms", forms);
     	return JSONObject.toJSONString(MsgUtils.returnOk("",obj));
     }
+    /**
+     * 查询sql语句数据
+     * @param model
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "findSqlData")
+    @ResponseBody
+    public Object findSqlData(Model model,HttpServletRequest request) {
+    	String sql = request.getParameter("sql");
+    	List<Map<String,Object>> list = null;
+    	if(sql != null && !"".equals(sql)){
+    		list = db.getList(sql, null);
+    	}
+    	return JSONObject.toJSONString(MsgUtils.returnOk("",list));
+    }
     
     /**
 	 * 保存表单数据
@@ -188,7 +204,7 @@ public class FormController {
 		try{
 			String ids = request.getParameter("forms");//表单
 			String executionId = request.getParameter("executionId");//实例
-			String userid = request.getParameter("userid");
+			String userid = ShiroUtils.getUserId().toString();
 			String fields = request.getParameter("fields"); //可以编辑元素
 			Map<String,List<String>> files = this.update(request, "upload");
 			if(ids != null && !"".equals(ids)){
@@ -204,13 +220,13 @@ public class FormController {
 				List<String> sqls = new ArrayList<String>();
 				List<String> uids = new ArrayList<String>();
 				
-				String sql = "insert into df_form_DATA(execution_id,form_id,field_id,charvalue,numvalue,datevalue,writer)values(?,?,?,?,?,?,?,?)";
+				String sql = "insert into df_form_DATA(execution_id,form_id,field_id,char_value,num_value,date_value,writer)values(?,?,?,?,?,?,?)";
 				List<List<Object>> params = new ArrayList<List<Object>>();
 				String[] vals;
 				if(fields != null && !"".equals(fields)){//只删除可以编辑的，保存只保存可以编辑的数据，否则所有数据
 					sqls.add("delete from df_form_data where form_id in ("+ids+") and execution_id="+executionId+" and field_id in ("+fields+")");
 				}else{
-					sqls.add("delete from td_example_data where form_id in ("+ids+") and execution_id="+executionId);
+					sqls.add("delete from df_form_data where form_id in ("+ids+") and execution_id="+executionId);
 				}
 				for(int i=0; i<forms.size(); i++){
 					for(int j=0; j<forms.get(i).getFields().size(); j++){
@@ -261,7 +277,6 @@ public class FormController {
 							p.add(val);
 							p.add(null);
 							p.add(null);
-							p.add(null);
 							p.add(userid);
 						}
 						if("num".equals(forms.get(i).getFields().get(j).getDataType())){
@@ -271,7 +286,6 @@ public class FormController {
 							}else{
 								p.add(null);
 							}
-							p.add(null);
 							p.add(null);
 							p.add(userid);
 						}
@@ -284,14 +298,12 @@ public class FormController {
 							}else{
 								p.add(new java.sql.Timestamp(formatter.parse(val).getTime()));
 							}
-							p.add(null);
 							p.add(userid);
 						}
 						if("text".equals(forms.get(i).getFields().get(j).getDataType())){
-							p.add(null);
-							p.add(null);
-							p.add(null);
 							p.add(val);
+							p.add(null);
+							p.add(null);
 							p.add(userid);
 						}
 						
@@ -356,7 +368,7 @@ public class FormController {
 						String v = request.getParameter(tkey[0]);
 						if(v != null && !"".equals(v)){
 							String[] vids = v.split(",");
-							sqls.add("delete from td_example_data_expand where example_id="+executionId+" and element_id="+tkey[1]);
+							sqls.add("delete from df_form_data_expand where example_id="+executionId+" and element_id="+tkey[1]);
 							for(int j=0; j<vids.length; j++){
 								if(!"".equals(vids[j])){
 									sqls.add("insert into td_example_data_expand(example_id,element_id,writer,value)values("+executionId+","+tkey[1]+",'','"+vids[j]+"')");
@@ -369,20 +381,20 @@ public class FormController {
 				
 				if(db.execUpdates(sqls,1, params)){
 					
-					result.put("result", true);
+					result.put("status", true);
 				}else{
-					result.put("result", false);
+					result.put("status", false);
 					result.put("msg", "数据错误");
 				}
 			}else{
-				result.put("result", false);
+				result.put("status", false);
 				result.put("msg", "参数错误");
 			}
 			request.setAttribute("msg", result.toString());
 			return "form/callback";
 		}catch(Exception e){
 			logger.error(e.getMessage(),e);
-			result.put("result", false);
+			result.put("status", false);
 			result.put("msg", e.getMessage());
 			request.setAttribute("msg", result.toString());
 			return "form/callback";

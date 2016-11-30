@@ -283,6 +283,7 @@
 		});
 	}
 	
+	/*
 	function getSqlColumns(sql){
 		 var k = sql.toUpperCase().indexOf(" FROM ");
          if(k <= 0){
@@ -323,7 +324,7 @@
          }
 		return outFields;
 	 }
-	
+	*/
 </script>
 </script>
 	</head>

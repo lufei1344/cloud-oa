@@ -61,13 +61,14 @@
 	<input type="hidden" id="displayName" value="${form.displayName}">
 	<input type="hidden" id="type" value="${form.type}">
 	<input type="hidden" id="formType" value="${form.formType}">
-	<textarea id="contentHtml" style="display: none;">${form.contentHtml }</textarea>
+	<textarea id="contentHtml" style="display: none;"></textarea>
+	<div id="html" style="display: none;">${form.contentHtml }</div>
 	<script type="text/javascript">
 		
 		var templateView = UE.getEditor('templateView');
 		
 		templateView.addListener("ready", function () {
-			templateView.setContent($("#contentHtml").val());		
+			templateView.setContent($("#html").html());		
 		});
 		
 		function getModelId(){

@@ -20,6 +20,7 @@
     <!-- 任务处理 -->
     <script type="text/javascript" src="${ctx}/scripts/task/TaskOperation.js"></script>
     <script type="text/javascript">
+    	var layer = window.parent.layer;
     	var params = new Object();
     	function getParams(){
     		var p = decodeURI(window.location.search.substring(1)).split("&");
@@ -33,12 +34,14 @@
     	getParams();
     	var ROOT_URL = '${ctx}';
     	var taskOperation = new TaskOperation();
+    	var formViews;
     	var viewsdata;
     	function show(){
     		var url = ROOT_URL+"/form/views"+window.location.search;
     		$.getJSON(url,function(redata){
     			if(redata.status){
     				viewsdata = redata.obj;
+    				formViews = new FormViews(viewsdata,params,ROOT_URL);
     				var forms = redata.obj.forms;
     				var title = "";
         			var content = "";
@@ -61,6 +64,9 @@
         			}
         			$("#title").html(title);
         			$("#content").html(content);
+        			
+        			//
+        			formViews.initForms();
     			}else{
     				alert(redata.msg);
     			}
@@ -80,7 +86,7 @@
                    <div class="ibox-title">
                        <h5>任务处理 
 	                       <small class="m-l-sm">
-	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">保存草稿</button> 
+	                       <button type="button" class="btn btn-sm btn-primary" onclick="formViews.saveData()">保存草稿</button> 
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="taskOperation.completeTask()">完成任务</button> 
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">回退（上一步）</button> 
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">回退（发起人）</button> 
@@ -98,6 +104,9 @@
                    </div>
                    <iframe name="formsubmit" id="formsubmit" style="display: none;"></iframe>
                     <form action="${ctx}/form/saveFormData" id="form" method="post" enctype="multipart/form-data" target="formsubmit">
+                   	<input type="hidden" id="forms" name="forms" value="${param.forms }"/>
+                   	<input type="hidden" id="executionId" name="executionId" value="${param.executionId }"/>
+                   	<input type="hidden" id="fields" name="fields" value="${param.fields }"/>
                    <div class="ibox-content">
                        	  <div class="tabs-container">
 		                    <ul class="nav nav-tabs" id="title">
