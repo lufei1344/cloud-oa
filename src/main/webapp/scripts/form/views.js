@@ -80,12 +80,20 @@ function string2Array(string) {
 function isArray(o) { 
   return Object.prototype.toString.call(o) === '[object Array]';  
 }
-
-FormViews = function(viewsdata,params,ROOT_URL) {
+/**
+ * 表单处理
+ * @param viewsdata  显示表单
+ * @param params     参数
+ * @param ROOT_URL   路径
+ * @param sysValue   系统变量
+ * @returns
+ */
+FormViews = function(viewsdata,params,ROOT_URL,sysValue) {
 	this.viewsdata = viewsdata;
 	this.params = params;
 	this.fields = params.fields;
 	this.ROOT_URL = ROOT_URL;
+	this.sysValue = sysValue; 
 };
 
 //保存
@@ -144,6 +152,28 @@ FormViews.prototype.getSqlData = function(sql){
 	});  
 	$.ajaxSettings.async = true;
 	return data;
+}
+//查询字典数据
+FormViews.prototype.getDictData = function(sql){
+	$.ajaxSettings.async = false;
+	var data;
+	$.getJSON(this.ROOT_URL+"/form/findDictData",{name:name},function(redata){  
+		data = redata.obj;  
+	});  
+	$.ajaxSettings.async = true;
+	return data;
+}
+//获取本表单值
+FormViews.prototype.getBbdValue = function(){
+	
+}
+//获取应用表单值
+FormViews.prototype.getYybdValue = function(){
+	
+}
+//获取系统变量值
+FormViews.prototype.getSysValue = function(){
+	
 }
 //默认值处理
 FormViews.prototype.setDefalutValue = function(e){
@@ -216,8 +246,8 @@ FormViews.prototype.initForms = function() {
 					}
 				}
 				//sql
-				if(e.selectRule.type == "sql"){
-					var data = this.getSqlData(e.selectRule.sql);
+				if(e.selectRule.type == "sql" || e.selectRule.type == "dict"){
+					var data = e.selectRule.type == "sql" ? this.getSqlData(e.selectRule.sql) : this.getDictData(e.selectRule.dictname);
 					for(var n=0; n<data.length; n++){
 						obj.options.add(new Option(data[n].name,data[n].value));
 					}
@@ -250,8 +280,8 @@ FormViews.prototype.initForms = function() {
 					}
 				}
 				//sql
-				if(e.selectRule.type == "sql"){
-					var data = this.getSqlData(e.selectRule.sql);
+				if(e.selectRule.type == "sql" || e.selectRule.type == "dict"){
+					var data = e.selectRule.type == "sql" ? this.getSqlData(e.selectRule.sql) : this.getDictData(e.selectRule.dictname);
 					for(var n=0; n<data.length; n++){
 						var opt = data[n];
 						if(n == 0){

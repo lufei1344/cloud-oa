@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 /**
  * 部门实体类，继承抽象安全实体类
  * @author yuqs
@@ -36,8 +38,10 @@ public class Org extends SecurityEntity
     //部门类型（扩展使用）
     private String type;
     //部门管辖的所有用户列表（一对多关联）
+    @JSONField(serialize = false)
     private List<User> users = new ArrayList<User>();
     //部门管辖的所有下级部门列表（一对多关联）
+    @JSONField(serialize = false)
     private List<Org> orgs = new ArrayList<Org>();
     
     public Org() {}

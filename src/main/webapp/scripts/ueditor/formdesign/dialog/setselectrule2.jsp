@@ -39,6 +39,10 @@
 			o.type = "sql";
 			o.sql = $("#sql").val();
 		}
+		if(seltab == "tdict"){
+			o.type = "dict";
+			o.dictname = $("#dict_name").val();
+		}
 		window.parent.returnValue = encodeURIComponent(JSON.stringify(o));
 	}
 	
@@ -57,8 +61,13 @@
 						$("#radval").append(html);
 					}
 				}
-				if(o.type == "sql"){
+				if(o.type == "dict"){
 					$('#myTab li:eq(1) a').tab('show');
+					$("#dict_name").val(o.dictname);
+					
+				}
+				if(o.type == "sql"){
+					$('#myTab li:eq(2) a').tab('show');
 					$("#sql").val(o.sql);
 					
 				}
@@ -143,6 +152,7 @@
 								依据常量
 							</a>
 						</li>
+						<li><a href="#tabdict" id="tdict" data-toggle="tab">依据字典</a></li>
 						<li><a href="#tabsql" id="tsql" data-toggle="tab">依据SQL</a></li>
 					</ul>
 					<div id="myTabContent" class="tab-content">
@@ -153,6 +163,14 @@
 										<td>常量: &nbsp;&nbsp;显示<input id="cl" style="width:60px;" onkeypress="if(event.keyCode==13){selcl(this);};"/>-
 										值<input id="clv" style="width:60px;" onkeypress="if(event.keyCode==13){selcl(this);};"/>
 										<input type="button" onclick="selcl()" value="确定"/></td>
+									</tr>
+							</table>	
+						</div>
+						<div class="tab-pane fade" id="tabdict">
+						    <table class="table" style="width: 100%;  font-size: 13px; text-align: center;"
+						border="0" cellpadding="0" cellspacing="1"  >
+								<tr>
+										<td>名称<input id="dict_name" style="width:60px;" />
 									</tr>
 							</table>	
 						</div>

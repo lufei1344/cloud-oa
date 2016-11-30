@@ -173,6 +173,7 @@ public class FormController {
     	//return "form/views";
     	Map<String,Object> obj = new HashMap<String,Object>();
     	obj.put("forms", forms);
+    	obj.put("user", ShiroUtils.getUser());
     	return JSONObject.toJSONString(MsgUtils.returnOk("",obj));
     }
     /**
@@ -187,6 +188,23 @@ public class FormController {
     	String sql = request.getParameter("sql");
     	List<Map<String,Object>> list = null;
     	if(sql != null && !"".equals(sql)){
+    		list = db.getList(sql, null);
+    	}
+    	return JSONObject.toJSONString(MsgUtils.returnOk("",list));
+    }
+    /**
+     * 查询字典数据
+     * @param model
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "findDictData")
+    @ResponseBody
+    public Object findDictData(Model model,HttpServletRequest request) {
+    	String name = request.getParameter("name");
+    	List<Map<String,Object>> list = null;
+    	if(name != null && !"".equals(name)){
+    		String sql = "select code as value,name from conf_dictitem where dictionary=(select id from conf_dictionary where cn_name='"+name+"')";
     		list = db.getList(sql, null);
     	}
     	return JSONObject.toJSONString(MsgUtils.returnOk("",list));

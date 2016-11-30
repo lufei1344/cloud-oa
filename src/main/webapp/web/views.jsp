@@ -41,7 +41,7 @@
     		$.getJSON(url,function(redata){
     			if(redata.status){
     				viewsdata = redata.obj;
-    				formViews = new FormViews(viewsdata,params,ROOT_URL);
+    				formViews = new FormViews(viewsdata,params,ROOT_URL,redata.obj.user);
     				var forms = redata.obj.forms;
     				var title = "";
         			var content = "";
