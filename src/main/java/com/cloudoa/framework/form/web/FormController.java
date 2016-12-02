@@ -514,6 +514,26 @@ public class FormController {
 	}
 	
 	
+	//用户部门选择控件数据
+	@RequestMapping(value = "/findUserData")	
+	@ResponseBody
+	public Object findUserData(HttpServletRequest request,HttpServletResponse response){
+		try {
+			String exampleid = request.getParameter("executionId");
+			String fid = request.getParameter("formId");
+			String eid = request.getParameter("fieldId");
+			String sql = "select value from df_form_data_expand where execution_id="+exampleid+" and field_id="+eid;
+			List<Map<String,Object>> list = db.getList(sql, null);
+			List<String> val = new ArrayList<String>();
+			for(Map<String,Object> m : list){
+				val.add(m.get("value").toString());
+			}
+			return MsgUtils.returnOk("", val);
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			return MsgUtils.returnError(e.getMessage());
+		}
+	}
 	//会签数据
 	@RequestMapping(value = "/findJoinSignData")	
 	public String findJoinSignData(HttpServletRequest request,HttpServletResponse response){

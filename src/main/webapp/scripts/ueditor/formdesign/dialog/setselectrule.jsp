@@ -12,6 +12,7 @@
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/3.7/jquery.min.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/3.7/bootstrap.min.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/FormUtil.js"></script>
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/parseSql.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/dialogs/internal.js"></script>
 		<style type="text/css">
 			a{
@@ -51,42 +52,43 @@
 		.a{ text-decoration: none;display:inline;}
 		</style>
 		<script type="text/javascript">
-	var ww=window.parent.dialogParameter;
-	dialog.onok = function (){
-		exitDialog();
-	};
-	var seltab = "sqlcolumn";
-	function exitDialog(){
-		//sql
-		if(seltab == "sqlcolumn"){
-			var o = new Object();
-			o.type = "sql";
-			o.sql = $("#sql").val();
-			var table = document.getElementById("sqlcolumn");
-			//显示回传
-			var show = [];
-			for(var i=1; i<table.rows.length; i++){
-				var oo = new Object();
-				oo.column = table.rows[i].cells[0].innerText;
-				oo.show = $(table.rows[i].cells[1]).find("input")[0].checked;
-				oo.back = $(table.rows[i].cells[2]).find("input")[0].checked;
-				show.push(oo);
+		var ww=window.parent.dialogParameter;
+		dialog.onok = function (){
+			exitDialog();
+		};
+		var seltab = "sqlcolumn";
+		function exitDialog(){
+			//sql
+			if(seltab == "sqlcolumn"){
+				var o = new Object();
+				o.type = "sql";
+				o.sql = $("#sql").val();
+				var table = document.getElementById("sqlcolumn");
+				//显示回传
+				var show = [];
+				for(var i=1; i<table.rows.length; i++){
+					var oo = new Object();
+					oo.column = table.rows[i].cells[0].innerText;
+					oo.title = $(table.rows[i].cells[1]).find("input").val();
+					oo.show = $(table.rows[i].cells[2]).find("input")[0].checked;
+					oo.back = $(table.rows[i].cells[3]).find("input")[0].checked;
+					show.push(oo);
+				}
+				o.show = show;
+				//值设置
+				var valset = [];
+				table = document.getElementById("sqlcolumnval");
+				for(var i=1; i<table.rows.length; i++){
+					var oo = new Object();
+					oo.column = table.rows[i].cells[0].getAttribute("elementid");
+					//alert(oo.column);
+					oo.columnname = table.rows[i].cells[0].innerText;
+					oo.enname = $(table.rows[i].cells[1]).find("select").length==0 ? "" : $(table.rows[i].cells[1]).find("select")[0].value;
+					valset.push(oo); 
+				}
+				o.valset = valset;
+				window.parent.returnValue = encodeURIComponent(JSON.stringify(o));
 			}
-			o.show = show;
-			//值设置
-			var valset = [];
-			table = document.getElementById("sqlcolumnval");
-			for(var i=1; i<table.rows.length; i++){
-				var oo = new Object();
-				oo.column = table.rows[i].cells[0].getAttribute("elementid");
-				//alert(oo.column);
-				oo.columnname = table.rows[i].cells[0].innerText;
-				oo.enname = $(table.rows[i].cells[1]).find("select").length==0 ? "" : $(table.rows[i].cells[1]).find("select")[0].value;
-				valset.push(oo); 
-			}
-			o.valset = valset;
-			window.parent.returnValue = encodeURIComponent(JSON.stringify(o));
-		}
 		
 	}
 	var selecthtml="";
@@ -117,13 +119,14 @@
 						var oo = o.show[i];
 						var html = '<tr>'+
 									'	<td>'+oo.column+'</td>'+
+									'	<td><input type="text" value="'+oo.title+'"/></td>'+
 									'	<td><input type="checkbox" /></td>'+
 									'	<td><input type="checkbox"   onclick="selval(this,\'sqlcolumn\',\''+oo.column+'\')" show="sqlcolumn" value="'+oo.column+'"/></td>'+
 									'</tr>';
 									
 						var $html = $(html);
-						$html.find("input")[0].checked = oo.show;	
-						$html.find("input")[1].checked = oo.back;		
+						$html.find("input")[1].checked = oo.show;	
+						$html.find("input")[2].checked = oo.back;		
 						$(table).append($html);	
 					}
 					
@@ -153,26 +156,7 @@
 		allanduall();
 	});
 	
-	//系统变量
-	function selxtbl(fh,obj){
-		var html = "<li><a type='xtbl'   key='"+fh+"'>"+obj.innerText+"</a>&nbsp;&nbsp;<a href='javascript:void(0)' onclick='cls(this)'>x</a></li>";
-		$("#radval").append(html);
-	}
-	//符号
-	function addFuhao(obj) {
-		var html = "<li><a type='xtfh'   key='"+obj.innerText+"'>"+obj.innerText+"</a>&nbsp;&nbsp;<a href='javascript:void(0)' onclick='cls(this)'>x</a></li>";
-		$("#radval").append(html);
-	}
-	//流程变量
-	function sellcbl(obj){
-		var cl = $("#lcbl").val();
-		if(cl == ""){
-			alert("请先填写流程变量");
-		}else{
-			var html = "<li><a type='lcbl'   key='"+cl+"'>"+cl+"</a>&nbsp;&nbsp;<a href='javascript:void(0)' onclick='cls(this)'>x</a></li>";
-			$("#radval").append(html);
-		}
-	}
+	
 	//删除
 	function cls(obj){
 		$(obj).parent().remove();
@@ -211,22 +195,15 @@
    		});
 		var data = getSqlColumns(sql);
 		for(var i=0; i<data.length; i++){
-			var cols = data[i].split("#");
-			if(cols.length>1){
-				var html = '<tr>'+
-						'	<td>'+cols[1]+'</td>'+
-						'	<td><input type="checkbox"/></td>'+
-						'	<td><input type="checkbox" onclick="selval(this,\''+show+'\',\''+cols[0]+'\')" show="'+show+'" value="'+cols[1]+'"/></td>'+
-						'</tr>';
-				$("#"+show).append(html);							
-			}else{
-				var html = '<tr>'+
-						'	<td>'+data.obj[i]+'</td>'+
-						'	<td><input type="checkbox"/></td>'+
-						'	<td><input type="checkbox" onclick="selval(this,\''+show+'\',\''+data.obj[i]+'\')" show="'+show+'" value="'+data.obj[i]+'"/></td>'+
-						'</tr>';
-				$("#"+show).append(html);
-			}
+			var cols = data[i];
+			var html = '<tr>'+
+					'	<td>'+cols+'</td>'+
+					'	<td><input type="text"/></td>'+
+					'	<td><input type="checkbox"/></td>'+
+					'	<td><input type="checkbox" onclick="selval(this,\''+show+'\',\''+cols+'\')" show="'+show+'" /></td>'+
+					'</tr>';
+			$("#"+show).append(html);							
+			
 		}
 	}
 	
@@ -236,14 +213,14 @@
 			var table = $("#"+show+"val")[0];
 			var isex = false;
 			for(var i=1; i<table.rows.length; i++){
-				if(table.rows[i].cells[0].innerText == obj.value){
+				if(table.rows[i].cells[0].innerText == id){
 					isex = true;
 					break;
 				}
 			}
 			if(!isex){
 				var html = '<tr>'+
-							'	<td elementid="'+id+'">'+obj.value+'</td>'+
+							'	<td elementid="'+id+'">'+id+'</td>'+
 							'	<td>'+selecthtml+'</td>'+
 							'</tr>';
 				$(table).append(html);			
@@ -252,7 +229,7 @@
 			var table = $("#"+show+"val")[0];
 			var isex = false;
 			for(var i=1; i<table.rows.length; i++){
-				if(table.rows[i].cells[0].innerText == obj.value){
+				if(table.rows[i].cells[0].innerText == id){
 					$(table.rows[i]).remove();
 				}
 			}
@@ -283,48 +260,7 @@
 		});
 	}
 	
-	/*
-	function getSqlColumns(sql){
-		 var k = sql.toUpperCase().indexOf(" FROM ");
-         if(k <= 0){
-             return;
-         }
-         var Fields = sql.substring(7, k).split(",");
-         var outFields = new Array();
-         var blackStack = 0;
-         var t = 0;
-         for(var i = 0; i < Fields.length; i++){
-             var x = Fields[i].indexOf("(");
-             if(x>=0){
-                 while(x>=0){
-                     blackStack++;
-                     Fields[i] = Fields[i].substring(x+1);
-                     t = Fields[i].indexOf(")");
-                     x = Fields[i].indexOf("(");
-             		if(t<x){
-             			blackStack--;
-                         Fields[i] = Fields[i].substring(t+1);
-             		}
-                     x = Fields[i].indexOf("(");
-                 }
-             }
-             x = Fields[i].indexOf(")");
-             if(x>=0){
-                 while(x>=0){
-                     blackStack--;
-                     Fields[i] = Fields[i].substring(x+1);
-                     x = Fields[i].indexOf(")");
-                  }
-             }
-             if(blackStack==0){
-                 var units = Fields[i].split(" ");
-                 units = units[units.length - 1].split(".");
-                 outFields[outFields.length] = units[units.length - 1];
-             }
-         }
-		return outFields;
-	 }
-	*/
+	
 </script>
 </script>
 	</head>
@@ -359,6 +295,7 @@
 						border="0" cellpadding="1" cellspacing="1" id="sqlcolumn">
 											<tr>
 												<td background="#dde4ea">元素名称</td>
+												<td background="#dde4ea">显示名称</td>
 												<td background="#dde4ea">显示<!-- <input type="checkbox" value="all"/>全选/<input type="checkbox" value="uall"/>反选 --></td>
 												<td background="#dde4ea">回传<!-- <input type="checkbox" value="all"/>全选/<input type="checkbox" value="uall"/>反选 --></td>
 											</tr>

@@ -12,6 +12,7 @@
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/3.7/jquery.min.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/bootstrap/3.7/bootstrap.min.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/FormUtil.js"></script>
+	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/formdesign/parseSql.js"></script>
 	 	<script type="text/javascript" src="${ctxPath}/scripts/ueditor/dialogs/internal.js"></script>
 		<script type="text/javascript">
 		var ww=window.parent.dialogParameter;

@@ -21,6 +21,8 @@
     <script type="text/javascript">
         var pagedata;
         var params = new Object();
+        var selectRule = window.dialogArguments.selectRule;
+        var keys = selectRule.show;
     	function getParams(){
     		var p = decodeURI(window.location.search.substring(1)).split("&");
         	for(var i = 0; i < p.length; i++){
@@ -39,8 +41,7 @@
     			if(redata.status){
     				var page = redata.obj.page;
     				pagedata = page;
-    				queryParams(redata.obj.keys);
-    				dataPage(page,redata.obj.keys);
+    				dataPage(page);
     				showPage("page",page);
     			}else{
     				alert(redata.msg);
@@ -48,31 +49,28 @@
     		});
     		
     	}
-    	function queryParams(keys){
+    	function queryParams(){
     		var query = "<td>";
     		for(var i=0; i<keys.length; i++){
-    			query += keys[i].show+":<input class='form-control' name='col_"+keys[i].kkey+"'/>"
+    			query += keys[i].title+":<input class='form-control' name='col_"+keys[i].column+"'/>"
     		}
     		query += "<button type='button'  class='btn btn-sm btn-primary' onclick='jumpPage(1)'> 搜索</button></td>";
     		$("#query").html(query);
+    		//条件
+  		    $("#sql").val(selectRule.sql);
     	}
-    	function dataPage(page,keys){
+    	function dataPage(page){
     		 var $table = $("#page");
-    		 var title = "<tr>";
    		     var content = "";
-   		     for(var i=0; i<keys.length; i++){
-   		    	 title +="<th>"+keys[i].show+"</th>";
-   		     }
-   		  	 title +="<th>操作</th></tr>";
    		     for(var i=0; i<page.result.length; i++){
    		    	content += "<tr>";
    		    	for(var n=0; n<keys.length; n++){
-   		    		content +="<td>"+page.result[i][keys[n].columnkey]+"</td>";
+   		    		content +="<td>"+page.result[i][keys[n].column.toLowerCase()]+"</td>";
    		    	}
    		    	content +="<td><a href='javascript:void(0)' onclick='getValue("+i+")'>选择</a></td>";
    		    	content += "</tr>";
    		    }
-   		  $table.find("thead").html(title);
+   		  
    		    $table.find("tbody").html(content);
     	}
     	function getValue(index){
@@ -84,7 +82,18 @@
     		window.returnValue = o;
     		window.close();
     	}
+    	function initTable(){
+    		 var $table = $("#page");
+    		 var title = "<tr>";
+    		 for(var i=0; i<keys.length; i++){
+   		    	 title +="<th>"+keys[i].title+"</th>";
+   		     }
+   		  	 title +="<th>操作</th></tr>";
+   		     $table.find("thead").html(title);
+    	}
     	$(function(){
+    		initTable();
+    		queryParams();
     		jumpPage(1);
     	});
     	
@@ -98,7 +107,7 @@
 		<input type="hidden" name="pageNo" id="pageNo" value="${page.pageNo}"/>
 		<input type="hidden" name="orderBy" id="orderBy" value="${page.orderBy}"/>
 		<input type="hidden" name="order" id="order" value="${page.order}"/>
-		<input type="hidden" name="sql" id="sql" value="SELECT CODE AS 'code#值',NAME AS 'NAME#名称' FROM conf_dictitem WHERE dictionary=4"/>
+		<input type="hidden" name="sql" id="sql" value=""/>
 		<div class="ibox-content">
 		 <div class="table-responsive">
 		 <table class="table table-striped table-hover table-bordered" id="query">

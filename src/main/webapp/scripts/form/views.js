@@ -143,6 +143,136 @@ FormViews.prototype.saveDataCallBack = function(redata) {
 FormViews.prototype.formValidate = function(){
 	return true;
 };
+//人员和部门选择对话框
+FormViews.prototype.dialogUser = function(obj,e){
+	var o = new Object();
+	o.ids = $("#"+e.enname+"_ids").val();
+	o.names = $("#"+e.enname).val(); 
+	var url = "/web/dialog/findUser.jsp";
+	if(e.extType == "dept"){
+		url = "/web/dialog/findDept.jsp"
+	}
+	var ret=window.showModalDialog(this.ROOT_URL+"/web/dialog/findDept.jsp",o,"dialogHeight:600px;dialogWidth:750px;status:0;");
+	if(typeof ret != 'undefined'){
+		//alert(fc);
+		$("#"+e.enname+"_ids").val(ret.ids);
+		$("#"+e.enname).val(ret.names);
+	}
+}
+//人员控件
+FormViews.prototype.replaceUser = function(e){
+	var $obj = $("#"+e.enname);
+	//input替换为textarea，显示不下
+	$obj.replaceWith("<textarea name='"+e.enname+"' id='"+e.enname+"' style='width:"+$obj.width()+"px;height:"+$obj.height()+"px'>"+e.charValue+"</textarea>");
+	$obj = $("#"+e.enname);
+	var $id = $("<input type='hidden'  name='"+e.enname+"_ids' id='"+e.enname+"_ids'/>");
+	var $btn = $("<input type='button' class='btn btn-sm' enname='"+e.enname+"' exttype='user'  value='选择'/>");
+	$btn.click(function(e){
+		this.dialogUser(this,e);
+	});
+	$obj.after($btn).after($id);
+	if(this.params.fields.indexOf(e.id)<0){
+		$btn.hide();
+		$obj[0].disabled = true;
+	}
+	var url = this.ROOT_URL+"/form/findUserData.html?s="+Math.random();
+	var o = new Object();
+	o.name = e.enname+"_ids";
+	o.executionId= params.executionId;
+	o.fieldId = e.id;
+	o.formId = e.formId;
+	$.getJSON(url,o,function(data){
+		if(data.obj.length>0){
+			$id.val(data.obj.join(","));
+		}else{
+			$id.val("");
+		}
+		
+	})
+};
+//部门控件
+FormViews.prototype.replaceDept = function(e){
+	var $obj = $("#"+e.enname);
+	//input替换为textarea，显示不下
+	$obj.replaceWith("<textarea name='"+e.enname+"' id='"+e.enname+"' style='width:"+$obj.width()+"px;height:"+$obj.height()+"px'>"+e.charValue+"</textarea>");
+	$obj = $("#"+e.enname);
+	var $id = $("<input type='hidden'  name='"+e.enname+"_ids' id='"+e.enname+"_ids'/>");
+	var $btn = $("<input type='button' class='btn btn-sm' enname='"+e.enname+"' exttype='dept'  value='选择'/>");
+	
+	$obj.after($btn).after($id);
+	if(this.params.fields.indexOf(e.id)<0){
+		$btn.hide();
+		$obj[0].disabled = true;
+	}
+	var url = this.ROOT_URL+"/form/findUserData.html?s="+Math.random();
+	var o = new Object();
+	o.name = e.enname+"_ids";
+	o.executionId= params.executionId;
+	o.fieldId = e.id;
+	o.formId = e.formId;
+	$.getJSON(url,o,function(data){
+		if(data.obj.length>0){
+			$id.val(data.obj.join(","));
+		}else{
+			$id.val("");
+		}
+		
+	})
+};
+//多文件上传
+FormViews.prototype.multiFile = function(e){
+	var $input = $("#"+e.enname);
+	$input.attr("type","hidden");
+	var html = '<span id="'+e.enname+'_uploader" class="wu-example">'+
+				'    <div id="'+e.enname+'_thelist" class="uploader-list"></div>'+
+				'    <div class="btns">'+
+				'        <div id="'+e.enname+'_picker">选择文件</div>'+
+				'    </div>'+
+				'</span>';
+	$input.after(html);
+	var uploader = WebUploader.create({
+					//是否自动上传
+					auto: true,
+				    // swf文件路径
+				    swf: this.ROOT_URL + '/scripts/webuploader/Uploader.swf',
+				    // 文件接收服务端。
+				    server: this.ROOT_URL+'/form/uploadFormFile',
+				    // 选择文件的按钮。可选。
+				    // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+				    pick: '#'+e.enname+'_picker',
+				    // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+				    resize: false
+				});
+	uploader.on( 'fileQueued', function( file ) {
+	   //alert(file.name);
+	});
+	uploader.on('uploadSuccess', function( file,redata) {
+		var html = "";
+		for(var i=0; i<redata.file.length; i++){
+			var fs = redata.file[i].split(":");
+			html += fs[0] +"&nbsp;"+fs[2];
+			$input.val($input.val() == "" ? redata.file[i] : ($input.val()+","+redata.file[i]));
+		}
+		$("#"+e.enname+"_thelist").append(html);
+	    //layer.msg("上传成功！");
+	});
+
+	uploader.on('uploadError', function( file ) {
+		layer.msg("上传出错！");
+	});
+	
+	//默认值
+	if(e.charValue != ""){
+		var files = e.charValue.split(",");
+		var html = "";
+		for(var i=0; i<files.length; i++){
+			var fs = files[i].split(":");
+			html += fs[0] +"&nbsp;"+fs[2];
+		}
+		$("#"+e.enname+"_thelist").append(html);
+		$input.val(e.charValue);
+	}
+};
 //查询sql语句数据
 FormViews.prototype.getSqlData = function(sql){
 	$.ajaxSettings.async = false;
@@ -239,9 +369,9 @@ FormViews.prototype.initForms = function() {
 			e = this.setDefalutValue(e);
 			//日期
 			if(e.dataType == "date"){
-				obj.onclick = function(){WdatePicker({dateFmt:this.getAttribute("dateformat")})};
+				obj.onclick = function(){laydate({istime: true, format: this.getAttribute("dateformat")})};
 				//赋值
-				if(e[e.dataType+"Value"] != ""){
+				if(typeof e[e.dataType+"Value"] != 'undefined' && e[e.dataType+"Value"] != ""){
 					var vvv = e[e.dataType+"Value"].substring(0,19);
 					obj.value = new Date(Date.parse(vvv.replace(/-/g,"/"))).format(obj.getAttribute("dateformat"));
 				}else{
@@ -334,7 +464,7 @@ FormViews.prototype.initForms = function() {
 			}
 			
 			//input
-			if(e.extType == "input" || e.showType == "textarea"){
+			if((e.extType == "input" || e.showType == "textarea") && e.dataType != "date"){
 				if(e.selectRule != "" && e.selectRule != "null"){
 					e.selectRule = decodeURIComponent(e.selectRule);
 					e.selectRule = string2Object(e.selectRule);
@@ -342,12 +472,14 @@ FormViews.prototype.initForms = function() {
 					obj.onclick = function(e){
 						return function(){
 							var o = new Object();
+							o.selectRule = e.selectRule;
 						    var fc=window.showModalDialog(ROOT_URL+"/web/findCallBack.jsp?sql="+encodeURIComponent(e.selectRule.sql),o,"dialogHeight:600px;dialogWidth:850px;status:0;");
 						    if(typeof fc != 'undefined'){
 								var e_SelectRule = e.selectRule;
 								for(var t=0; t<e_SelectRule.valset.length; t++){
 									var vs = e_SelectRule.valset[t];
 									var $ele = $("#"+vs.enname);
+									vs.column = vs.column.toLowerCase();
 									if($ele.attr("datatype") == 'date'){
 										$ele.val(new Date(Date.parse(fc[vs.column].replace(/-/g,"/"))).format($ele.attr("dateformat")));
 									}else{
@@ -375,10 +507,18 @@ FormViews.prototype.initForms = function() {
 					obj.value = e[e.dataType+"Value"];
 				}
 			}
+			//用户控件
+			if(e.extType == "user"){
+				this.replaceUser(e);
+			}
+			//部门控件
+			if(e.extType == "dept"){
+				this.replaceDept(e);
+			}
 			//file输入选择
-			if(e.extType == "file"){
-				if(e.e_ProPerty == "free"){//多个文件
-					mfile(e);
+			if(e.showType == "file"){
+				if(e.extType == "free"){//多个文件
+					this.multiFile(e);
 				}else{//固定
 					var vvv = e['charValue'];
 					if(vvv != ""){

@@ -15,7 +15,13 @@
     <script type="text/javascript" src="${ctx}/scripts/hplus/js/jquery.min.js"></script>
     <script type="text/javascript" src="${ctx}/scripts/hplus/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="${ctx}/scripts/hplus/js/plugins/layer/layer.js"></script>
+    <script type="text/javascript" src="${ctx}/scripts/hplus/js/plugins/layer/laydate/laydate.js"></script>
+    <!-- 文件上传 -->
+    <link rel="stylesheet" href="${ctx}/scripts/webuploader/webuploader.css" />
+    <script type="text/javascript" src="${ctx}/scripts/webuploader/webuploader.min.js"></script>
     <!-- 表单处理 -->
+    <script type="text/javascript" src="${ctx}/scripts/ueditor/formdesign/parseSql.js"></script>
+    <script type="text/javascript" src="${ctx}/scripts/form/dateformat.js"></script>
     <script type="text/javascript" src="${ctx}/scripts/form/views.js"></script>
     <!-- 任务处理 -->
     <script type="text/javascript" src="${ctx}/scripts/task/TaskOperation.js"></script>
