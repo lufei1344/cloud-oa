@@ -141,7 +141,42 @@ FormViews.prototype.saveDataCallBack = function(redata) {
 };
 //校验
 FormViews.prototype.formValidate = function(){
-	return true;
+	var ret = true;
+	var forms = this.viewsdata.forms; 
+	Outer:
+	for(var i=0; i<forms.length; i++){
+		if(!b){
+			break;
+		}
+		var form = forms[i];
+		for(var v =0; v<form.fields.length; v++){
+			var e = form.fields[v];
+			if(b && typeof e.validate != "undefined" && e.validate != ""){
+				e.validate = string2Object(e.validate);
+				var val = $("#"+e.enname).val();
+				for(var n=0; n<e.validate.length; n++){
+					var exp = new RegExp(e.validate[n].exp,"g");
+					if(e.validate[n].exp == "^$"){
+						if(/^$/.test(val)){//有校验的必须非空
+							layer.msg(e.cnname+"为"+e.validate[n].name);
+							$("#"+e.enname)[0].focus();
+							ret = false;
+							break Outer;
+						}
+					}else{
+						if(/^$/.test(val) || !exp.test(val)){//有校验的必须非空
+							layer.msg(e.cnname+"为"+e.validate[n].name);
+							$("#"+e.enname)[0].focus();
+							ret = false;
+							break Outer;
+						}
+					}
+				}
+			}
+		}
+	}	
+	
+	return ret;
 };
 //人员和部门选择对话框
 FormViews.prototype.dialogUser = function(obj,e){
@@ -222,6 +257,10 @@ FormViews.prototype.replaceDept = function(e){
 		
 	})
 };
+//文件下载
+FormViews.prototype.downLoadFile = function(fname,fpath){
+	window.open(this.ROOT_URL+"/form/downLoadFile?name="+encodeURIComponent(fname)+"&path="+fpath);
+};
 //多文件上传
 FormViews.prototype.multiFile = function(e){
 	var $input = $("#"+e.enname);
@@ -253,7 +292,7 @@ FormViews.prototype.multiFile = function(e){
 		var html = "";
 		for(var i=0; i<redata.file.length; i++){
 			var fs = redata.file[i].split(":");
-			html += fs[0] +"&nbsp;"+fs[2];
+			html += "<span><a href='javascript:void()' onclick='formViews.downLoadFile(\""+fs[0]+"\",\""+fs[1]+"\")'>"+fs[0] +"</a>&nbsp;"+fs[2]+"</span>";
 			$input.val($input.val() == "" ? redata.file[i] : ($input.val()+","+redata.file[i]));
 		}
 		$("#"+e.enname+"_thelist").append(html);
@@ -270,7 +309,7 @@ FormViews.prototype.multiFile = function(e){
 		var html = "";
 		for(var i=0; i<files.length; i++){
 			var fs = files[i].split(":");
-			html += fs[0] +"&nbsp;"+fs[2];
+			html += "<span><a href='javascript:void()' onclick='formViews.downLoadFile(\""+fs[0]+"\",\""+fs[1]+"\")'>"+fs[0] +"</a>&nbsp;"+fs[2]+"</span>";
 		}
 		$("#"+e.enname+"_thelist").append(html);
 		$input.val(e.charValue);

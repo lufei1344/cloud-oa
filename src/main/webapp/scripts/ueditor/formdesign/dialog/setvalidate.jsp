@@ -72,7 +72,7 @@
 			valid.push({name:"浮点数",exp:"^-?([1-9]\d*\.\d*|0\.\d*[1-9]\d*|0?\.0+|0)$"});
 			valid.push({name:"邮政编码",exp:"^[1-9]\d{5}(?!\d)$"});
 			valid.push({name:"固定电话",exp:"^\d{3}-\d{8}|\d{4}-\d{7}$"});
-			valid.push({name:"手机号码",exp:"^((13[0-9])|(15[^4,\\D])|(18[0,2,5-9]))\\d{8}$"});
+			valid.push({name:"手机号码",exp:"^((13[0-9])|(15[^4,\d])|(18[0,2,5-9]))\d{8}$"});
 			valid.push({name:"IP地址",exp:"^\d+\.\d+\.\d+\.\d+$"});
 			valid.push({name:"是否英文",exp:"^[a-zA-Z\_]+$"});
 			valid.push({name:"是否英文",exp:"^[a-zA-Z\_]+$"});

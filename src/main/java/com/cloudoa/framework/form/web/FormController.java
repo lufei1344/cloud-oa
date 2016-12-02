@@ -1,6 +1,7 @@
 package com.cloudoa.framework.form.web;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -517,7 +518,33 @@ public class FormController {
 			return "error";
 		}
 	}
-	
+	@RequestMapping(value = "/downLoadFile")
+	public String downLoadFile(HttpServletRequest request,    
+			HttpServletResponse response) throws IOException{
+		try{
+			String path = request.getParameter("path");
+			String name = request.getParameter("name");
+			response.setContentType("application/octet-stream");
+			String fileName = new String(name.getBytes("GB2312"), "ISO8859-1");
+			response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+			String fpath = request.getSession().getServletContext().getRealPath("/")+"/"+path;
+			File f = new File(fpath);
+			if(f.exists()){
+				FileInputStream fis = new FileInputStream(fpath);
+				byte[] buf = new byte[10240];
+				int len = -1;
+				while((len = fis.read(buf)) != -1){
+					response.getOutputStream().write(buf, 0, len);
+				}
+				response.getOutputStream().flush();
+				fis.close();
+			}
+			response.getOutputStream().flush();
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+		}
+		return null;
+	}
 	
 	//用户选择控件
 	@RequestMapping(value = "/findSelUser")	
