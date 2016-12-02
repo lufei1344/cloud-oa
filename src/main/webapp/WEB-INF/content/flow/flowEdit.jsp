@@ -86,6 +86,7 @@
 	var is_open_properties_panel = false;
 	var task;
 	var line;
+	var ROOT_URL = "${ctx}";
 	jq(function(){
 		try{
 			_task_obj = jq('#task');
@@ -257,13 +258,12 @@
 			workflow.process.name=processName;
 			var xml = workflow.toXML();
 			var jsonstr = workflow.toJSON();
-			alert(jsonstr);
 			//return;
 			var data = {
 					processDescriptor:xml,
 					processName:processName,
 					category:jq("#category").val(),
-					//processJson:
+					processJson:jsonstr,
 					processVariables:workflow.process.getVariablesJSONObject()
 				};
 			saveFlow(data);

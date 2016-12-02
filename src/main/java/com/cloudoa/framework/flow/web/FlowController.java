@@ -113,8 +113,8 @@ public class FlowController {
 
     @RequestMapping(value = "update", method = RequestMethod.POST)
     @ResponseBody
-    public Object update(String processDescriptor,String processName,String category,String processVariables) {
-    	processService.processDefinitionDeployment(processName,processDescriptor,TenantHolder.TenantId,category);
+    public Object update(String processDescriptor,String processJson,String processName,String category,String processVariables) {
+    	processService.processDefinitionDeployment(processName,processDescriptor,processJson,TenantHolder.TenantId,category);
         return MsgUtils.returnOk("");
     }
 

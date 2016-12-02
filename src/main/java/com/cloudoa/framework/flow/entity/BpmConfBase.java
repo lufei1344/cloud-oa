@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,6 +25,8 @@ public class BpmConfBase implements java.io.Serializable {
 
     /** 主键. */
     private Long id;
+    
+    private String name;
 
     /** 流程定义ID. */
     private String processDefinitionId;
@@ -60,6 +64,7 @@ public class BpmConfBase implements java.io.Serializable {
     /** @return 主键. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return this.id;
     }
@@ -141,4 +146,13 @@ public class BpmConfBase implements java.io.Serializable {
     public void setBpmProcesses(Set<BpmProcess> bpmProcesses) {
         this.bpmProcesses = bpmProcesses;
     }
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+    
 }

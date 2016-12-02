@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,33 +24,25 @@ import javax.persistence.Table;
 @Table(name = "BPM_CONF_NODE")
 public class BpmConfNode implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
-
     /** 主键. */
     private Long id;
-
     /** 外键，流程配置. */
     private BpmConfBase bpmConfBase;
-
     /** 节点ID. */
     private String code;
-
     /** 节点名称. */
     private String name;
-
     /** 节点类型. */
     private String type;
-
     /** 配置用户. */
-    private Integer confUser;
-
+    private String confUser;
     /** 配置回调. */
-    private Integer confListener;
+    private String confListener;
 
     /** 配置规则. */
     private Integer confRule;
 
-    /** 配置表单. */
-    private Integer confForm;
+   
 
     /** 配置操作. */
     private Integer confOperation;
@@ -93,41 +87,12 @@ public class BpmConfNode implements java.io.Serializable {
         this.id = id;
     }
 
-    public BpmConfNode(Long id, BpmConfBase bpmConfBase, String code,
-            String name, String type, Integer confUser, Integer confListener,
-            Integer confRule, Integer confForm, Integer confOperation,
-            Integer confNotice, Integer priority,
-            Set<BpmConfListener> bpmConfListeners,
-            Set<BpmConfNotice> bpmConfNotices, Set<BpmConfUser> bpmConfUsers,
-            Set<BpmConfAssign> bpmConfAssigns,
-            Set<BpmConfCountersign> bpmConfCountersigns,
-            Set<BpmConfForm> bpmConfForms, Set<BpmConfRule> bpmConfRules,
-            Set<BpmConfOperation> bpmConfOperations) {
-        this.id = id;
-        this.bpmConfBase = bpmConfBase;
-        this.code = code;
-        this.name = name;
-        this.type = type;
-        this.confUser = confUser;
-        this.confListener = confListener;
-        this.confRule = confRule;
-        this.confForm = confForm;
-        this.confOperation = confOperation;
-        this.confNotice = confNotice;
-        this.priority = priority;
-        this.bpmConfListeners = bpmConfListeners;
-        this.bpmConfNotices = bpmConfNotices;
-        this.bpmConfUsers = bpmConfUsers;
-        this.bpmConfAssigns = bpmConfAssigns;
-        this.bpmConfCountersigns = bpmConfCountersigns;
-        this.bpmConfForms = bpmConfForms;
-        this.bpmConfRules = bpmConfRules;
-        this.bpmConfOperations = bpmConfOperations;
-    }
+    
 
     /** @return 主键. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return this.id;
     }
@@ -197,35 +162,25 @@ public class BpmConfNode implements java.io.Serializable {
         this.type = type;
     }
 
-    /** @return 配置用户. */
-    @Column(name = "CONF_USER")
-    public Integer getConfUser() {
-        return this.confUser;
-    }
+   
 
-    /**
-     * @param confUser
-     *            配置用户.
-     */
-    public void setConfUser(Integer confUser) {
-        this.confUser = confUser;
-    }
+    public String getConfUser() {
+		return confUser;
+	}
 
-    /** @return 配置回调. */
-    @Column(name = "CONF_LISTENER")
-    public Integer getConfListener() {
-        return this.confListener;
-    }
+	public void setConfUser(String confUser) {
+		this.confUser = confUser;
+	}
 
-    /**
-     * @param confListener
-     *            配置回调.
-     */
-    public void setConfListener(Integer confListener) {
-        this.confListener = confListener;
-    }
+	public String getConfListener() {
+		return confListener;
+	}
 
-    /** @return 配置规则. */
+	public void setConfListener(String confListener) {
+		this.confListener = confListener;
+	}
+
+	/** @return 配置规则. */
     @Column(name = "CONF_RULE")
     public Integer getConfRule() {
         return this.confRule;
@@ -239,19 +194,7 @@ public class BpmConfNode implements java.io.Serializable {
         this.confRule = confRule;
     }
 
-    /** @return 配置表单. */
-    @Column(name = "CONF_FORM")
-    public Integer getConfForm() {
-        return this.confForm;
-    }
-
-    /**
-     * @param confForm
-     *            配置表单.
-     */
-    public void setConfForm(Integer confForm) {
-        this.confForm = confForm;
-    }
+   
 
     /** @return 配置操作. */
     @Column(name = "CONF_OPERATION")

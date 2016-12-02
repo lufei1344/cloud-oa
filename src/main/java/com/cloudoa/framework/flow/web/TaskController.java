@@ -61,6 +61,25 @@ public class TaskController {
     	return MsgUtils.returnOk("",obj);
     }
     /**
+     * 可以打开的表单和编辑的元素
+     * @param model
+     * @param page
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="openViews")
+    @ResponseBody
+    public Object openViews(HttpServletRequest request) {
+    	String activityId = request.getParameter("activityId");
+    	String processDefinitionId = request.getParameter("processDefinitionId");
+    	Map<String,Object> obj = new HashMap<String,Object>();
+    	obj.put("activityId", activityId);
+    	obj.put("processDefinitionId", processDefinitionId);
+    	obj.put("forms", new String[]{"1","2"});
+    	obj.put("fields", new String[]{"1","2"});
+    	return MsgUtils.returnOk("",obj);
+    }
+    /**
      * 流程提交人员选择
      * @param model
      * @param page

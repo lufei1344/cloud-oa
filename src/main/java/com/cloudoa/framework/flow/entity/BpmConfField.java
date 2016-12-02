@@ -4,19 +4,21 @@ package com.cloudoa.framework.flow.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * BpmConfListener 配置回调.
+ * BpmConfForm 配置表单元素.
  * 
  * @author Lingo
  */
 @Entity
-@Table(name = "BPM_CONF_LISTENER")
-public class BpmConfListener implements java.io.Serializable {
+@Table(name = "BPM_CONF_FIELD")
+public class BpmConfField implements java.io.Serializable {
     private static final long serialVersionUID = 0L;
 
     /** 主键. */
@@ -26,22 +28,25 @@ public class BpmConfListener implements java.io.Serializable {
     private BpmConfNode bpmConfNode;
 
     /** 值. */
-    private String value;
+    private long formId;
+    
+    /** 值. */
+    private long fieldId;
+    
 
-   
 
-    public BpmConfListener() {
+    public BpmConfField() {
     }
 
-    public BpmConfListener(Long id) {
+    public BpmConfField(Long id) {
         this.id = id;
     }
 
-  
-
+   
     /** @return 主键. */
     @Id
     @Column(name = "ID", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return this.id;
     }
@@ -69,19 +74,21 @@ public class BpmConfListener implements java.io.Serializable {
         this.bpmConfNode = bpmConfNode;
     }
 
-    /** @return 值. */
-    @Column(name = "VALUE", length = 200)
-    public String getValue() {
-        return this.value;
-    }
+	public long getFormId() {
+		return formId;
+	}
 
-    /**
-     * @param value
-     *            值.
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public void setFormId(long formId) {
+		this.formId = formId;
+	}
+
+	public long getFieldId() {
+		return fieldId;
+	}
+
+	public void setFieldId(long fieldId) {
+		this.fieldId = fieldId;
+	}
 
     
 }

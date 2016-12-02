@@ -16,9 +16,36 @@ jq(function(){
 		onChange:function(newValue, oldValue){
 		}
 	});
+	_form_win = jq('#form-win').window({
+		href:ROOT_URL+'/scripts/wfdesigner/wf/designer/forms.html',   
+	    closed:true,
+	    //cache:false,
+	    draggable:true,
+	    collapsible:false,
+	    minimizable:false,
+	    maximizable:false,
+	    modal:true,
+	    shadow:true
+	});
+	_field_win = jq('#field-win').window({
+		href:ROOT_URL+'/scripts/wfdesigner/wf/designer/fields.html',   
+	    closed:true,
+	    //cache:false,
+	    draggable:true,
+	    collapsible:false,
+	    minimizable:false,
+	    maximizable:false,
+	    modal:true,
+	    shadow:true
+	});
 	populateTaskProperites();
 });
-
+function dialogForm(){
+	_form_win.window("open");
+}
+function dialogField(){
+	_field_win.window("open");
+}
 function saveTaskProperties(){
 	task.taskId=jq('#id').val();
 	task.taskName=jq('#name').val();
@@ -36,6 +63,9 @@ function saveTaskProperties(){
 		task._elementVariable="users";
 		task._completionCondition="${nrOfInstances == nrOfCompletedInstances }";
 	}
+	//附件属性
+	task.forms=jq('#forms').val();
+	task.fields=jq('#fields').val();
 	jq.messager.alert('信息','保存成功!','info');
 }
 function populateTaskProperites(){
@@ -103,6 +133,10 @@ function loadTaskFormProperties(){
 					<td><input type="text" id="priority" name="priority" value=""/></td>
 				</tr>
 				<tr>
+					<td align="right">动作:</td>
+					<td><input type="text" id="listener" name="listener" value=""/></td>
+				</tr>
+				<tr>
 					<td align="right">人员:</td>
 					<td>
 						<select id="nodeType" name="nodeType">
@@ -112,28 +146,27 @@ function loadTaskFormProperties(){
 						</select>
 					</td>
 				</tr>
+				<tr>
+					<td colspan="2" style="text-align: center;">人员配置</td>
+				</tr>
+				<tr>
+					<td align="right">岗位:</td>
+					<td><input type="text" id="forms" name="post" value=""/><input type="button"  value="选择" onclick="dialogForm(this)"/></td>
+				</tr>
+				<tr>
+					<td colspan="2" style="text-align: center;">表单配置</td>
+				</tr>
+				<tr>
+					<td align="right">表单:</td>
+					<td><input type="text" id="forms" name="forms" value=""/><input type="button"  value="选择" onclick="dialogForm(this)"/></td>
+				</tr>
+				<tr>
+					<td align="right">元素:</td>
+					<td><input type="text" id="fields" name="fields" value=""/><input type="button"  value="选择" onclick="dialogField(this)"/></td>
+				</tr>
 				</table>
 			</div>
-			<div id="formProperties" title="表单配置" style="overflow: hidden;">
-				<table id="task-form-properties-list">
-					<thead>
-					<tr>
-					<th field="id" width="100" align="middle" sortable="false">Id</th>
-					<th field="name" width="100" align="middle" sortable="false">Name</th>
-					<th field="type" width="100" align="middle" sortable="false">Type</th>
-					<th field="expression" width="100" align="middle" sortable="false">Expression</th>
-					<th field="variable" width="100" align="middle" sortable="false">Variable</th>
-					<th field="defaultValue" width="100" align="middle" sortable="false">Default</th>
-					<th field="datePattern" width="100" align="middle" sortable="false">Date Pattern</th>
-					<th field="readable" width="100" align="middle" sortable="false">Readable</th>
-					<th field="writeable" width="100" align="middle" sortable="false">Writeable</th>
-					<th field="required" width="100" align="middle" sortable="false">Required</th>
-					<th field="formValues" width="100" align="middle" sortable="false">Form Values</th>
-					<th field="action" width="100" align="middle" formatter="formActionBt">Action</th>
-					</tr>
-					</thead>
-				</table>
-			</div>
+			
 			
 		</div>
 	</div>

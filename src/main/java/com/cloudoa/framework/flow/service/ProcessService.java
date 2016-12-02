@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.cloudoa.framework.flow.cmd.FindNextActivitiesCmd;
+import com.cloudoa.framework.flow.dao.BpmConfBaseDao;
+import com.cloudoa.framework.flow.dao.BpmConfFieldDao;
+import com.cloudoa.framework.flow.dao.BpmConfFormDao;
+import com.cloudoa.framework.flow.dao.BpmConfLineDao;
+import com.cloudoa.framework.flow.dao.BpmConfNodeDao;
+import com.cloudoa.framework.flow.entity.BpmConfBase;
+import com.cloudoa.framework.flow.entity.BpmConfField;
+import com.cloudoa.framework.flow.entity.BpmConfForm;
+import com.cloudoa.framework.flow.entity.BpmConfLine;
+import com.cloudoa.framework.flow.entity.BpmConfNode;
 import com.cloudoa.framework.orm.Page;
 import com.cloudoa.framework.security.dao.UserDao;
 import com.cloudoa.framework.security.entity.User;
@@ -51,6 +64,17 @@ public class ProcessService {
     private UserDao userDao;
     @Autowired
     private DbConn db;
+    
+    @Autowired
+    private BpmConfBaseDao bpmConfBaseDao;
+    @Autowired
+    private BpmConfNodeDao bpmConfNodeDao;
+    @Autowired
+    private BpmConfLineDao bpmConfLineDao;
+    @Autowired
+    private BpmConfFormDao bpmConfFormDao;
+    @Autowired
+    private BpmConfFieldDao bpmConfFieldDao;
 
     public String startProcess(String userId, String businessKey,
             String processDefinitionId, Map<String, Object> processParameters) {
@@ -117,7 +141,7 @@ public class ProcessService {
     /**
      * 流程定义发布
      */
-    public boolean processDefinitionDeployment(String name,String xml,String tenantId,String category) {
+    public boolean processDefinitionDeployment(String name,String xml,String json,String tenantId,String category) {
     	
     	try {
     		RepositoryService repositoryService = processEngine
@@ -127,6 +151,133 @@ public class ProcessService {
     				xml.getBytes("UTF-8"));
     		Deployment deployment = repositoryService.createDeployment()
     				.addInputStream(name+".bpmn", bais).name(name).category(category).deploy();
+    		ProcessDefinition df = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+    		
+    		/**
+    		 * {
+			    "id": "process1480664770622",
+			    "name": "1111111",
+			    "nodes": [
+			        {
+			            "eventId": "start",
+			            "eventName": "开始",
+			            "type": "Start"
+			        },
+			        {
+			            "eventId": "end",
+			            "eventName": "结束",
+			            "type": "End"
+			        },
+			        {
+			            "cornerWidth": 15,
+			            "cornerHeight": 15,
+			            "lineStroke": 1,
+			            "lastDragStartTime": 0,
+			            "x": 206,
+			            "y": 147,
+			            "width": 131,
+			            "height": 60,
+			            "id": "task1480664778409",
+			            "isMoving": false,
+			            "canSnapToHelper": true,
+			            "timer": -1,
+			            "alpha": 1,
+			            "alphaBeforeOnDrag": 1,
+			            "deleteable": true,
+			            "canDrag": true,
+			            "resizeable": true,
+			            "selectable": true,
+			            "originalHeight": -1,
+			            "taskId": "task1480664778409",
+			            "taskName": "测试",
+			            "exclusive": true,
+			            "isSequential": false,
+			            "nodeType": "only",
+			            "performerType": "candidateUsers",
+			            "dueDate": "",
+			            "priority": "",
+			            "expression": "#{users}",
+			            "isUseExpression": true,
+			            "type": "draw2d.UserTask"
+			        }
+			    ],
+			    "lines": [
+			        {
+			            "sourceId": "start",
+			            "targetId": "task1480664778409",
+			            "lineId": "flow1480664785602",
+			            "lineName": ""
+			        },
+			        {
+			            "sourceId": "task1480664778409",
+			            "targetId": "end",
+			            "lineId": "flow1480664790797",
+			            "lineName": ""
+			        }
+			    ]
+			}
+    		 */
+    		//流程配置
+    		JSONObject process = (JSONObject)JSONObject.parse(json);
+    		BpmConfBase p = new BpmConfBase();
+    		p.setProcessDefinitionId(df.getId());
+    		p.setProcessDefinitionKey(df.getKey());
+    		p.setProcessDefinitionVersion(df.getVersion());
+    		p.setName(df.getName());
+    		bpmConfBaseDao.save(p);
+    		
+    		//节点信息
+    		p.setBpmConfNodes(new HashSet<BpmConfNode>());
+    		JSONArray nodes = process.getJSONArray("nodes");
+    		for(int i=0; i<nodes.size(); i++){
+    			if("draw2d.UserTask".equals(nodes.getJSONObject(i).getString("type"))){
+    				BpmConfNode n = new BpmConfNode();
+        			n.setName(nodes.getJSONObject(i).getString("taskName"));
+        			n.setCode(nodes.getJSONObject(i).getString("taskId"));
+        			n.setType(nodes.getJSONObject(i).getString("nodeType"));
+        			n.setConfListener(nodes.getJSONObject(i).getString("nodeType"));
+        			n.setBpmConfBase(p);
+        			p.getBpmConfNodes().add(n);
+        			bpmConfNodeDao.save(n);
+        			
+        			//表单
+        			String forms = nodes.getJSONObject(i).getString("forms");
+        			if(forms != null && !"".equals(forms)){
+        				String[] ids = forms.split(",");
+        				for(String id : ids){
+        					BpmConfForm f = new BpmConfForm();
+            				f.setBpmConfNode(n);
+            				f.setFormId(Long.valueOf(id));
+            				bpmConfFormDao.save(f);
+        				}
+        			}
+        			
+        			//表单元素
+        			String fields = nodes.getJSONObject(i).getString("fields");
+        			if(forms != null && !"".equals(forms)){
+        				String[] ids = fields.split(",");
+        				for(String id : ids){
+        					BpmConfField f = new BpmConfField();
+            				f.setBpmConfNode(n);
+            				f.setFieldId(Long.valueOf(id));
+            				bpmConfFieldDao.save(f);
+        				}
+        			}
+    			}
+    		}
+    		
+    		//连线
+    		nodes = process.getJSONArray("lines");
+    		for(int i=0; i<nodes.size(); i++){
+    				BpmConfLine n = new BpmConfLine();
+    				n.setBpmConfBase(p);
+    				n.setLineId(nodes.getJSONObject(i).getString("lineId"));
+    				n.setLineName(nodes.getJSONObject(i).getString("lineName"));
+    				n.setSourceId(nodes.getJSONObject(i).getString("sourceId"));
+    				n.setTargetId(nodes.getJSONObject(i).getString("targetId"));
+        			bpmConfLineDao.save(n);
+    		}
+    		
     	} catch (UnsupportedEncodingException e) {
     		e.printStackTrace();
     		return false;
