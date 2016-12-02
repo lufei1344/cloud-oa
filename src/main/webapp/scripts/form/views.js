@@ -146,17 +146,18 @@ FormViews.prototype.formValidate = function(){
 //人员和部门选择对话框
 FormViews.prototype.dialogUser = function(obj,e){
 	var o = new Object();
-	o.ids = $("#"+e.enname+"_ids").val();
-	o.names = $("#"+e.enname).val(); 
+	var $obj = $(obj);
+	o.ids = $("#"+$obj.attr("enname")+"_ids").val();
+	o.names = $("#"+$obj.attr("enname")).val(); 
 	var url = "/web/dialog/findUser.jsp";
-	if(e.extType == "dept"){
+	if($obj.attr("exttype") == "dept"){
 		url = "/web/dialog/findDept.jsp"
 	}
-	var ret=window.showModalDialog(this.ROOT_URL+"/web/dialog/findDept.jsp",o,"dialogHeight:600px;dialogWidth:750px;status:0;");
+	var ret=window.showModalDialog(this.ROOT_URL+url,o,"dialogHeight:500px;dialogWidth:450px;status:0;");
 	if(typeof ret != 'undefined'){
 		//alert(fc);
-		$("#"+e.enname+"_ids").val(ret.ids);
-		$("#"+e.enname).val(ret.names);
+		$("#"+$obj.attr("enname")+"_ids").val(ret.ids);
+		$("#"+$obj.attr("enname")).val(ret.names);
 	}
 }
 //人员控件
@@ -168,7 +169,7 @@ FormViews.prototype.replaceUser = function(e){
 	var $id = $("<input type='hidden'  name='"+e.enname+"_ids' id='"+e.enname+"_ids'/>");
 	var $btn = $("<input type='button' class='btn btn-sm' enname='"+e.enname+"' exttype='user'  value='选择'/>");
 	$btn.click(function(e){
-		this.dialogUser(this,e);
+		formViews.dialogUser(this,e);
 	});
 	$obj.after($btn).after($id);
 	if(this.params.fields.indexOf(e.id)<0){
@@ -198,7 +199,9 @@ FormViews.prototype.replaceDept = function(e){
 	$obj = $("#"+e.enname);
 	var $id = $("<input type='hidden'  name='"+e.enname+"_ids' id='"+e.enname+"_ids'/>");
 	var $btn = $("<input type='button' class='btn btn-sm' enname='"+e.enname+"' exttype='dept'  value='选择'/>");
-	
+	$btn.click(function(e){
+		formViews.dialogUser(this,e);
+	});
 	$obj.after($btn).after($id);
 	if(this.params.fields.indexOf(e.id)<0){
 		$btn.hide();

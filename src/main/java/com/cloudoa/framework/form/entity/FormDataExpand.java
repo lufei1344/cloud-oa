@@ -26,7 +26,6 @@ public class FormDataExpand implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String executionId;
-    private long formId;
     private long fieldId; 
     private String value; 
     private String writer;
@@ -43,12 +42,7 @@ public class FormDataExpand implements Serializable {
 	public void setExecutionId(String executionId) {
 		this.executionId = executionId;
 	}
-	public long getFormId() {
-		return formId;
-	}
-	public void setFormId(long formId) {
-		this.formId = formId;
-	}
+	
 	public long getFieldId() {
 		return fieldId;
 	}

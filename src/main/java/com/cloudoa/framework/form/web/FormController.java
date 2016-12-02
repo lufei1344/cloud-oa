@@ -456,10 +456,10 @@ public class FormController {
 						String v = request.getParameter(tkey[0]);
 						if(v != null && !"".equals(v)){
 							String[] vids = v.split(",");
-							sqls.add("delete from df_form_data_expand where example_id="+executionId+" and element_id="+tkey[1]);
+							sqls.add("delete from df_form_data_expand where execution_id="+executionId+" and field_id="+tkey[1]);
 							for(int j=0; j<vids.length; j++){
 								if(!"".equals(vids[j])){
-									sqls.add("insert into td_example_data_expand(example_id,element_id,writer,value)values("+executionId+","+tkey[1]+",'','"+vids[j]+"')");
+									sqls.add("insert into df_form_data_expand(execution_id,field_id,writer,value)values("+executionId+","+tkey[1]+",'','"+vids[j]+"')");
 								}
 								
 							}
@@ -489,7 +489,12 @@ public class FormController {
 		}
 	}
 	
-	
+	/**
+	 * 多文件控件上传
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(value = "/uploadFormFile")	
 	public String uploadFile(HttpServletRequest request,HttpServletResponse response){
 		try {
@@ -514,6 +519,34 @@ public class FormController {
 	}
 	
 	
+	//用户选择控件
+	@RequestMapping(value = "/findSelUser")	
+	@ResponseBody
+	public Object findSelUser(HttpServletRequest request,HttpServletResponse response){
+		try {
+			String sql = "select id,case when parent_org is null then 0 else parent_org end pid,name,'d' type from sec_org "+
+						 "	union all "+
+						 "select id,case when org is null then 0 else org end pid,fullname name,'u' type from sec_user ";
+			List<Map<String,Object>> list = db.getList(sql, null);
+			return MsgUtils.returnOk("", list);
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			return MsgUtils.returnError(e.getMessage());
+		}
+	}
+	//部门选择控件
+	@RequestMapping(value = "/findSelDept")	
+	@ResponseBody
+	public Object findSelDept(HttpServletRequest request,HttpServletResponse response){
+		try {
+			String sql = "select id,case when parent_org is null then 0 else parent_org end pid,name,'d' type from sec_org ";
+			List<Map<String,Object>> list = db.getList(sql, null);
+			return MsgUtils.returnOk("", list);
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			return MsgUtils.returnError(e.getMessage());
+		}
+	}
 	//用户部门选择控件数据
 	@RequestMapping(value = "/findUserData")	
 	@ResponseBody
