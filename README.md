@@ -15,8 +15,10 @@ Cloud-oa是一个工作流管理平台，包含表单定制，流程设置等。
 部分截图展示
 
 表单配置
-<img width="100" src="https://github.com/lufei1344/cloud-oa/raw/master/pic/formconf.png">
+<img width="100%" src="https://github.com/lufei1344/cloud-oa/raw/master/pic/formconf.png">
+
 流程配置
-<img width="100" src="https://github.com/lufei1344/cloud-oa/raw/master/pic/flowconf.png">
+<img width="100%" src="https://github.com/lufei1344/cloud-oa/raw/master/pic/flowconf.png">
+
 表单显示
-<img width="100" src="https://github.com/lufei1344/cloud-oa/raw/master/pic/form.png">
+<img width="100%" src="https://github.com/lufei1344/cloud-oa/raw/master/pic/form.png">
