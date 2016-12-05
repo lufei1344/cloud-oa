@@ -11,9 +11,13 @@ draw2d.UserTask=function(configPropCallback){
 	this.candidateGroups=new draw2d.ArrayList();
 	this.formProperties=new draw2d.ArrayList();
 	this.taskListeners=new draw2d.ArrayList();
-	this.forms = new draw2d.ArrayList();
-	this.fields = new draw2d.ArrayList();
+	
 	this.setTitle("用户任务");
+	//扩展属性
+	this.forms = "";
+	this.fields = "";
+	this.listener = "";
+	this.rule = ""
 };
 draw2d.UserTask.prototype=new draw2d.Task();
 draw2d.UserTask.prototype.type="draw2d.UserTask";

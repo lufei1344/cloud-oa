@@ -47,7 +47,7 @@
     		$.getJSON(url,function(redata){
     			if(redata.status){
     				viewsdata = redata.obj;
-    				formViews = new FormViews(viewsdata,params,ROOT_URL,redata.obj.user);
+    				formViews = new FormViews(taskOperation,viewsdata,params,ROOT_URL,redata.obj.user);
     				var forms = redata.obj.forms;
     				var title = "";
         			var content = "";
@@ -93,7 +93,7 @@
                        <h5>任务处理 
 	                       <small class="m-l-sm">
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="formViews.saveData()">保存草稿</button> 
-	                       <button type="button" class="btn btn-sm btn-primary" onclick="taskOperation.completeTask()">完成任务</button> 
+	                       <button type="button" class="btn btn-sm btn-primary" onclick="formViews.completeTask()">完成任务</button> 
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">回退（上一步）</button> 
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">回退（发起人）</button> 
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">转办</button> 

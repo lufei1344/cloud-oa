@@ -40,7 +40,7 @@ public class BpmConfNode implements java.io.Serializable {
     private String confListener;
 
     /** 配置规则. */
-    private Integer confRule;
+    private String confRule;
 
    
 
@@ -53,9 +53,7 @@ public class BpmConfNode implements java.io.Serializable {
     /** 排序. */
     private Integer priority;
 
-    /** . */
-    private Set<BpmConfListener> bpmConfListeners = new HashSet<BpmConfListener>(
-            0);
+  
 
     /** . */
     private Set<BpmConfNotice> bpmConfNotices = new HashSet<BpmConfNotice>(0);
@@ -73,9 +71,7 @@ public class BpmConfNode implements java.io.Serializable {
     /** . */
     private Set<BpmConfForm> bpmConfForms = new HashSet<BpmConfForm>(0);
 
-    /** . */
-    private Set<BpmConfRule> bpmConfRules = new HashSet<BpmConfRule>(0);
-
+  
     /** . */
     private Set<BpmConfOperation> bpmConfOperations = new HashSet<BpmConfOperation>(
             0);
@@ -180,23 +176,19 @@ public class BpmConfNode implements java.io.Serializable {
 		this.confListener = confListener;
 	}
 
-	/** @return 配置规则. */
-    @Column(name = "CONF_RULE")
-    public Integer getConfRule() {
-        return this.confRule;
-    }
-
-    /**
-     * @param confRule
-     *            配置规则.
-     */
-    public void setConfRule(Integer confRule) {
-        this.confRule = confRule;
-    }
+	
 
    
 
-    /** @return 配置操作. */
+    public String getConfRule() {
+		return confRule;
+	}
+
+	public void setConfRule(String confRule) {
+		this.confRule = confRule;
+	}
+
+	/** @return 配置操作. */
     @Column(name = "CONF_OPERATION")
     public Integer getConfOperation() {
         return this.confOperation;
@@ -238,20 +230,7 @@ public class BpmConfNode implements java.io.Serializable {
         this.priority = priority;
     }
 
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmConfNode")
-    public Set<BpmConfListener> getBpmConfListeners() {
-        return this.bpmConfListeners;
-    }
-
-    /**
-     * @param bpmConfListeners
-     *            .
-     */
-    public void setBpmConfListeners(Set<BpmConfListener> bpmConfListeners) {
-        this.bpmConfListeners = bpmConfListeners;
-    }
-
+   
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmConfNode")
     public Set<BpmConfNotice> getBpmConfNotices() {
@@ -323,19 +302,7 @@ public class BpmConfNode implements java.io.Serializable {
         this.bpmConfForms = bpmConfForms;
     }
 
-    /** @return . */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmConfNode")
-    public Set<BpmConfRule> getBpmConfRules() {
-        return this.bpmConfRules;
-    }
-
-    /**
-     * @param bpmConfRules
-     *            .
-     */
-    public void setBpmConfRules(Set<BpmConfRule> bpmConfRules) {
-        this.bpmConfRules = bpmConfRules;
-    }
+   
 
     /** @return . */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bpmConfNode")

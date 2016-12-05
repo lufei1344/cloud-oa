@@ -55,6 +55,10 @@
     <SCRIPT src='${ctx}/scripts/wfdesigner/js/draw2d/moocanvas.js'></SCRIPT>                        
     <SCRIPT src='${ctx}/scripts/wfdesigner/js/draw2d/draw2d.js'></SCRIPT>
 
+ 	<!-- ztree -->
+    <link href="${pageContext.request.contextPath}/scripts/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
+	<script src="${pageContext.request.contextPath}/scripts/zTreeStyle/jquery.ztree.all-3.1.min.js" type="text/javascript"></script>
+	<script src="${pageContext.request.contextPath}/web/dialog/search.js" type="text/javascript"></script>
 
     <!-- example specific imports -->
     <SCRIPT src="${ctx}/scripts/wfdesigner/js/designer/MyCanvas.js"></SCRIPT>

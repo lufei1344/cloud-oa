@@ -36,12 +36,13 @@
     		var url = "${ctx}/flow/task/tonext";
     		var data = {processDefinitionId:params.processDefinitionId,activityId:params.activityId};
     		$.getJSON(url,data,function(redata){
+    			//type : only单人,more多人,multi会签
     			var nodes = redata.obj;
     			var title = "";
     			var users = "";
     			for(var i=0; i<nodes.length; i++){
     				if(i == 0){
-    					title +='<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true" id="'+nodes[i].id+'" multiInstance="'+nodes[i].multiInstance+'">'+nodes[i].name+'</a>'+
+    					title +='<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true" id="'+nodes[i].id+'" type="'+nodes[i].type+'">'+nodes[i].name+'</a>'+
 	                        	'</li>'
 	                    users +='<div id="tab-1" class="tab-pane active">'+
 			                    '        <div class="full-height-scroll">'+
@@ -54,7 +55,7 @@
 			                    
                         users += '  </tbody></table></div></div></div>';
     				}else{
-    					title +='<li><a data-toggle="tab" href="#tab-'+(i+1)+'" aria-expanded="true" id="'+nodes[i].id+'"  multiInstance="'+nodes[i].multiInstance+'">'+nodes[i].name+'</a>'+
+    					title +='<li><a data-toggle="tab" href="#tab-'+(i+1)+'" aria-expanded="true" id="'+nodes[i].id+'"  type="'+nodes[i].type+'">'+nodes[i].name+'</a>'+
                     			'</li>'
 		                users +='<div id="tab-'+(i+1)+'" class="tab-pane">'+
 			                    '        <div class="full-height-scroll">'+
@@ -95,7 +96,7 @@
     		}
     		data.taskId = params.taskId;
     		data.activityId = $node.attr("id");
-    		data.multiInstance = $node.attr("multiInstance");
+    		data.type = $node.attr("type");
     		data.users = users.join(",");
     		data.next = $node.text();
     		var url = "${ctx}/flow/task/next";

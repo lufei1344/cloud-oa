@@ -64,8 +64,16 @@
     	});
     	
     	function showViews(taskId,executionId,processInstanceId,processDefinitionId,activityId){
-    		var url = "${ctx}/web/views.jsp?taskId="+taskId+"&executionId="+executionId+"&forms=&fields=&processInstanceId="+processInstanceId+"&processDefinitionId="+processDefinitionId+"&activityId="+activityId;
-			window.open(url);
+    		var data = {processDefinitionId:processDefinitionId,activityId:activityId};
+    		$.getJSON("${ctx}/flow/task/openViews",data,function(redata){
+    			if(redata.status){
+    				var url = "${ctx}/web/views.jsp?taskId="+taskId+"&executionId="+executionId+"&forms="+redata.obj.forms+"&fields="+redata.obj.fields+"&processInstanceId="+processInstanceId+"&processDefinitionId="+processDefinitionId+"&activityId="+activityId;
+        			window.open(url);
+    			}else{
+    				alert("服务器错误");
+    			}
+    			
+    		});
     	}
     </script>
 </head>

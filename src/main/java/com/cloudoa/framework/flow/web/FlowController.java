@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import com.cloudoa.framework.flow.service.ProcessService;
 import com.cloudoa.framework.orm.Page;
 import com.cloudoa.framework.orm.PropertyFilter;
+import com.cloudoa.framework.utils.DbConn;
 import com.cloudoa.framework.utils.MsgUtils;
 
 /**
@@ -41,6 +43,9 @@ public class FlowController {
 
     @Autowired
     private ProcessService processService;
+    
+    @Autowired
+    private DbConn db;
     
     /**
      * 流程定义列表
@@ -126,6 +131,24 @@ public class FlowController {
         return MsgUtils.returnOk("");
     }
    
+    /**
+     * 流程表单设置
+     * @param model
+     * @param page
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="forms", method = RequestMethod.GET)
+    @ResponseBody
+    public Object forms(HttpServletRequest request) {
+    	String sql = "select concat('type_',code) id,code oid,name,0 pid, 'type' type,'' enname from conf_dictitem where dictionary=3 "+
+					 "	union all "+
+					 "	select concat('form_',id) id,id oid,display_name name,concat('type_',form_type) pid,'form' type,'' enname from df_form "+
+					 "	union ALL "+
+					 "	select id,id oid,cnname name,concat('form_',form_id) pid,'field' type,enname from df_field ";
+    	List<Map<String,Object>> list = db.getList(sql, null);
+    	return MsgUtils.returnOk("", list);
+    }
     /**
      * 流程部署列表
      * @param model

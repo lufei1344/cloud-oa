@@ -235,7 +235,8 @@ public class ProcessService {
         			n.setName(nodes.getJSONObject(i).getString("taskName"));
         			n.setCode(nodes.getJSONObject(i).getString("taskId"));
         			n.setType(nodes.getJSONObject(i).getString("nodeType"));
-        			n.setConfListener(nodes.getJSONObject(i).getString("nodeType"));
+        			n.setConfListener(nodes.getJSONObject(i).getString("listener"));
+        			n.setConfRule(nodes.getJSONObject(i).getString("rule"));
         			n.setBpmConfBase(p);
         			p.getBpmConfNodes().add(n);
         			bpmConfNodeDao.save(n);
@@ -360,12 +361,32 @@ public class ProcessService {
      * @return [{id:id,name:name,users:[]}]
      */
     public List<Map<String,Object>> findProcessInstanceNextNode(String processDefinitionId,String activityId){
-    	FindNextActivitiesCmd cmd = new FindNextActivitiesCmd(
-                processDefinitionId, activityId);
-
-    	List<PvmActivity> pvmActivities = processEngine.getManagementService().executeCommand(cmd);
+    	//FindNextActivitiesCmd cmd = new FindNextActivitiesCmd(
+        //        processDefinitionId, activityId);
+    	//List<PvmActivity> pvmActivities = processEngine.getManagementService().executeCommand(cmd);
+        String sql = "SELECT * "+
+					"	FROM "+
+					"		bpm_conf_node "+
+					"	WHERE "+
+					"		CODE IN ( "+
+					"			SELECT "+
+					"				target_id "+
+					"			FROM "+
+					"				bpm_conf_line "+
+					"			WHERE "+
+					"				source_id = '"+activityId+"'"+
+					"			AND conf_base_id = ("+
+					"				SELECT"+
+					"					id"+
+					"				FROM"+
+					"					bpm_conf_base"+
+					"				WHERE "+
+					"					process_definition_id = '"+processDefinitionId+"'"+
+					"			)"+
+					"		)";        
+    	List<Map<String,Object>> list = db.getList(sql, null);
     	List<Map<String,Object>> nodes = new ArrayList<Map<String,Object>>();
-		for (PvmActivity pvmActivity : pvmActivities) {
+/*		for (PvmActivity pvmActivity : list) {
             Map<String,Object> node = new HashMap<String,Object>();
             node.put("id", pvmActivity.getId());
             node.put("name", pvmActivity.getProperty("name"));
@@ -373,6 +394,15 @@ public class ProcessService {
             node.put("users", this.findNodeUser(pvmActivity.getId()));//该节点可以处理的用户,先测试用，以后改为配置
             nodes.add(node);
         }
+*/		for (Map<String,Object> m : list) {
+			Map<String,Object> node = new HashMap<String,Object>();
+			node.put("id", m.get("code"));
+			node.put("name", m.get("name"));
+			node.put("type", m.get("type"));
+			node.put("rule", m.get("rule"));
+			node.put("users", this.findNodeUser(m.get("code").toString()));//该节点可以处理的用户,先测试用，以后改为配置
+			nodes.add(node);
+		}
 		return nodes;
     }
     
@@ -388,6 +418,39 @@ public class ProcessService {
     		 users.add(u);
     	}
     	return users;
+    }
+    //获取节点表单
+    public String findNodeForm(String processDefinitionId,String activityId){
+    	String sql = "select form_id from bpm_conf_form where node_id=(select id from bpm_conf_node where code='"+activityId+"' and conf_base_id = ("+
+					"	SELECT id FROM bpm_conf_base	WHERE process_definition_id = '"+processDefinitionId+"'"+
+					"))";
+    	List<Map<String,Object>> list = db.getList(sql, null);
+    	String forms = "";
+    	for (Map<String,Object> m : list) {
+    		if("".equals(forms)){
+    			forms += m.get("form_id");
+    		}else{
+    			forms += "," + m.get("form_id");
+    		}
+    		
+		}
+    	return forms;
+    }
+    //获取节点元素
+    public String findNodeField(String processDefinitionId,String activityId){
+    	String sql = "select field_id from bpm_conf_field where node_id=(select id from bpm_conf_node where code='"+activityId+"' and conf_base_id = ("+
+				"	SELECT id FROM bpm_conf_base	WHERE process_definition_id = '"+processDefinitionId+"'"+
+				"))";
+		List<Map<String,Object>> list = db.getList(sql, null);
+		String forms = "";
+		for (Map<String,Object> m : list) {
+			if("".equals(forms)){
+    			forms += m.get("field_id");
+    		}else{
+    			forms += "," + m.get("field_id");
+    		}
+		}
+		return forms;
     }
    /**
     * 任务处理

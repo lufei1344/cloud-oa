@@ -75,8 +75,8 @@ public class TaskController {
     	Map<String,Object> obj = new HashMap<String,Object>();
     	obj.put("activityId", activityId);
     	obj.put("processDefinitionId", processDefinitionId);
-    	obj.put("forms", new String[]{"1","2"});
-    	obj.put("fields", new String[]{"1","2"});
+    	obj.put("forms", processService.findNodeForm(processDefinitionId, activityId));
+    	obj.put("fields", processService.findNodeField(processDefinitionId, activityId));
     	return MsgUtils.returnOk("",obj);
     }
     /**
@@ -103,10 +103,10 @@ public class TaskController {
     public Object next(String taskId,String executionId,String title, HttpServletRequest request) {
     	String users = request.getParameter("users");
     	String next = request.getParameter("next");
-    	String multiInstance = request.getParameter("multiInstance");
+    	String type = request.getParameter("type");
     	Map<String,Object> vars = new HashMap<String,Object>();
     	vars.put("users", users);//提交的人员
-    	if("1".equals(multiInstance)){
+    	if("multi".equals(type)){//only单人,more多人,multi会签
     		//会签
     		String[] sus = users.split(",");
     		List<String> us = new ArrayList<String>();

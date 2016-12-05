@@ -88,12 +88,14 @@ function isArray(o) {
  * @param sysValue   系统变量
  * @returns
  */
-FormViews = function(viewsdata,params,ROOT_URL,sysValue) {
+FormViews = function(taskOperation,viewsdata,params,ROOT_URL,sysValue) {
+	this.taskOperation = taskOperation;
 	this.viewsdata = viewsdata;
 	this.params = params;
 	this.fields = params.fields;
 	this.ROOT_URL = ROOT_URL;
 	this.sysValue = sysValue; 
+	this.submitState = "data";
 };
 
 //保存
@@ -134,10 +136,36 @@ FormViews.prototype.saveData = function() {
 	form.action = this.ROOT_URL+"/form/saveFormData";
 	form.submit();
 };
+FormViews.prototype.completeTask = function(){
+	this.submitState = "task";
+	this.saveData();
+}
 FormViews.prototype.saveDataCallBack = function(redata) {
 	if(redata.status){
-		layer.msg("保存成功！");
+		if(this.submitstate == "data"){
+			layer.msg("保存成功！");
+		}else{//下一步
+			this.taskOperation.completeTask();
+		}
+	}else{
+		layer.msg(redata.msg);
 	}
+};
+//获取表单数据
+FormViews.prototype.getFormData = function(){
+	var o = {};
+	var a = $("#form").serializeArray();
+	$.each(a, function () {
+		if (o[this.name] !== undefined) {
+			if (!o[this.name].push) {
+				o[this.name] = [o[this.name]];
+			}
+			o[this.name].push(this.value || '');
+		} else {
+			o[this.name] = this.value || '';
+		}
+	});
+	return o;
 };
 //校验
 FormViews.prototype.formValidate = function(){
@@ -145,13 +173,13 @@ FormViews.prototype.formValidate = function(){
 	var forms = this.viewsdata.forms; 
 	Outer:
 	for(var i=0; i<forms.length; i++){
-		if(!b){
+		if(!ret){
 			break;
 		}
 		var form = forms[i];
 		for(var v =0; v<form.fields.length; v++){
 			var e = form.fields[v];
-			if(b && typeof e.validate != "undefined" && e.validate != ""){
+			if(ret && typeof e.validate != "undefined" && e.validate != ""){
 				e.validate = string2Object(e.validate);
 				var val = $("#"+e.enname).val();
 				for(var n=0; n<e.validate.length; n++){
@@ -337,11 +365,11 @@ FormViews.prototype.getDictData = function(sql){
 }
 //获取本表单值
 FormViews.prototype.getBbdValue = function(e){
-	
+	return "";
 }
 //获取应用表单值
 FormViews.prototype.getYybdValue = function(e){
-	
+	return "";
 }
 //获取系统变量值
 FormViews.prototype.getSysValue = function(key){
@@ -379,13 +407,13 @@ FormViews.prototype.setDefalutValue = function(e){
 					exp += o.key;
 				}
 				if(o.type == "xtbl"){//系统变量
-					exp += "";
+					exp += "'"+this.getSysValue(o.key)+"'";
 				}
 				if(o.type == "bbd"){//本表单
-					exp += "";
+					exp += "'"+this.getBbdValue(o.key)+"'";
 				}
 				if(o.type == "yybd"){//引用表单
-					exp += "";
+					exp += "'"+this.getYybdValue(o.key)+"'";
 				}
 			}
 			if(exp != ""){
@@ -411,7 +439,12 @@ FormViews.prototype.initForms = function() {
 			e = this.setDefalutValue(e);
 			//日期
 			if(e.dataType == "date"){
-				obj.onclick = function(){laydate({istime: true, format: this.getAttribute("dateformat")})};
+				obj.onclick = function(){
+						var df = this.getAttribute("dateformat");
+						//YYYY-MM-DD hh:mm:ss,yyyy年MM月dd日 HH时mm分ss秒格式与laydate格式不一直要转换
+						df = df.replace("yyyy","YYYY").replace("dd","DD").replace("HH","hh");
+						laydate({istime: true, format: df});
+					};
 				//赋值
 				if(typeof e[e.dataType+"Value"] != 'undefined' && e[e.dataType+"Value"] != ""){
 					var vvv = e[e.dataType+"Value"].substring(0,19);
@@ -580,17 +613,16 @@ FormViews.prototype.initForms = function() {
 			
 		
 			
-			/**
+			
 			//只读
-			if(fields.indexOf(e.id)>=0){
+			if(this.params.fields.indexOf(e.id)<0){
 				obj.disabled = true;
 				//obj.readOnly = true;
-				readonlyeles_id.push(e.e_English_Name);
-				if(e.e_ShowType == "checkbox" || e.e_ShowType == "radio"){
-					$("input[name='"+e.e_English_Name+"']").attr("disabled",true);
+				if(e.extType == "checkbox" || e.extType == "radio"){
+					$("input[name='"+e.enname+"']").attr("disabled",true);
 				}
 			}
-			*/
+			
 			//会签,改为会签控件，流程不在控制
 			/*
 			if(mutiEles.indexOf(e.id)>=0){

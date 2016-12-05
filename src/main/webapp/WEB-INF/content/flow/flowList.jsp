@@ -121,8 +121,18 @@
         	var data = {id:id};
         	$.getJSON(url,data,function(redata){
         		if(redata.status){
-        			var url = "${ctx}/web/views.jsp?taskId="+redata.obj.taskId+"&executionId="+redata.obj.executionId+"&forms=&fields=&processInstanceId="+redata.obj.processInstanceId+"&processDefinitionId="+redata.obj.processDefinitionId+"&activityId="+redata.obj.activityId;
-        			window.open(url);
+        			//var url = "${ctx}/web/views.jsp?taskId="+redata.obj.taskId+"&executionId="+redata.obj.executionId+"&forms=&fields=&processInstanceId="+redata.obj.processInstanceId+"&processDefinitionId="+redata.obj.processDefinitionId+"&activityId="+redata.obj.activityId;
+        			//window.open(url);
+        			var data = {processDefinitionId:redata.obj.processDefinitionId,activityId:redata.obj.activityId};
+            		$.getJSON("${ctx}/flow/task/openViews",data,function(rdata){
+            			if(rdata.status){
+            				var url = "${ctx}/web/views.jsp?taskId="+redata.obj.taskId+"&executionId="+redata.obj.executionId+"&forms="+rdata.obj.forms+"&fields="+rdata.obj.fields+"&processInstanceId="+redata.obj.processInstanceId+"&processDefinitionId="+redata.obj.processDefinitionId+"&activityId="+redata.obj.activityId;
+                			window.open(url);
+            			}else{
+            				alert("服务器错误");
+            			}
+            			
+            		});
         		}else{
         			alert(redata.msg);
         		}

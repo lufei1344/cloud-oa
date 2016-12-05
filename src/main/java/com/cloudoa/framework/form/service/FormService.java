@@ -74,6 +74,7 @@ public class FormService {
 						b.setCnname(e.attr("cnname"));
 						b.setEnname(e.attr("enname"));
 						b.setDataType("".equals(e.attr("datatype")) || e.attr("datatype") == null ? "char" : e.attr("datatype"));
+						b.setDateFormat(e.attr("dateformat"));
 						b.setShowType(e.attr("showtype"));
 						b.setExtType(e.attr("exttype"));
 						b.setValidate(e.attr("validate"));

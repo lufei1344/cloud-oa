@@ -17,7 +17,7 @@ jq(function(){
 		}
 	});
 	_form_win = jq('#form-win').window({
-		href:ROOT_URL+'/scripts/wfdesigner/wf/designer/forms.html',   
+		href:ROOT_URL+'/scripts/wfdesigner/wf/designer/forms.jsp',   
 	    closed:true,
 	    //cache:false,
 	    draggable:true,
@@ -27,8 +27,9 @@ jq(function(){
 	    modal:true,
 	    shadow:true
 	});
-	_field_win = jq('#field-win').window({
-		href:ROOT_URL+'/scripts/wfdesigner/wf/designer/fields.html',   
+	
+	_rule_win = jq('#rule-win').window({
+		href:ROOT_URL+'/scripts/wfdesigner/wf/designer/rules.jsp',   
 	    closed:true,
 	    //cache:false,
 	    draggable:true,
@@ -38,14 +39,17 @@ jq(function(){
 	    modal:true,
 	    shadow:true
 	});
+
 	populateTaskProperites();
 });
 function dialogForm(){
 	_form_win.window("open");
+	refreshTree();
 }
-function dialogField(){
-	_field_win.window("open");
+function dialogRule(){
+	_rule_win.window("open");
 }
+
 function saveTaskProperties(){
 	task.taskId=jq('#id').val();
 	task.taskName=jq('#name').val();
@@ -66,6 +70,8 @@ function saveTaskProperties(){
 	//附件属性
 	task.forms=jq('#forms').val();
 	task.fields=jq('#fields').val();
+	task.listener=jq('#listener').val();
+	task.rule=jq('#rule').val();
 	jq.messager.alert('信息','保存成功!','info');
 }
 function populateTaskProperites(){
@@ -75,6 +81,12 @@ function populateTaskProperites(){
 	jq('#name').val(task.taskName);
 	jq('#dueDate').val(task.dueDate);
 	jq('#priority').val(task.priority);
+	
+	//附件属性
+	jq('#forms').val(task.forms);
+	jq('#fields').val(task.fields);
+	jq('#listener').val(task.listener);
+	jq('#rule').val(task.rule);
 }
 
 function loadTaskFormProperties(){
@@ -137,6 +149,13 @@ function loadTaskFormProperties(){
 					<td><input type="text" id="listener" name="listener" value=""/></td>
 				</tr>
 				<tr>
+					<td align="right">进入条件:</td>
+					<td>
+						<textarea id="rule" name="rule"></textarea>
+						<input type="button"  value="设置" onclick="dialogRule(this)"/>
+					</td>
+				</tr>
+				<tr>
 					<td align="right">人员:</td>
 					<td>
 						<select id="nodeType" name="nodeType">
@@ -151,7 +170,7 @@ function loadTaskFormProperties(){
 				</tr>
 				<tr>
 					<td align="right">岗位:</td>
-					<td><input type="text" id="forms" name="post" value=""/><input type="button"  value="选择" onclick="dialogForm(this)"/></td>
+					<td><input type="text" id="post" name="post" value=""/><input type="button"  value="选择" onclick="dialogForm(this)"/></td>
 				</tr>
 				<tr>
 					<td colspan="2" style="text-align: center;">表单配置</td>
@@ -162,7 +181,7 @@ function loadTaskFormProperties(){
 				</tr>
 				<tr>
 					<td align="right">元素:</td>
-					<td><input type="text" id="fields" name="fields" value=""/><input type="button"  value="选择" onclick="dialogField(this)"/></td>
+					<td><input type="text" id="fields" name="fields" value=""/><input type="button"  value="选择" onclick="dialogForm(this)"/></td>
 				</tr>
 				</table>
 			</div>
