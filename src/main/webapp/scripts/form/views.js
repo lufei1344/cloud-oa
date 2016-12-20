@@ -425,6 +425,17 @@ FormViews.prototype.setDefalutValue = function(e){
 	}
 	return e;
 }
+//设置表单状态 ,openType 1处理，openType 2查看,-1admin编辑
+FormViews.prototype.setOpenType = function() {
+	if(params.openType == -1){
+		
+	}
+	if(params.openType == "2"){
+		$("#content").find("input").attr("disabled","disabled");
+		$("#content").find("textarea").attr("disabled","disabled");
+	}
+};
+//初始化表单
 FormViews.prototype.initForms = function() {
 	var forms = this.viewsdata.forms; 
 	for(var i=0; i<forms.length; i++){

@@ -436,6 +436,23 @@ public class ProcessService {
 		}
     	return forms;
     }
+    //获取节点表单
+    public String findNodeForm(String processDefinitionId){
+    	String sql = "select distinct form_id from bpm_conf_form where node_id in (select id from bpm_conf_node where  conf_base_id = ("+
+    			"	SELECT id FROM bpm_conf_base	WHERE process_definition_id = '"+processDefinitionId+"'"+
+    			"))";
+    	List<Map<String,Object>> list = db.getList(sql, null);
+    	String forms = "";
+    	for (Map<String,Object> m : list) {
+    		if("".equals(forms)){
+    			forms += m.get("form_id");
+    		}else{
+    			forms += "," + m.get("form_id");
+    		}
+    		
+    	}
+    	return forms;
+    }
     //获取节点元素
     public String findNodeField(String processDefinitionId,String activityId){
     	String sql = "select field_id from bpm_conf_field where node_id=(select id from bpm_conf_node where code='"+activityId+"' and conf_base_id = ("+
@@ -507,7 +524,7 @@ public class ProcessService {
     /**
      * 已结流程.
      */
-    public Page findCompletedProcessInstances(String userId, String tenantId,
+    public Page findCompletedProcessInstances(String userId,
             Page page) {
         HistoryService historyService = processEngine.getHistoryService();
 
@@ -545,7 +562,7 @@ public class ProcessService {
     }
 
     /**
-     * 代领任务（组任务）.
+     * 待办任务（个人任务）.
      */
     public Page findGroupTasks(String userId, String tenantId, Page<Map<String,Object>> page) {
         /*TaskService taskService = processEngine.getTaskService();
@@ -588,108 +605,75 @@ public class ProcessService {
     /**
      * 已办任务（历史任务）.
      */
-    public Page findHistoryTasks(String userId, String tenantId, Page page) {
-        HistoryService historyService = processEngine.getHistoryService();
-
-        long count = historyService.createHistoricTaskInstanceQuery()
-                .taskAssignee(userId).finished().count();
-        List<HistoricTaskInstance> historicTaskInstances = historyService
-                .createHistoricTaskInstanceQuery()
-                .taskAssignee(userId).finished()
-                .listPage((int) page.getStart(), page.getPageSize());
-        page.setResult(historicTaskInstances);
-        page.setTotalCount(count);
-
-        return page;
+    public Page findHistoryTasks(String userId, Page page) {
+    	String sql = "select distinct"+
+				"		res.id_ as id,"+
+				"		res.execution_id_ as executionId,"+
+				"		res.proc_def_id_ as processDefinitionId,"+
+				"		res.name_ as name,"+
+				"		res.task_def_key_ as activityId,"+
+				"		res.start_time_ as starttime,"+
+				"		res.end_time_ as endtime,"+
+				"		e.start_time_ as estarttime,"+
+				"		e.end_time_ as eendtime,"+
+				"		res.proc_inst_id_ as processInstanceId,"+
+				 "		e.name_ as title,u.fullname,u.id as userid"+
+				"	from"+
+				"		act_hi_taskinst res"+
+				"	inner join act_hi_identitylink i on i.task_id_ = res.id_"+
+				"	inner join act_hi_procinst e on res.execution_id_=e.id_"+
+				"	inner join sec_user u on i.user_id_=u.id"+
+				"	where"+
+				"		res.assignee_ is null"+
+				"	and i.type_ = 'candidate'"+
+				"	and i.user_id_ = "+userId+
+				"	order by"+
+				"		res.id_ asc";
+    	page = db.getPage(page, new StringBuffer(sql), null);
+    	return page;
     }
 
-    /**
-     * 代理中的任务（代理人还未完成该任务）.
-     */
-    public Page findDelegatedTasks(String userId, String tenantId, Page page) {
-        TaskService taskService = processEngine.getTaskService();
-
-        long count = taskService.createTaskQuery()
-                .taskOwner(userId).taskDelegationState(DelegationState.PENDING)
-                .count();
-        List<Task> tasks = taskService.createTaskQuery()
-                .taskOwner(userId).taskDelegationState(DelegationState.PENDING)
-                .listPage((int) page.getStart(), page.getPageSize());
-        page.setResult(tasks);
-        page.setTotalCount(count);
-
-        return page;
-    }
-
-    /**
-     * 同时返回已领取和未领取的任务.
-     */
-    public Page findCandidateOrAssignedTasks(String userId, String tenantId,
-            Page page) {
-        TaskService taskService = processEngine.getTaskService();
-
-        long count = taskService.createTaskQuery()
-                .taskCandidateUser(userId).count();
-        List<Task> tasks = taskService.createTaskQuery()
-                .taskCandidateUser(userId)
-                .listPage((int) page.getStart(), page.getPageSize());
-        page.setResult(tasks);
-        page.setTotalCount(count);
-
-        return page;
-    }
+   
 
     
 
     /**
      * 流程实例.
      */
-    public Page findProcessInstances(String tenantId, Page page) {
-        RuntimeService runtimeService = processEngine.getRuntimeService();
-        long count = runtimeService.createProcessInstanceQuery()
-                .count();
-        List<ProcessInstance> processInstances = runtimeService
-                .createProcessInstanceQuery()
-                .listPage((int) page.getStart(), page.getPageSize());
-        page.setResult(processInstances);
-        page.setTotalCount(count);
-
-        return page;
+    public Page findProcessInstances(Page page,String userid,String state) {
+    	String sql = "SELECT"+
+					"	id_ id,proc_def_id_ processDefinitionId,start_time_ starttime,end_time_ endtime,name_ title "+
+					" FROM"+
+					"	act_hi_procinst a where 1=1";
+    	if(userid != null && !"".equals(userid)){
+    		sql += " and "+
+					"	EXISTS ("+
+					"		SELECT"+
+					"			'x'"+
+					"		FROM"+
+					"			act_hi_identitylink b"+
+					"		WHERE"+
+					"			b.user_id_ = '1'"+
+					"		AND b.type_ = 'participant'"+
+					"		AND b.proc_inst_id_ = a.proc_inst_id_"+
+					"	)";
+    	}
+    	if(state != null && !"".equals(state)){
+    		if("1".equals(state)){//完结
+    			sql += " and a.end_time_ is not null";
+    		}
+    		if("0".equals(state)){//完结
+    			sql += " and a.end_time_ is  null";
+    		}
+    	}
+					
+    	page = db.getPage(page, new StringBuffer(sql), null);
+    	return page;
     }
 
-    /**
-     * 任务.
-     */
-    public Page findTasks(String tenantId, Page page) {
-        TaskService taskService = processEngine.getTaskService();
-        long count = taskService.createTaskQuery()
-                .count();
-        List<Task> tasks = taskService.createTaskQuery()
-                .listPage((int) page.getStart(), page.getPageSize());
-        page.setResult(tasks);
-        page.setTotalCount(count);
-
-        return page;
-    }
+   
 
     
-
-    /**
-     * 历史流程实例.
-     */
-    public Page findHistoricProcessInstances(String tenantId, Page page) {
-        HistoryService historyService = processEngine.getHistoryService();
-
-        long count = historyService.createHistoricProcessInstanceQuery()
-                .count();
-        List<HistoricProcessInstance> historicProcessInstances = historyService
-                .createHistoricProcessInstanceQuery()
-                .listPage((int) page.getStart(), page.getPageSize());
-        page.setResult(historicProcessInstances);
-        page.setTotalCount(count);
-
-        return page;
-    }
 
     /**
      * 历史节点.

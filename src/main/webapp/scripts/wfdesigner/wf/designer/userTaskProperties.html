@@ -5,6 +5,7 @@
 //var task = workflow.getFigure(tid);
 var listenerId="";
 var formPropertyId="";
+var _rule_win;
 jq(function(){
 	jq('#task-properties-accordion').accordion({
 		onSelect:function(title,index){
@@ -47,7 +48,8 @@ function dialogForm(){
 	refreshTree();
 }
 function dialogRule(){
-	_rule_win.window("open");
+	_rule_win.window('open');
+	_rule_win.window('refresh',ROOT_URL+'/scripts/wfdesigner/wf/designer/rules.jsp');
 }
 
 function saveTaskProperties(){
@@ -152,7 +154,7 @@ function loadTaskFormProperties(){
 					<td align="right">进入条件:</td>
 					<td>
 						<textarea id="rule" name="rule"></textarea>
-						<input type="button"  value="设置" onclick="dialogRule(this)"/>
+						<input type="button"  value="设置" id="ruledig" onclick="dialogRule(this)"/>
 					</td>
 				</tr>
 				<tr>

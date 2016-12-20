@@ -93,6 +93,9 @@ draw2d.Task.prototype.createHTMLElement = function() {
 	
 	return item;
 };
+draw2d.Task.prototype.setTitleColor = function(color){
+	this.textarea.style.color=color;
+};
 draw2d.Task.prototype.setDimension = function(w, h) {
 	try{
 		draw2d.Node.prototype.setDimension.call(this, w, h);
@@ -155,9 +158,15 @@ draw2d.Task.prototype.setCanDrag = function(flag) {
 		return;
 	}
 	if (flag) {
+		
 		this.header.style.cursor = "move";
 	} else {
 		this.header.style.cursor = "";
+		var p = this.ports;
+		for(var i=0; i<p.size; i++){
+			p.get(i).setVisible(false); 
+		}
+		
 	}
 };
 draw2d.Task.prototype.setWorkflow = function(_5019) {

@@ -161,6 +161,7 @@
 			window.opener._list_grid_obj.datagrid('reload');
 		} );
 	});
+	
 	function addModel(name,x,y,icon){
 		var model = null;
 		if(icon!=null&&icon!=undefined){

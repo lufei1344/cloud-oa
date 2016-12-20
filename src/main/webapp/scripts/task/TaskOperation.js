@@ -31,11 +31,23 @@ TaskOperation.prototype.confirmStartProcess = function() {
 	$('#' + this.formId).submit();
 };
 
+//提交任务
 TaskOperation.prototype.completeTask = function() {
 	var url = ROOT_URL+"/web/next.jsp?taskId="+(params.taskId ?  params.taskId : "")+"&executionId="+params.executionId+"&processInstanceId="+params.processInstanceId+"&processDefinitionId="+params.processDefinitionId+"&activityId="+params.activityId;
 	var index = layer.open({
 		  type: 2,
 	      title: '提交任务',
+	      area: ['750px', '400px'],
+	      content: url
+		});
+	
+};
+//流程跟踪
+TaskOperation.prototype.taskTrace = function() {
+	var url = ROOT_URL+"/web/taskTrace.jsp?executionId="+params.executionId+"&processInstanceId="+params.processInstanceId+"&processDefinitionId="+params.processDefinitionId+"&activityId="+params.activityId;
+	var index = layer.open({
+		  type: 2,
+	      title: '流程跟踪',
 	      area: ['750px', '400px'],
 	      content: url
 		});

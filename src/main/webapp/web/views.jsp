@@ -81,6 +81,9 @@
     	$(function(){
     		show();
     	});
+    	function printViews(){
+    		window.open(ROOT_URL+"/web/print.jsp");
+    	}
     </script>
 
 </head>
@@ -92,14 +95,16 @@
                    <div class="ibox-title">
                        <h5>任务处理 
 	                       <small class="m-l-sm">
-	                       <button type="button" class="btn btn-sm btn-primary" onclick="formViews.saveData()">保存草稿</button> 
-	                       <button type="button" class="btn btn-sm btn-primary" onclick="formViews.completeTask()">完成任务</button> 
-	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">回退（上一步）</button> 
-	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">回退（发起人）</button> 
+	                       <button type="button" class="btn btn-sm btn-primary" id="btn_SaveForm" onclick="formViews.saveData()">保存草稿</button> 
+	                       <button type="button" class="btn btn-sm btn-primary" id="btn_taskTrace" onclick="taskOperation.taskTrace()">流程追踪</button> 
+	                       <button type="button" class="btn btn-sm btn-primary" id="btn_complateTask" onclick="formViews.completeTask()">完成任务</button> 
+	                       <button type="button" class="btn btn-sm btn-primary" id="btn_backTask" onclick="jumpPage(1)">回退（上一步）</button> 
+	                       <button type="button" class="btn btn-sm btn-primary" id="btn_backTask" onclick="jumpPage(1)">回退（发起人）</button> 
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">转办</button> 
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">协办</button> 
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">沟通</button> 
 	                       <button type="button" class="btn btn-sm btn-primary" onclick="jumpPage(1)">加签</button> 
+	                       <button type="button" class="btn btn-sm btn-primary" onclick="printViews()">打印</button> 
 	                       </small>
                        </h5>
                        <div class="ibox-tools">

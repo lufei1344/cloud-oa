@@ -1,7 +1,6 @@
 package com.cloudoa.framework.flow.web;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,15 +9,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloudoa.framework.flow.service.ProcessService;
@@ -72,11 +72,18 @@ public class TaskController {
     public Object openViews(HttpServletRequest request) {
     	String activityId = request.getParameter("activityId");
     	String processDefinitionId = request.getParameter("processDefinitionId");
+    	String openType = request.getParameter("openType");
     	Map<String,Object> obj = new HashMap<String,Object>();
     	obj.put("activityId", activityId);
     	obj.put("processDefinitionId", processDefinitionId);
-    	obj.put("forms", processService.findNodeForm(processDefinitionId, activityId));
-    	obj.put("fields", processService.findNodeField(processDefinitionId, activityId));
+    	if("1".equals(openType)){//任务处理
+    		obj.put("forms", processService.findNodeForm(processDefinitionId, activityId));
+        	obj.put("fields", processService.findNodeField(processDefinitionId, activityId));
+    	}else{//查看
+    		obj.put("forms", processService.findNodeForm(processDefinitionId));
+        	obj.put("fields", "");
+    	}
+    	
     	return MsgUtils.returnOk("",obj);
     }
     /**
@@ -120,27 +127,27 @@ public class TaskController {
     	return MsgUtils.returnOk("");
     }
     /**
-     * 流程跟踪
-     * 
-     * @throws Exception
+     * 流程跟踪【包含流程跟踪、任务列表（完成和未完成）、流程变量】.
      */
-    @RequestMapping("workspace-graphHistoryProcessInstance")
-    public void graphHistoryProcessInstance(
-            @RequestParam("processInstanceId") String processInstanceId,
-            HttpServletResponse response) throws Exception {
-       /* Command<InputStream> cmd = new HistoryProcessInstanceDiagramCmd(
-                processInstanceId);
+    @RequestMapping("taskTrace")
+    @ResponseBody
+    public Object taskTrace(String processInstanceId, Model model) {
+        HistoryService historyService = processEngine.getHistoryService();
+        HistoricProcessInstance historicProcessInstance = historyService
+                .createHistoricProcessInstanceQuery()
+                .processInstanceId(processInstanceId).singleResult();
 
-        InputStream is = processEngine.getManagementService().executeCommand(
-                cmd);
-        response.setContentType("image/png");
+      
+        List<HistoricTaskInstance> historicTasks = historyService
+                .createHistoricTaskInstanceQuery()
+                .processInstanceId(processInstanceId).list();
+      
+        model.addAttribute("historicTasks", historicTasks);
+        String xml = processService.findDefinitionDeploymentXml(historicProcessInstance.getProcessDefinitionId());
 
-        int len = 0;
-        byte[] b = new byte[1024];
-
-        while ((len = is.read(b, 0, 1024)) != -1) {
-            response.getOutputStream().write(b, 0, len);
-        }*/
+        Map<String,Object> obj = new HashMap<String,Object>();
+        obj.put("xml", xml);
+        return MsgUtils.returnOk("", obj);
     }
     /**
      * 未结任务
@@ -166,7 +173,7 @@ public class TaskController {
     @RequestMapping(value="completedProcessInstances")
     @ResponseBody
     public Object completedProcessInstances(Model model,@ModelAttribute Page page, HttpServletRequest request) {
-    	page = processService.findCompletedProcessInstances(ShiroUtils.getUserId().toString(), TenantHolder.TenantId,
+    	page = processService.findCompletedProcessInstances(ShiroUtils.getUserId().toString(), 
     			page);
     	return MsgUtils.returnOk("",page);
     }
@@ -200,7 +207,7 @@ public class TaskController {
     public Object historyTasks(@ModelAttribute Page page, Model model) {
     	 String userId = ShiroUtils.getUserId().toString();
          String tenantId = TenantHolder.TenantId;
-        page = processService.findHistoryTasks(userId, tenantId, page);
+        page = processService.findHistoryTasks(userId, page);
         model.addAttribute("page", page);
 
         return MsgUtils.returnOk("",page);
